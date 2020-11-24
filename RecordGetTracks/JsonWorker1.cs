@@ -10,26 +10,10 @@ using System.Threading.Tasks;
 using System.Windows.Forms;
 
 namespace RecordGetTracks
-{
-    public class Station
-    {
-        public string Link { get; set; }
-        public string Name { get; set; }
-    }
-    public delegate DialogResult messageCaller(string message, string topic, MessageBoxButtons buttNS, MessageBoxIcon icon);
-    
+{    
     public class JsonWorker1
     {
-        public string jSonStationFile()
-        {
-            string path = "allst.json";
-            if (!Directory.Exists(path))
-            {
-             //   Directory.CreateDirectory(path);
-            }
-            return path;
-
-        }
+        private List<RadioData.RadioStation> listRadio;
         public string[] RadioList = new string[] { "Radio record",
 "Mafblan fm",
 "Trancemission",
@@ -180,66 +164,64 @@ namespace RecordGetTracks
 "https://www.radiorecord.fm/player2/butlogo/deti.gif",
 "https://www.radiorecord.fm/player2/butlogo/rv.gif",
  };
-        public List<Station> SetRadioNamesListFirst(string[] linkss, string[] names)
+        //public List<RadioData.RadioStation> SetRadioNamesListFirst(string[] linkss, string[] names)
+        //{
+        //    List<RadioData.RadioStation> list = new List<RadioData.RadioStation> { };
+        //    for (int i = 0; i < links.Length; i++)
+        //    {
+        //        RadioData.RadioStation station = new RadioData.RadioStation() { LinkTracksList = linkss[i], Name = names[i] };
+        //        list.Add(station);
+        //    }
+        //    CreateJsnFile(list, GlVars.namesFile);
+        //    return list;
+        //}
+        //public List<RadioData.RadioStation> RadioNamesList(messageCaller msg, IWebDriver ChromeDriver, List<IWebElement> webElements)
+        //{
+        //    if (listRadio == null)
+        //    {
+        //        listRadio = new List<RadioData.RadioStation> { };
+        //        if (File.Exists(GlVars.namesFile))
+        //            listRadio = ReadJsnFile(GlVars.namesFile);
+        //        else
+        //        {
+        //            DialogResult rs = msg("Загрузить втроенный лист станций или создать новый?\nЧтобы использовать встроенный нажми 'Yes'\nЧтобы загрузить лист с сайта нажми 'No'","Названия плейлистов", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
+        //            if (rs == DialogResult.Yes)
+        //                listRadio = SetRadioNamesListFirst(links, RadioList);
+        //            else if (rs == DialogResult.No)
+        //                listRadio = LoadStationNames(ChromeDriver, webElements);
+        //        }
+        //    }
+        //    return listRadio;
+        //}
+        //public List<RadioData.RadioStation> LoadStationNames(IWebDriver ChromeDriver, List<IWebElement> webElements)
+        //{
+        //    List<RadioData.RadioStation> stations = new List<RadioData.RadioStation> { };
+        //    for (int i = 0; i < webElements.Count; i++)
+        //    {
+        //        webElements[i].Click();
+        //        var GifLink = webElements[i].GetAttribute("src");
+        //        ChromeDriver.SwitchTo().Frame("playlist_frame");
+        //        var stationName = ChromeDriver.FindElement(By.ClassName("ntitle2")).Text;
+        //        ChromeDriver.SwitchTo().DefaultContent();
+        //        stations.Add(new RadioData.RadioStation { LinkTracksList = GifLink, Name = stationName });
+        //    } 
+        //    CreateJsnFile(stations, GlVars.namesFile);
+        //    return stations;
+        //}
+        public static List<RadioData.RadioStation> ReadJsnFile(string path)
         {
-            List<Station> list = new List<Station> { };
-            for (int i = 0; i < links.Length; i++)
-            {
-                Station station = new Station() { Link = linkss[i], Name = names[i] };
-                list.Add(station);
-            }
-            CreateJsnFile(list, "allst.json");
-            return list;
-        }
-        private List<Station> listRadio;
-        public List<Station> RadioNamesList(messageCaller msg, IWebDriver ChromeDriver, List<IWebElement> webElements)
-        {
-            string path = "allst.json";
-            if (listRadio == null)
-            {
-                listRadio = new List<Station> { };
-                if (File.Exists(path))
-                    listRadio = ReadJsnFile(path);
-                else
-                {
-                    DialogResult rs = msg("Загрузить втроенный лист станций или создать новый?\nЧтобы использовать встроенный нажми 'Yes'\nЧтобы загрузить лист с сайта нажми 'No'","Названия плейлистов", MessageBoxButtons.YesNoCancel, MessageBoxIcon.Exclamation);
-                    if (rs == DialogResult.Yes)
-                        listRadio = SetRadioNamesListFirst(links, RadioList);
-                    else if (rs == DialogResult.No)
-                        listRadio = LoadStationNames(ChromeDriver, webElements);
-                }
-            }
-            return listRadio;
-        }
-        public List<Station> LoadStationNames(IWebDriver ChromeDriver, List<IWebElement> webElements)
-        {
-            List<Station> stations = new List<Station> { };
-            for (int i = 0; i < webElements.Count; i++)
-            {
-                webElements[i].Click();
-                var GifLink = webElements[i].GetAttribute("src");
-                ChromeDriver.SwitchTo().Frame("playlist_frame");
-                var stationName = ChromeDriver.FindElement(By.ClassName("ntitle2")).Text;
-                ChromeDriver.SwitchTo().DefaultContent();
-                stations.Add(new Station { Link = GifLink, Name = stationName });
-            }
-            CreateJsnFile(stations, "allst.json");
-            return stations;
-        }
-        public List<Station> ReadJsnFile(string path)
-        {
-            List<Station> stations = new List<Station> { };
+            List<RadioData.RadioStation> stations = new List<RadioData.RadioStation> { };
             using (StreamReader jsReader = new StreamReader(path))
             {
-                Station station = new Station();
+                RadioData.RadioStation station = new RadioData.RadioStation();
 
                 JsonReader json = new JsonTextReader(jsReader);
                 JsonSerializer jsonSerializer = new JsonSerializer();
-                var favoriteList = jsonSerializer.Deserialize<List<Station>>(json);
+                var favoriteList = jsonSerializer.Deserialize<List<RadioData.RadioStation>>(json);
                 return favoriteList;
             }
         }
-        public void CreateJsnFile(List<Station> listFav, string path)
+        public static void CreateJsnFile(List<RadioData.RadioStation> listFav, string path)
         {
             using (StreamWriter sw = new StreamWriter(path, false))
             {

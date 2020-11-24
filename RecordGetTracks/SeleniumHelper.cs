@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Globalization;
+using System.IO;
 using System.Reflection;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
@@ -9,6 +10,16 @@ namespace RecordGetTracks
 {
     class SeleniumHelper
     {
+        //static string SessionFold
+        //{
+        //    get
+        //    {
+        //        string ps = GlVars  .DirF + @"usr1\";
+        //        if (!Directory.Exists(ps))
+        //            Directory.CreateDirectory(ps);
+        //        return ps;
+        //    }
+        //}
         private static IWebDriver _driver;
         public static void ResetDriver()
         {
@@ -31,14 +42,19 @@ namespace RecordGetTracks
                 {
                     return _driver;
                 }
-                var chromeDriverService = ChromeDriverService.CreateDefaultService(@"C:\Users\unkno\AppData\Local\Google\Chrome\Application\");
+                var chromeDriverService = ChromeDriverService.CreateDefaultService(@"C:\Users\unkno\AppData\Local\Google\Chrome\Application\");  // сделать возможность менять
                 chromeDriverService.HideCommandPromptWindow = true;
-                var chromeOptions = new ChromeOptions();
+                var chromeOptions = new ChromeOptions(); 
                 _driver = new ChromeDriver(chromeDriverService, chromeOptions);
                 // Avoid synchronization issues by applying timed delay to each step if necessary
-                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-                _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(5);
+                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(7);
+              //  _driver.Manage().Window.Minimize();
                 return _driver;
+            }
+            set
+            {
+                _driver = value;
             }
         }
         public static void AfterTestRun()
@@ -55,13 +71,10 @@ namespace RecordGetTracks
             wait.Until(webDriver => (DateTime.Now - timestamp) > delay);
         }
 
-
-
         public static string GetCosasBuildVersion()
         {
             var version = Assembly.GetExecutingAssembly().GetName().Version;
             var result = String.Format(CultureInfo.InvariantCulture, "{0}.{1}.{2}.{3}", version.Major, version.Minor, version.Build, version.MinorRevision);
-
             return result;
         }
     }

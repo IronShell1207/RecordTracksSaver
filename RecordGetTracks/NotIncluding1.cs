@@ -80,6 +80,72 @@ namespace RecordGetTracks
                 element.Click();      
                 }
             }}*/
+        //if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.ProgressBarStyle = ProgressBarStyle.Marquee));
+        //else progressBar.ProgressBarStyle = ProgressBarStyle.Marquee;
+        //Thread.Sleep(100);
+        //try
+        //{
+        //    var listStations = GlVars.RecordGetStations;
+        //    var listStNames = jsnWrk.RadioNamesList(msgCall, SeleniumHelper.ChromeDriver, listStations).ToDictionary(c => c.Link, s => s.Name);
+        //    int i = 0;
+        //    foreach (IWebElement station in listStations)
+        //    {
+        //        var link = station.GetAttribute("src");
+        //        if (listStNames.ContainsKey(link))
+        //        {
+        //            var Name = listStNames.Where(x => x.Key == link).FirstOrDefault().Value;
+        //            //stats.Add(new StationN { Element = station, Name = listStNames.Where(x => x.Key == station.GetAttribute("src")).FirstOrDefault().Value });
+        //            Invoke((Action)(() => listBox.Items.Add(++i + ". " + Name)));
+        //            GlVars.StationsList.Add(new Station { Link = link, Name = Name });
+        //        }
+        //        else
+        //        {
+        //            Invoke((Action)(() => listBox.Items.Add(++i + ". " + link)));
+        //            GlVars.StationsList.Add(new Station { Link = link, Name = link });
+        //        }
+        //    }
+
+        //}
+        //catch (WebDriverException ex)
+        //{
+        //    msgCall(ex.Message, "Браузер потерян?", MessageBoxButtons.OK, MessageBoxIcon.Error);
+        //    SeleniumHelper.ChromeDriver = null;
+        //    Application.Exit();
+        //}
+        //if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.ProgressBarStyle = ProgressBarStyle.Continuous));
+        //else progressBar.ProgressBarStyle = ProgressBarStyle.Continuous;
+        //Thread.Sleep(100);
+        //listBox1.Items.Clear();
+        //        TracksLoader = new Thread(() =>
+        //        {
+        //    string LinkStation = "";
+        //    if (InvokeRequired) Invoke((Action)(() => { LinkStation = GlVars.FavList[listBox.SelectedIndex].Link; }));
+        //    else LinkStation = GlVars.StationsList[listBox.SelectedIndex].Link;
+        //    GlVars.RecordGetStations.Find(x => x.GetAttribute(RecordPage.LinkAttr) == LinkStation).Click();
+        //    SeleniumHelper.ChromeDriver.SwitchTo().Frame(RecordPage.TracksFrameN);
+        //    var TracksNms = SeleniumHelper.ChromeDriver.FindElements(RecordPage.TrackXPath);
+        //    foreach (IWebElement el in TracksNms)
+        //    {
+        //        string trackName = el.Text;
+        //        for (int i1 = 0; i1 < GlVars.SymNAll.Length; i1++)
+        //        {
+        //            trackName = trackName.Replace(GlVars.SymNAll[i1], GlVars.SymAlld[i1]);
+        //        }
+        //        TracksList.Add(trackName);
+        //        if (InvokeRequired) Invoke((Action)(() => listBox1.Items.Add(trackName)));
+        //        else listBox1.Items.Add(trackName);
+        //    }
+        //    SeleniumHelper.ChromeDriver.SwitchTo().DefaultContent();
+        //    if (InvokeRequired) Invoke((Action)(() => buttonAllList.Enabled = true));
+        //    else buttonAllList.Enabled = true;
+        //    if (InvokeRequired) Invoke((Action)(() => buttonMakePlaylist.Enabled = true));
+        //    else buttonMakePlaylist.Enabled = true;
+        //    if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.ProgressBarStyle = ProgressBarStyle.Continuous));
+        //    else progressBar.ProgressBarStyle = ProgressBarStyle.Continuous;
+        //    Thread.Sleep(100);
+        //});
+        //        TracksLoader.Start();
+
         #region spotifyOLD
         /*
           async Task CreatePlay()
