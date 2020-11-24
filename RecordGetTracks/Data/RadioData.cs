@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using RecordGetTracks;
 
 namespace RadioData
-{ 
+{
     public class RadioStation // ОСНОВНОЙ КЛасс радио станций ВКЛЮЧАЮЩИЙ Список треков.!!
     {
         private List<string> _tracksList;
@@ -43,13 +43,14 @@ namespace RadioData
     public class xPathes
     {
         public static readonly By StationBtns = By.XPath("//div[@class='icon']//img");
-        public static readonly string TracksFrameN = "playlist_frame";
+        public static readonly string TracksFrameN = "content_frame";
         public static readonly string LinkAttr = "src";
-        
+        public static readonly By TrackXPath = By.XPath("//div[@class='artist']");
+        public static readonly By TracksPath = By.ClassName("artist");
         public static readonly By TrackAllXPath = By.XPath("//b[text()='Все']");
+        public static readonly By TracksList = By.XPath("//tbody/tr");
         public class IframePage
         {
-            public static By TrackXPath = By.ClassName("artist");
             public static By PageRef = By.ClassName("pages");
             public static By PageName = By.ClassName("ntitle2");
         }
@@ -74,7 +75,7 @@ namespace RadioData
                     return _stationList;
                 try
                 {
-                    _stationList = JsonWorker1.ReadJsnFile(Names.JsonRadioList);
+                    _stationList = JsonWorker1.ReadJsnFile(Names.JsonRadioList) as List<RadioData.RadioStation>;
                     return _stationList;
                 }
                 catch (Exception ex) { }

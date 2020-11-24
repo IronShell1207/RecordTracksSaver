@@ -53,9 +53,9 @@ namespace RadioData
             List<string> songs = new List<string> { };
             try
             {
-                var AllTracks = SeleniumHelper.ChromeDriver.FindElements(xPathes.IframePage.TrackXPath);
-                int iTracksCount = count != 0 && count<=AllTracks.Count ? count : AllTracks.Count;
-                for (int ix = 0; ix<iTracksCount; ix++)
+                var AllTracks = SeleniumHelper.ChromeDriver.FindElements(xPathes.TrackAllXPath);
+                int iTracksCount = count != 0 && count <= AllTracks.Count ? count : AllTracks.Count;
+                for (int ix = 0; ix < iTracksCount; ix++)
                 {
                     var name = AllTracks[ix].Text;
                     for (int i = 0; i < Converting.SymToChange.Length; i++)
@@ -69,6 +69,7 @@ namespace RadioData
             { }
             if (songs.Count > 0)
             {
+                RadioLists.StationsList[index].DateLoadedTracks = DateTime.Now.ToLongDateString();
                 RadioLists.StationsList[index].TracksList = songs;
             }
         }

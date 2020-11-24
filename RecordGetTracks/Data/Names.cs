@@ -10,6 +10,7 @@ namespace RecordGetTracks
     class Names
     {
         public static string JsonRadioList = DataFolderPath + "RadioStations.json";
+        
         public static string DataFolderPath
         {
             get

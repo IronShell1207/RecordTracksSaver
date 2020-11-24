@@ -31,76 +31,6 @@ namespace RecordGetTracks
         private Thread StationsLoader, TracksLoader, FullTracksList, SpotifyListCreator;
         private ContextMenus ctxm;
         RadioWorker rwork;
-        /* private void timerProgress_Tick(object sender, EventArgs e)
-         {
-             //if (Names.progressMax == Names.progressValue)
-             //   timerProgress.Stop();
-             progressBar.Value = Names.progressValue;
-             var curValueMax = progressBar.Maximum;
-             var curState = progressBar.ProgressBarStyle;
-             if (Names.progressMax != curValueMax)
-                 progressBar.Maximum = Names.progressMax;
-             if (curState.Equals(ProgressBarStyle.Continuous) == Names.isMarqueee) // по умолчанию первое значение (текущее состояние Continuous)=true,
-                                                                            //то правое тоже должно быть равно true (то есть Marquee) для изменения значения.
-                                                                            // если у нас сейчас состояние Marquee (слева) то будет false и справа будет false, потому что мы меняем обратно на Continous и false = false и значение применится
-                 progressBar.ProgressBarStyle = Names.isMarqueee ? ProgressBarStyle.Marquee : ProgressBarStyle.Continuous;
-
-         }*/
-        //private List<IWebElement> recordStations;
-        //private List<Station> favList;
-        //public List<Station> StationsList
-        //{
-        //    get
-        //    {
-        //        if (stationsList == null)
-        //        {
-        //            stationsList = new List<Station> { };
-        //        }
-        //        return stationsList;
-        //    }
-        //    set
-        //    {
-        //        stationsList = value;
-        //    }
-        //}
-        //public List<IWebElement> RecordGetStations
-        //{
-        //    get
-        //    {
-        //        if (recordStations == null)
-        //        {
-        //            // ChromeDriver().Manage().Window.Position = new Point(1000, 0);
-        //            SeleniumHelper.ChromeDriver.Url = "https://www.radiorecord.fm/playlist.html";
-        //            Thread.Sleep(2000);
-        //            recordStations = SeleniumHelper.ChromeDriver.FindElements(By.XPath("//div[@class='icon']//img")).ToList();
-        //        }
-        //        return recordStations;
-        //    }
-        //    set
-        //    {
-        //        recordStations = value;
-        //    }
-        //}
-        //public List<Station> FavList
-        //{
-        //    get
-        //    {
-        //        if (favList== null)
-        //        {
-        //            if (File.Exists("favlist.json"))
-        //            {
-        //                StationsList = jsnWrk.ReadJsnFile("favlist.json");
-        //                foreach (Station station in StationsList)
-        //                    listBox.Items.Add(station.Name);
-        //            }
-        //        }
-        //        return favList;
-        //    }
-        //    set
-        //    {
-        //        favList = value;
-        //    }
-        //}
         public Form1()
         {
             InitializeComponent();
@@ -113,30 +43,9 @@ namespace RecordGetTracks
             var btnloc = new Point(btn.Location.X, btn.Location.Y + btn.Size.Height);
             var pnt = new Point(Location.X, Location.Y);
             var pnlloc = panelMenu.Location;
-            var fpn = new Point(btnloc.X + pnlloc .X+ pnt.X, btnloc.Y+ pnlloc.Y + pnt.Y);
+            var fpn = new Point(btnloc.X + pnlloc.X + pnt.X, btnloc.Y + pnlloc.Y + pnt.Y);
             ctx.Show(fpn);
         }
-
-
-        /* public IWebDriver ChromeDriver()
-         {
-             if (chromeDriver == null)
-             {
-                 var chDrSer = ChromeDriverService.CreateDefaultService(@"C:\Users\unkno\AppData\Local\Google\Chrome\Application\");
-                 chDrSer.HideCommandPromptWindow = true;
-                 var chrOpts = new ChromeOptions();9
-                 // chrOpts.AddArguments("--window-size=1400,1000");
-                 chrOpts.PageLoadStrategy = PageLoadStrategy.Normal;
-                 //chromeDriver = new ChromeDriver(@"C:\Programs\chrome-win", chrOpts);
-                 chromeDriver = new ChromeDriver(chDrSer, chrOpts);
-                 //ChromeDriver().Manage().Window.Minimize();
-             }
-             return chromeDriver;
-         }*/
-
-
-
-        //   Нужна подмога. Есть два разных списка и нужно сравнить значение из первого (который я перебираю) со значением из второго списка и вывести свойство Name из второго при совпадении. Я сделал перебором еще и второго списка. А есть ли вариант обойти перебор второго списка?
         private void buttonStart_Click(object sender, EventArgs e)
         {
             var StartCreator = new Thread(() =>
@@ -158,31 +67,38 @@ namespace RecordGetTracks
                 StartCreator.Start();
             }
         }
-        //public void CreateListRadios(List<Station> list)
-        //{
-        //    if (InvokeRequired) Invoke((Action)(() => listBox.Items.Clear()));
-        //    else listBox.Items.Clear();
-        //    foreach (Station fx in list)
-        //    {
-        //        if (InvokeRequired) Invoke((Action)(() => listBox.Items.Add(fx.Name)));
-        //        else listBox.Items.Add(fx.Name);
-        //    }
-        //}
         private void listBox_SelectedIndexChanged(object sender, EventArgs e)
         {
-            if (listBox.SelectedIndex > -1)
+            var cInd = listBox.SelectedIndex;
+
+            if (cInd > -1)
             {
+                var station = RadioLists.StationsList.Find(x => x.Name == listBox.Items[cInd].ToString().Replace(" 💙", ""));
+                var stationTracks = station.TracksList;
+                if (stationTracks.Count > 0)
+                {
+                    listBox1.Items.Clear();
+                    listBox1.Items.AddRange(stationTracks.ToArray());
+                    if (station.DateLoadedTracks != null)
+                    {
+                        labelDatePlaylist.Text = $"Список треков от: {station.DateLoadedTracks}";
+                        labelDatePlaylist.Visible = true;
+                    }
+                    else labelDatePlaylist.Visible = false;
+                }
+
                 if (toggleRecIsFav.Checked == false)
                     btnRecAddFav.Enabled = true;
-                if (toggleRecIsFav.Checked == true)
+                if (toggleRecIsFav.Checked == true || station.isFavorite == true)
                     btnRecRemFav.Enabled = true;
                 buttongetTitle.Enabled = true;
             }
             else
             {
                 buttongetTitle.Enabled = false;
+                labelDatePlaylist.Visible = false;
                 btnRecAddFav.Enabled = false;
-                btnRecRemFav.Enabled = false;
+                buttongetTitle.Enabled = false;
             }
         }
 
@@ -244,19 +160,10 @@ namespace RecordGetTracks
         }
         List<string> TracksList = new List<string> { };
 
-        private void LoadTracks_Click(object sender, EventArgs e)
-        {
-
-        }
-
         private void metroButton1_Click(object sender, EventArgs e)
         {
             TracksList.RemoveAt(listBox1.SelectedIndex);
             listBox1.Items.RemoveAt(listBox1.SelectedIndex);
-        }
-
-        private void metroButton3_Click(object sender, EventArgs e)
-        {
         }
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
@@ -287,14 +194,6 @@ namespace RecordGetTracks
             listBox.Items.Insert(ind, indIt + " 💙");
             JsonWorker1.CreateJsnFile(RadioData.RadioLists.StationsList, Names.JsonRadioList);
         }
-
-        private void metroButton5_Click(object sender, EventArgs e)
-        {
-            //GlVars.StationsList.RemoveAt(listBox.SelectedIndex);
-            //listBox.Items.RemoveAt(listBox.SelectedIndex);
-            //jsnWrk.CreateJsnFile(GlVars.StationsList, GlVars.favFile);
-        }
-
         private void toggleIsFav_CheckedChanged(object sender, EventArgs e)
         {
             CreateListRadios(toggleRecIsFav.Checked);
@@ -344,7 +243,7 @@ namespace RecordGetTracks
             //    tbPlName.Text = listBox.SelectedItem.ToString();
             //panelShoweer(panelSpotify);
         }
-        void Spoti(string login, string password, string PlaylistName, List<string> songs, bool IsNewPlaylist)
+       /* void Spoti(string login, string password, string PlaylistName, List<string> songs, bool IsNewPlaylist)
         {
             // if (InvokeRequired) progressBar.Invoke(new Action(() => { progressBar.ProgressBarStyle = ProgressBarStyle.Marquee; progressBar.Value = 0; }));
             // else { progressBar.ProgressBarStyle = ProgressBarStyle.Marquee; progressBar.Value = 0; }
@@ -419,12 +318,8 @@ namespace RecordGetTracks
             }
             ClickLink(By.XPath("//header/div[3]/div[1]/div[1]/div[1]/button[1]"));
             return i;
-        }
+        }*/
 
-        private void Form1_SizeChanged(object sender, EventArgs e)
-        {
-            //panelShoweer(panelSpotify);
-        }
 
         private void buttonStartSpoti_Click(object sender, EventArgs e)
         {
@@ -451,6 +346,7 @@ namespace RecordGetTracks
             listBox1.Items.Clear();
             var station = RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
             rwork.LoadTracks(station, 0);
+            listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
         }
 
 
@@ -459,23 +355,91 @@ namespace RecordGetTracks
             ContextMenuShower(sender as Button, ctxm.ctxFile);
         }
 
+        private void tbTracksNum_KeyDown(object sender, KeyEventArgs e)
+        {
+            var txt = tbTracksNum.Text;
+            if (txt.Length > 0)
+            {
+                if (e.KeyData == System.Windows.Forms.Keys.Up)
+                {
+                    var isz = int.Parse(txt);
+                    isz += 1;
+                    tbTracksNum.Text = isz.ToString();
+                }
+                if (e.KeyData == System.Windows.Forms.Keys.Down)
+                {
+                    var isz = int.Parse(txt);
+                    isz -= 1;
+                    tbTracksNum.Text = isz.ToString();
+                }
+            }
+        }
+
+        private void btnHideSetts_Click(object sender, EventArgs e)
+        {
+            panelSettings.Visible = false;
+        }
+
+        private void metroLabel5_Click(object sender, EventArgs e)
+        {
+            panelSpotiMain.Visible = false;
+            panelRecMain.Visible = true;
+        }
+
+        private void btnExpMenu_MouseClick(object sender, MouseEventArgs e)
+        {
+            ContextMenuShower(btnExpMenu, ctxm.ctxExport);
+        }
+
+        private void button4_MouseDown(object sender, MouseEventArgs e)
+        {
+                if (e.Button == MouseButtons.Left)
+                {
+                    var btn = sender as Button;
+                    btn.PerformClick();
+                    Thread.Sleep(50);
+                }
+        }
+
+        private void metroButton2_Click(object sender, EventArgs e)
+        {
+            var ofd = new OpenFileDialog()
+            {
+                FileName = "chrome.exe",
+                Filter = "chrome.exe|chrome.exe|All files(*.*)|*.*",
+                Title = "Укажите расположение Google Chrome",
+            };
+            var defpath = "";
+            var chrMultiUsr = @"C:\Program Files (x86)\Google\Chrome\Application";
+            var chrSingleUsr = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Google\Chrome\Application\";
+            if (Directory.Exists(chrMultiUsr))
+                defpath = chrMultiUsr;
+            else if (Directory.Exists(chrSingleUsr))
+                defpath = chrSingleUsr;
+            ofd.InitialDirectory = defpath;
+            if (DialogResult.OK == ofd.ShowDialog())
+            {
+
+            }
+
+        }
+
         private void tb_KeyPress(object sender, KeyPressEventArgs e)
         {
             var tb = sender as MetroTextBox;
-
-                if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
-                {
-                    e.Handled = true;
-                }
-                // only allow one decimal point
-                if ((e.KeyChar == '.') && (tb.Text.IndexOf('.') > -1))
-                {
-                    e.Handled = true;
-                }
+            if (!char.IsControl(e.KeyChar) && !char.IsDigit(e.KeyChar) && (e.KeyChar != '.'))
+            {
+                e.Handled = true;
+            }
+            // only allow one decimal point
+            if ((e.KeyChar == '.') && (tb.Text.IndexOf('.') > -1))
+            {
+                e.Handled = true;
+            }
         }
         private void button4_Click(object sender, EventArgs e)
         {
-            int cNum = tbTracksNum.Text!="" ? int.Parse(tbTracksNum.Text) : 0;
+            int cNum = tbTracksNum.Text != "" ? int.Parse(tbTracksNum.Text) : 0;
             cNum += 5;
             tbTracksNum.Text = cNum.ToString();
         }

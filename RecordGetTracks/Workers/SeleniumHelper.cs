@@ -42,7 +42,7 @@ namespace RecordGetTracks
                 {
                     return _driver;
                 }
-                var chromeDriverService = ChromeDriverService.CreateDefaultService(@"C:\Users\unkno\AppData\Local\Google\Chrome\Application\");  // сделать возможность менять
+                var chromeDriverService = ChromeDriverService.CreateDefaultService(@"C:\Program Files (x86)\Google\Chrome\Application");  // сделать возможность менять
                 chromeDriverService.HideCommandPromptWindow = true;
                 var chromeOptions = new ChromeOptions(); 
                 _driver = new ChromeDriver(chromeDriverService, chromeOptions);
