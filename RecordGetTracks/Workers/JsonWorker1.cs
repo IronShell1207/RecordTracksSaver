@@ -13,9 +13,9 @@ namespace RecordGetTracks
 {    
     public class JsonWorker1
     {
-        public static object ReadJsnFile(string path)
+        public static List<RadioData.RadioStation> ReadJsnFile()
         {
-            using (StreamReader jsReader = new StreamReader(path))
+            using (StreamReader jsReader = new StreamReader(SettingsStatic.JsonRecordPath))
             {
                 JsonReader json = new JsonTextReader(jsReader);
                 JsonSerializer jsonSerializer = new JsonSerializer();
@@ -23,10 +23,17 @@ namespace RecordGetTracks
                 return list;
             }
         }
-        //public static object ReadJsn(object list,string path)
-        //{
-        //    var nlist = 
-        //}
+        public static SettingsM ReadSettingsJson()
+        {
+            using (StreamReader jsReader = new StreamReader(SettingsStatic.JsonSettingsPath))
+            {
+                JsonReader json = new JsonTextReader(jsReader);
+                JsonSerializer jsonSerializer = new JsonSerializer();
+                var list = jsonSerializer.Deserialize<SettingsM>(json);
+                return list;
+            }
+        }
+
         public static void CreateJsnFile(object listFav, string path)
         {
             using (StreamWriter sw = new StreamWriter(path, false))

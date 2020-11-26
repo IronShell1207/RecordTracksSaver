@@ -75,7 +75,7 @@ namespace RadioData
                     return _stationList;
                 try
                 {
-                    _stationList = JsonWorker1.ReadJsnFile(Names.JsonRadioList) as List<RadioData.RadioStation>;
+                    _stationList = JsonWorker1.ReadJsnFile();
                     return _stationList;
                 }
                 catch (Exception ex) { }

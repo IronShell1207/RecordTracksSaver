@@ -2,6 +2,7 @@
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Support.UI;
@@ -10,18 +11,8 @@ namespace RecordGetTracks
 {
     class SeleniumHelper
     {
-        //static string SessionFold
-        //{
-        //    get
-        //    {
-        //        string ps = GlVars  .DirF + @"usr1\";
-        //        if (!Directory.Exists(ps))
-        //            Directory.CreateDirectory(ps);
-        //        return ps;
-        //    }
-        //}
         private static IWebDriver _driver;
-        public static void ResetDriver()
+        public static void QuitDriver()
         {
             try
             {
@@ -34,6 +25,37 @@ namespace RecordGetTracks
             }
             catch (Exception ex) { }
         }
+        public static void ClickLink(By by)
+        {
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            try
+            {
+                wait.Until(d => d.FindElement(by)); //ждем пока объект заспавнится 
+                _driver.FindElement(by).Click();
+            }
+            catch (NoSuchElementException ex)
+            { // если не прогрузился
+
+            }
+        }
+        public static bool SendKeys(By by, string[] text) // печатаем текст в поле безошибочно
+        {
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            try
+            {
+                wait.Until(d => d.FindElement(by));
+                foreach (string str in text)
+                {
+                    _driver.FindElement(by).SendKeys(str);
+                    Thread.Sleep(50);
+                }
+            }
+            catch (NoSuchElementException ex)
+            {
+                return false;
+            }
+            return true;
+        }
         public static IWebDriver ChromeDriver
         {
             get
@@ -42,7 +64,7 @@ namespace RecordGetTracks
                 {
                     return _driver;
                 }
-                var chromeDriverService = ChromeDriverService.CreateDefaultService(@"C:\Program Files (x86)\Google\Chrome\Application");  // сделать возможность менять
+                var chromeDriverService = ChromeDriverService.CreateDefaultService(SettingsStatic.settings.ChromePath);  // сделать возможность менять
                 chromeDriverService.HideCommandPromptWindow = true;
                 var chromeOptions = new ChromeOptions(); 
                 _driver = new ChromeDriver(chromeDriverService, chromeOptions);
@@ -57,11 +79,6 @@ namespace RecordGetTracks
                 _driver = value;
             }
         }
-        public static void AfterTestRun()
-        {
-            ResetDriver();
-        }
-
 
         public static void Wait(int miliseconds, int maxTimeOutSeconds = 60)
         {

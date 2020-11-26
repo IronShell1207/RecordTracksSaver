@@ -71,7 +71,6 @@
             this.panelRightMain = new MetroFramework.Controls.MetroPanel();
             this.panelMenu = new MetroFramework.Controls.MetroPanel();
             this.labelDatePlaylist = new MetroFramework.Controls.MetroLabel();
-            this.labelTracks = new MetroFramework.Controls.MetroLabel();
             this.btnSupp = new System.Windows.Forms.Button();
             this.btnExpMenu = new System.Windows.Forms.Button();
             this.btnFileMenu = new System.Windows.Forms.Button();
@@ -86,11 +85,14 @@
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.panelSpaceMiddle = new MetroFramework.Controls.MetroPanel();
             this.panelSettings = new MetroFramework.Controls.MetroPanel();
+            this.metroLabel7 = new MetroFramework.Controls.MetroLabel();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
             this.tbGooglePath = new MetroFramework.Controls.MetroTextBox();
             this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
             this.btnHideSetts = new MetroFramework.Controls.MetroButton();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
+            this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
+            this.toggleBrowser = new MetroFramework.Controls.MetroToggle();
             this.panelSpotiMain.SuspendLayout();
             this.panelSpotiImport.SuspendLayout();
             this.panelRecSpaceImp2.SuspendLayout();
@@ -214,6 +216,7 @@
             this.toggleRecIsFav.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.toggleRecIsFav.UseSelectable = true;
             this.toggleRecIsFav.CheckedChanged += new System.EventHandler(this.toggleIsFav_CheckedChanged);
+            this.toggleRecIsFav.Click += new System.EventHandler(this.toggleRecIsFav_Click);
             // 
             // lblRecFav
             // 
@@ -374,7 +377,7 @@
             this.panelSpotiMain.HorizontalScrollbarBarColor = true;
             this.panelSpotiMain.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSpotiMain.HorizontalScrollbarSize = 10;
-            this.panelSpotiMain.Location = new System.Drawing.Point(10, 401);
+            this.panelSpotiMain.Location = new System.Drawing.Point(10, 384);
             this.panelSpotiMain.Name = "panelSpotiMain";
             this.panelSpotiMain.Size = new System.Drawing.Size(205, 452);
             this.panelSpotiMain.TabIndex = 17;
@@ -621,7 +624,7 @@
             this.panelRecMain.HorizontalScrollbarBarColor = true;
             this.panelRecMain.HorizontalScrollbarHighlightOnWheel = false;
             this.panelRecMain.HorizontalScrollbarSize = 10;
-            this.panelRecMain.Location = new System.Drawing.Point(14, 10);
+            this.panelRecMain.Location = new System.Drawing.Point(18, 13);
             this.panelRecMain.Name = "panelRecMain";
             this.panelRecMain.Size = new System.Drawing.Size(195, 438);
             this.panelRecMain.TabIndex = 18;
@@ -715,7 +718,6 @@
             // panelMenu
             // 
             this.panelMenu.Controls.Add(this.labelDatePlaylist);
-            this.panelMenu.Controls.Add(this.labelTracks);
             this.panelMenu.Controls.Add(this.btnSupp);
             this.panelMenu.Controls.Add(this.btnExpMenu);
             this.panelMenu.Controls.Add(this.btnFileMenu);
@@ -735,23 +737,13 @@
             // labelDatePlaylist
             // 
             this.labelDatePlaylist.AutoSize = true;
-            this.labelDatePlaylist.Location = new System.Drawing.Point(392, 4);
+            this.labelDatePlaylist.Location = new System.Drawing.Point(213, 3);
             this.labelDatePlaylist.Name = "labelDatePlaylist";
             this.labelDatePlaylist.Size = new System.Drawing.Size(136, 19);
             this.labelDatePlaylist.TabIndex = 28;
             this.labelDatePlaylist.Text = "Список от: 25.11.2020";
             this.labelDatePlaylist.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.labelDatePlaylist.Visible = false;
-            // 
-            // labelTracks
-            // 
-            this.labelTracks.AutoSize = true;
-            this.labelTracks.Location = new System.Drawing.Point(215, 4);
-            this.labelTracks.Name = "labelTracks";
-            this.labelTracks.Size = new System.Drawing.Size(99, 19);
-            this.labelTracks.TabIndex = 27;
-            this.labelTracks.Text = "Список треков";
-            this.labelTracks.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
             // btnSupp
             // 
@@ -776,6 +768,7 @@
             this.btnExpMenu.TabIndex = 25;
             this.btnExpMenu.Text = "Экспорт";
             this.btnExpMenu.UseVisualStyleBackColor = true;
+            this.btnExpMenu.Click += new System.EventHandler(this.btnExpMenu_Click);
             this.btnExpMenu.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnExpMenu_MouseClick);
             // 
             // btnFileMenu
@@ -968,6 +961,9 @@
             // panelSettings
             // 
             this.panelSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelSettings.Controls.Add(this.toggleBrowser);
+            this.panelSettings.Controls.Add(this.metroLabel8);
+            this.panelSettings.Controls.Add(this.metroLabel7);
             this.panelSettings.Controls.Add(this.metroButton2);
             this.panelSettings.Controls.Add(this.tbGooglePath);
             this.panelSettings.Controls.Add(this.metroLabel6);
@@ -978,9 +974,9 @@
             this.panelSettings.HorizontalScrollbarBarColor = true;
             this.panelSettings.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSettings.HorizontalScrollbarSize = 10;
-            this.panelSettings.Location = new System.Drawing.Point(128, 10);
+            this.panelSettings.Location = new System.Drawing.Point(117, 9);
             this.panelSettings.Name = "panelSettings";
-            this.panelSettings.Size = new System.Drawing.Size(371, 215);
+            this.panelSettings.Size = new System.Drawing.Size(371, 345);
             this.panelSettings.TabIndex = 22;
             this.panelSettings.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.panelSettings.VerticalScrollbarBarColor = true;
@@ -988,9 +984,20 @@
             this.panelSettings.VerticalScrollbarSize = 10;
             this.panelSettings.Visible = false;
             // 
+            // metroLabel7
+            // 
+            this.metroLabel7.AutoSize = true;
+            this.metroLabel7.FontSize = MetroFramework.MetroLabelSize.Small;
+            this.metroLabel7.Location = new System.Drawing.Point(7, 321);
+            this.metroLabel7.Name = "metroLabel7";
+            this.metroLabel7.Size = new System.Drawing.Size(168, 15);
+            this.metroLabel7.TabIndex = 28;
+            this.metroLabel7.Text = "Сбросить настройки и пароли";
+            this.metroLabel7.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
             // metroButton2
             // 
-            this.metroButton2.Location = new System.Drawing.Point(103, 117);
+            this.metroButton2.Location = new System.Drawing.Point(97, 117);
             this.metroButton2.Name = "metroButton2";
             this.metroButton2.Size = new System.Drawing.Size(159, 23);
             this.metroButton2.TabIndex = 27;
@@ -1005,7 +1012,7 @@
             // 
             // 
             this.tbGooglePath.CustomButton.Image = null;
-            this.tbGooglePath.CustomButton.Location = new System.Drawing.Point(276, 1);
+            this.tbGooglePath.CustomButton.Location = new System.Drawing.Point(290, 1);
             this.tbGooglePath.CustomButton.Name = "";
             this.tbGooglePath.CustomButton.Size = new System.Drawing.Size(21, 21);
             this.tbGooglePath.CustomButton.Style = MetroFramework.MetroColorStyle.Blue;
@@ -1025,7 +1032,7 @@
             this.tbGooglePath.SelectionLength = 0;
             this.tbGooglePath.SelectionStart = 0;
             this.tbGooglePath.ShortcutsEnabled = true;
-            this.tbGooglePath.Size = new System.Drawing.Size(298, 23);
+            this.tbGooglePath.Size = new System.Drawing.Size(312, 23);
             this.tbGooglePath.TabIndex = 26;
             this.tbGooglePath.Text = "С:\\Program Files (x86)\\Google\\Chrome\\Application\\";
             this.tbGooglePath.Theme = MetroFramework.MetroThemeStyle.Dark;
@@ -1047,7 +1054,7 @@
             // 
             // btnHideSetts
             // 
-            this.btnHideSetts.Location = new System.Drawing.Point(148, 187);
+            this.btnHideSetts.Location = new System.Drawing.Point(281, 309);
             this.btnHideSetts.Name = "btnHideSetts";
             this.btnHideSetts.Size = new System.Drawing.Size(75, 23);
             this.btnHideSetts.TabIndex = 24;
@@ -1066,6 +1073,29 @@
             this.metroLabel3.Text = "Настройки";
             this.metroLabel3.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
+            // metroLabel8
+            // 
+            this.metroLabel8.AutoSize = true;
+            this.metroLabel8.Location = new System.Drawing.Point(41, 149);
+            this.metroLabel8.Name = "metroLabel8";
+            this.metroLabel8.Size = new System.Drawing.Size(278, 19);
+            this.metroLabel8.TabIndex = 29;
+            this.metroLabel8.Text = "Скрывать браузер по окончании операций";
+            this.metroLabel8.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // toggleBrowser
+            // 
+            this.toggleBrowser.AutoSize = true;
+            this.toggleBrowser.Location = new System.Drawing.Point(143, 175);
+            this.toggleBrowser.Name = "toggleBrowser";
+            this.toggleBrowser.Size = new System.Drawing.Size(80, 17);
+            this.toggleBrowser.TabIndex = 30;
+            this.toggleBrowser.Text = "Off";
+            this.toggleBrowser.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.toggleBrowser.UseSelectable = true;
+            this.toggleBrowser.CheckedChanged += new System.EventHandler(this.toggleBrowser_CheckedChanged);
+            this.toggleBrowser.Click += new System.EventHandler(this.toggleBrowser_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -1080,7 +1110,7 @@
             this.MinimumSize = new System.Drawing.Size(506, 374);
             this.Name = "Form1";
             this.Style = MetroFramework.MetroColorStyle.Green;
-            this.Text = "Record Radio Worker";
+            this.Text = "Radio Tracks Converter";
             this.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
@@ -1173,10 +1203,12 @@
         public MetroFramework.Controls.MetroPanel panelSpotiMain;
         public MetroFramework.Controls.MetroPanel panelRecMain;
         private MetroFramework.Controls.MetroLabel labelDatePlaylist;
-        private MetroFramework.Controls.MetroLabel labelTracks;
         private MetroFramework.Controls.MetroButton metroButton2;
         private MetroFramework.Controls.MetroTextBox tbGooglePath;
         private MetroFramework.Controls.MetroLabel metroLabel6;
+        private MetroFramework.Controls.MetroLabel metroLabel7;
+        private MetroFramework.Controls.MetroToggle toggleBrowser;
+        private MetroFramework.Controls.MetroLabel metroLabel8;
     }
 }
 

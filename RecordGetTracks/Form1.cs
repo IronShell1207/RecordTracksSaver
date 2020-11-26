@@ -28,9 +28,9 @@ namespace RecordGetTracks
 
     public partial class Form1 : MetroFramework.Forms.MetroForm
     {
-        private Thread StationsLoader, TracksLoader, FullTracksList, SpotifyListCreator;
         private ContextMenus ctxm;
         RadioWorker rwork;
+
         public Form1()
         {
             InitializeComponent();
@@ -38,6 +38,29 @@ namespace RecordGetTracks
             ctxm = new ContextMenus(this);
             //  Names.progressMax = progressBar.Maximum;
         }
+        private void Form1_Load(object sender, EventArgs e)
+        {
+            Text = Text+" " + Application.ProductVersion;
+            var th = new Thread(() =>
+            {
+            CreateListRadios(false);
+            if (File.Exists(SettingsStatic.JsonSettingsPath))
+            {
+                Invoke(new Action(() => {
+                    toggleRecIsFav.Checked = SettingsStatic.settings.UseFavList;
+                    tbGooglePath.Text = SettingsStatic.settings.ChromePath;
+                    toggleBrowser.Checked = SettingsStatic.settings.HideBrowserAfter;
+                }));
+                }
+            })
+            { IsBackground = true };
+            th.Start();
+            panelRecMain.Dock = DockStyle.Fill;
+        }
+        public void ProgressProgressBar(int value) => progressBar.Invoke(new Action(() => progressBar.Value = value));
+        public void MaximumProgressBar(int value) => progressBar.Invoke(new Action(() => progressBar.Maximum = value));
+        public void StatusProgressBar(ProgressBarStyle styl) => progressBar.Invoke(new Action(() => progressBar.ProgressBarStyle = styl));
+
         private void ContextMenuShower(Button btn, ContextMenuStrip ctx)
         {
             var btnloc = new Point(btn.Location.X, btn.Location.Y + btn.Size.Height);
@@ -52,7 +75,7 @@ namespace RecordGetTracks
             {
                 listBox.Invoke(new Action(() => listBox.Items.Clear()));
 
-                rwork.CollectLinks();
+                rwork.CollectLinks(this);
                 CreateListRadios(false);
             });
             if (RadioLists.StationsList.Any() && DialogResult.Yes == msgCall("Список станций уже создан! Вы уверены что хотите полностью пересоздать список станций? Это займет какое-то время.", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
@@ -70,14 +93,13 @@ namespace RecordGetTracks
         private void listBox_SelectedIndexChanged(object sender, EventArgs e)
         {
             var cInd = listBox.SelectedIndex;
-
+            listBox1.Items.Clear();
             if (cInd > -1)
             {
                 var station = RadioLists.StationsList.Find(x => x.Name == listBox.Items[cInd].ToString().Replace(" 💙", ""));
                 var stationTracks = station.TracksList;
                 if (stationTracks.Count > 0)
                 {
-                    listBox1.Items.Clear();
                     listBox1.Items.AddRange(stationTracks.ToArray());
                     if (station.DateLoadedTracks != null)
                     {
@@ -114,24 +136,7 @@ namespace RecordGetTracks
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            if (StationsLoader != null)
-                StationsLoader.Abort();
-            if (TracksLoader != null)
-                TracksLoader.Abort();
-            if (FullTracksList != null)
-                FullTracksList.Abort();
-            if (SpotifyListCreator != null)
-                SpotifyListCreator.Abort();
-            //if (SeleniumHelper.ChromeDriver!=null && SeleniumHelper.ChromeDriver.CurrentWindowHandle.Any())
-            //    SeleniumHelper.ChromeDriver.Quit();
-            var procs = Process.GetProcessesByName("chromedriver");
-            if (procs.Any())
-            {
-                foreach (Process proc in procs)
-                    proc.Kill();
-            }
-
-
+            SeleniumHelper.QuitDriver();
         }
         public void panelShoweer(MetroPanel panel)
         {
@@ -144,20 +149,7 @@ namespace RecordGetTracks
             //ControlMover.ControlMover.Add((Control)panel); //textbox крашит программу
         }
 
-        private void Form1_Load(object sender, EventArgs e)
-        {
-            var th = new Thread(() =>
-            {
-                CreateListRadios(false);
-            })
-            { IsBackground = true };
-            th.Start();
-            panelRecMain.Dock = DockStyle.Fill;
-            //if (File.Exists(GlVars.favFile))
-            //{
-            //    toggleIsFav.Checked = true;
-            //}
-        }
+
         List<string> TracksList = new List<string> { };
 
         private void metroButton1_Click(object sender, EventArgs e)
@@ -168,6 +160,7 @@ namespace RecordGetTracks
 
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
+
             if (listBox1.SelectedIndex > 0)
                 btnTracksRemove.Enabled = true;
             else btnTracksRemove.Enabled = false;
@@ -192,8 +185,9 @@ namespace RecordGetTracks
             //    GlVars.FavList.Add(jsnWrk.RadioNamesList(msgCall, SeleniumHelper.ChromeDriver, GlVars.RecordGetStations)[ind]);
             listBox.Items.RemoveAt(ind);
             listBox.Items.Insert(ind, indIt + " 💙");
-            JsonWorker1.CreateJsnFile(RadioData.RadioLists.StationsList, Names.JsonRadioList);
+            JsonWorker1.CreateJsnFile(RadioData.RadioLists.StationsList, SettingsStatic.JsonRecordPath);
         }
+        #region TOGGLER!!!!!!!!!!!!
         private void toggleIsFav_CheckedChanged(object sender, EventArgs e)
         {
             CreateListRadios(toggleRecIsFav.Checked);
@@ -212,7 +206,12 @@ namespace RecordGetTracks
                     listBox.Invoke(new Action(() => listBox.Items.Add(radios.Name + (radios.isFavorite ? " 💙" : ""))));
                 }
         }
-
+        private void toggleRecIsFav_Click(object sender, EventArgs e)
+        {
+            SettingsStatic.settings.UseFavList = (sender as MetroToggle).Checked;
+            JsonWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
+        }
+        #endregion
         private void metroButton3_Click_1(object sender, EventArgs e)
         {
 
@@ -243,82 +242,82 @@ namespace RecordGetTracks
             //    tbPlName.Text = listBox.SelectedItem.ToString();
             //panelShoweer(panelSpotify);
         }
-       /* void Spoti(string login, string password, string PlaylistName, List<string> songs, bool IsNewPlaylist)
-        {
-            // if (InvokeRequired) progressBar.Invoke(new Action(() => { progressBar.ProgressBarStyle = ProgressBarStyle.Marquee; progressBar.Value = 0; }));
-            // else { progressBar.ProgressBarStyle = ProgressBarStyle.Marquee; progressBar.Value = 0; }
-            // Thread.Sleep(100);
-            IWebDriver webDriver = SeleniumHelper.ChromeDriver;
-            webDriver.Url = "https://open.spotify.com";
-            var wait = new WebDriverWait(webDriver, TimeSpan.FromMilliseconds(10000));
-            ClickLink(By.XPath("//button[@data-testid='login-button']")); // click login button
-            SendKeys(By.Id("login-username"), login); //push login 
-            SendKeys(By.Id("login-password"), password); //push pass
-            ClickLink(By.Id("login-button")); //click to login
-            if (IsNewPlaylist)
-            {
-                ClickLink(By.XPath("(//button[@type='button'])[3]")); //click to New playlist
-                SendKeys(By.XPath("//input[@placeholder='New Playlist']"), PlaylistName); // Send 
-                ClickLink(By.XPath("//button[text()='CREATE']")); // Create playlist
-            }
-            //  SeleniumHelper.ChromeDriver.Url = SpotifyPages.SearchPageUrl;
-            // if (InvokeRequired)
-            //{
-            //    Invoke((Action)(() => progressBar.ProgressBarStyle = ProgressBarStyle.Continuous));
-            //    Invoke((Action)(() => progressBar.Maximum = songs.Count));
-            // }
-            //else
-            //{
-            //    progressBar.ProgressBarStyle = ProgressBarStyle.Continuous;
-            //   progressBar.Maximum = songs.Count;
-            //}
-            int i = 0;
-            foreach (string song in songs)
-            {
-                i = AddTrackToPlaylist(song, i);
-            }
-            //if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.Value = songs.Count));
-            // else progressBar.Value = songs.Count;
-            msgCall(String.Format("Создание плейлиста завершено.\nВсего добавлено {0}/{1} треков.", i, songs.Count), "Завершено", MessageBoxButtons.OK, MessageBoxIcon.Information);
+        /* void Spoti(string login, string password, string PlaylistName, List<string> songs, bool IsNewPlaylist)
+         {
+             // if (InvokeRequired) progressBar.Invoke(new Action(() => { progressBar.ProgressBarStyle = ProgressBarStyle.Marquee; progressBar.Value = 0; }));
+             // else { progressBar.ProgressBarStyle = ProgressBarStyle.Marquee; progressBar.Value = 0; }
+             // Thread.Sleep(100);
+             IWebDriver webDriver = SeleniumHelper.ChromeDriver;
+             webDriver.Url = "https://open.spotify.com";
+             var wait = new WebDriverWait(webDriver, TimeSpan.FromMilliseconds(10000));
+             ClickLink(By.XPath("//button[@data-testid='login-button']")); // click login button
+             SendKeys(By.Id("login-username"), login); //push login 
+             SendKeys(By.Id("login-password"), password); //push pass
+             ClickLink(By.Id("login-button")); //click to login
+             if (IsNewPlaylist)
+             {
+                 ClickLink(By.XPath("(//button[@type='button'])[3]")); //click to New playlist
+                 SendKeys(By.XPath("//input[@placeholder='New Playlist']"), PlaylistName); // Send 
+                 ClickLink(By.XPath("//button[text()='CREATE']")); // Create playlist
+             }
+             //  SeleniumHelper.ChromeDriver.Url = SpotifyPages.SearchPageUrl;
+             // if (InvokeRequired)
+             //{
+             //    Invoke((Action)(() => progressBar.ProgressBarStyle = ProgressBarStyle.Continuous));
+             //    Invoke((Action)(() => progressBar.Maximum = songs.Count));
+             // }
+             //else
+             //{
+             //    progressBar.ProgressBarStyle = ProgressBarStyle.Continuous;
+             //   progressBar.Maximum = songs.Count;
+             //}
+             int i = 0;
+             foreach (string song in songs)
+             {
+                 i = AddTrackToPlaylist(song, i);
+             }
+             //if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.Value = songs.Count));
+             // else progressBar.Value = songs.Count;
+             msgCall(String.Format("Создание плейлиста завершено.\nВсего добавлено {0}/{1} треков.", i, songs.Count), "Завершено", MessageBoxButtons.OK, MessageBoxIcon.Information);
 
-        }
-        void ClickLink(By by)
-        {
-            var wait = new WebDriverWait(SeleniumHelper.ChromeDriver, TimeSpan.FromMilliseconds(10000));
-            var element = by;
-            wait.Until(d => d.FindElement(element));
-            SeleniumHelper.ChromeDriver.FindElement(element).Click();
+         }
+         void ClickLink(By by)
+         {
+             var wait = new WebDriverWait(SeleniumHelper.ChromeDriver, TimeSpan.FromMilliseconds(10000));
+             var element = by;
+             wait.Until(d => d.FindElement(element));
+             SeleniumHelper.ChromeDriver.FindElement(element).Click();
 
-        }
-        void SendKeys(By by, string keys)
-        {
-            var wait = new WebDriverWait(SeleniumHelper.ChromeDriver, TimeSpan.FromMilliseconds(10000));
-            var element = by;
-            wait.Until(d => d.FindElement(element));
-            SeleniumHelper.ChromeDriver.FindElement(element).SendKeys(keys);
-        }
-        int AddTrackToPlaylist(string songname, int i)
-        {
-            ClickLink(By.XPath("(//a[@draggable='false'])[3]"));
-            SendKeys(By.XPath("//input[@data-testid='search-input']"), songname);
-            //  ClickLink(By.XPath("//span[text()='See all']"));
-            try
-            {
-                Actions actions = new Actions(SeleniumHelper.ChromeDriver);
-                var songMenu = SeleniumHelper.ChromeDriver.FindElement(By.XPath("//div[@data-testid='tracklist-row']"));
-                actions.ContextClick(songMenu).Perform();
-                ClickLink(By.XPath("//div[text()='Add to Playlist']"));
-                ClickLink(By.XPath("//div[@class='media-object']//div"));
-                // if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.Value = ++i));
-                // else progressBar.Value = ++i;
+         }
+         void SendKeys(By by, string keys)
+         {
+             var wait = new WebDriverWait(SeleniumHelper.ChromeDriver, TimeSpan.FromMilliseconds(10000));
+             var element = by;
+             wait.Until(d => d.FindElement(element));
+             SeleniumHelper.ChromeDriver.FindElement(element).SendKeys(keys);
+         }
+         int AddTrackToPlaylist(string songname, int i)
+         {
+             ClickLink(By.XPath("(//a[@draggable='false'])[3]"));
+             SendKeys(By.XPath("//input[@data-testid='search-input']"), songname);
+             //  ClickLink(By.XPath("//span[text()='See all']"));
+             try
+             {
+                 Actions actions = new Actions(SeleniumHelper.ChromeDriver);
+                 var songMenu = SeleniumHelper.ChromeDriver.FindElement(By.XPath("//div[@data-testid='tracklist-row']"));
+                 actions.ContextClick(songMenu).Perform();
+                 ClickLink(By.XPath("//div[text()='Add to Playlist']"));
+                 ClickLink(By.XPath("//div[@class='media-object']//div"));
+                 // if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.Value = ++i));
+                 // else progressBar.Value = ++i;
 
-            }
-            catch (NoSuchElementException ex)
-            {
-            }
-            ClickLink(By.XPath("//header/div[3]/div[1]/div[1]/div[1]/button[1]"));
-            return i;
-        }*/
+             }
+             catch (NoSuchElementException ex)
+             {
+             }
+             ClickLink(By.XPath("//header/div[3]/div[1]/div[1]/div[1]/button[1]"));
+             return i;
+         }*/
 
 
         private void buttonStartSpoti_Click(object sender, EventArgs e)
@@ -347,6 +346,7 @@ namespace RecordGetTracks
             var station = RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
             rwork.LoadTracks(station, 0);
             listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
+            labelDatePlaylist.Text = "Список треков от: "+ RadioLists.StationsList[station].DateLoadedTracks;
         }
 
 
@@ -393,34 +393,33 @@ namespace RecordGetTracks
 
         private void button4_MouseDown(object sender, MouseEventArgs e)
         {
-                if (e.Button == MouseButtons.Left)
-                {
-                    var btn = sender as Button;
-                    btn.PerformClick();
-                    Thread.Sleep(50);
-                }
+            if (e.Button == MouseButtons.Left)
+            {
+                var btn = sender as Button;
+                btn.PerformClick();
+                Thread.Sleep(50);
+            }
         }
 
         private void metroButton2_Click(object sender, EventArgs e)
         {
-            var ofd = new OpenFileDialog()
-            {
-                FileName = "chrome.exe",
-                Filter = "chrome.exe|chrome.exe|All files(*.*)|*.*",
-                Title = "Укажите расположение Google Chrome",
-            };
-            var defpath = "";
-            var chrMultiUsr = @"C:\Program Files (x86)\Google\Chrome\Application";
-            var chrSingleUsr = Environment.GetFolderPath(Environment.SpecialFolder.ApplicationData) + @"\Google\Chrome\Application\";
-            if (Directory.Exists(chrMultiUsr))
-                defpath = chrMultiUsr;
-            else if (Directory.Exists(chrSingleUsr))
-                defpath = chrSingleUsr;
-            ofd.InitialDirectory = defpath;
-            if (DialogResult.OK == ofd.ShowDialog())
-            {
+            /*
+             var defpath = "";
 
-            }
+             if (Directory.Exists(chrMultiUsr))
+                 defpath = chrMultiUsr;
+             else if (Directory.Exists(chrSingleUsr))
+                 defpath = chrSingleUsr;
+             ofd.InitialDirectory = defpath;
+             if (DialogResult.OK == ofd.ShowDialog())
+             {
+
+             }*/
+
+        }
+
+        private void btnExpMenu_Click(object sender, EventArgs e)
+        {
 
         }
 
@@ -448,6 +447,17 @@ namespace RecordGetTracks
             var proc = System.Diagnostics.Process.GetProcessesByName("chromedriver");
             foreach (System.Diagnostics.Process process in proc)
                 process.Kill();
+        }
+
+        private void toggleBrowser_Click(object sender, EventArgs e)
+        {
+            SettingsStatic.settings.HideBrowserAfter = (sender as MetroToggle).Checked;
+            JsonWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
+        }
+
+        private void toggleBrowser_CheckedChanged(object sender, EventArgs e)
+        {
+
         }
     }
 }
