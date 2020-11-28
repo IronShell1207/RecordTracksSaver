@@ -72,16 +72,15 @@
     <Compile Include="Form1.Designer.cs">
       <DependentUpon>Form1.cs</DependentUpon>
     </Compile>
-    <Compile Include="GlobalVariations.cs" />
     <Compile Include="Workers\JsonWorker1.cs" />
-    <Compile Include="Mover.cs" />
+    <Compile Include="Workers\Mover.cs" />
     <Compile Include="NotIncluding1.cs" />
     <Compile Include="ObjWork.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Data\SpotifyData.cs" />
     <Compile Include="Data\SettingsWorkData.cs" />
-    <Compile Include="SpotifyWorker.cs" />
+    <Compile Include="Workers\SpotifyWorker.cs" />
     <Compile Include="Workers\RadioWorker.cs" />
     <Compile Include="Workers\SeleniumHelper.cs" />
     <EmbeddedResource Include="Form1.resx">

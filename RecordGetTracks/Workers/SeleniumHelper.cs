@@ -71,6 +71,7 @@ namespace RecordGetTracks
                 // Avoid synchronization issues by applying timed delay to each step if necessary
                 _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
                 _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(7);
+                if (SettingsStatic.settings.HideBrowser) _driver.Manage().Window.Minimize();
               //  _driver.Manage().Window.Minimize();
                 return _driver;
             }

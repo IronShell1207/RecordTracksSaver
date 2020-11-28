@@ -15,15 +15,17 @@ namespace RadioData
     // public delegate void ProgressStatus(int value, int max, bool isMarquee); //bool положительный когда требуется анимация загрузки (бегущая строка)
     class RadioWorker
     {
+        Form1 form1;
         public void CollectLinks(object form) // первоначальный сбор станций и создание json списка БЕЗ СТАНЦИЙ и БЕЗ FAVORITE
         {
-            Form1 form1 = form as Form1;
-            SeleniumHelper.ChromeDriver.Manage().Window.Maximize();
+            form1 = form as Form1;
+            form1.StatusProgressBar(ProgressBarStyle.Marquee);
             RadioLists.StationsList = new List<RadioStation> { }; // пересоздаем список для того чтобы не возникало проблем с текущим его наполнением
             var CurrURL = SeleniumHelper.ChromeDriver.Url; // переходим на сайт Record
             if (CurrURL != RadioData.Pages.MainPageUrl)
                 SeleniumHelper.ChromeDriver.Url = RadioData.Pages.MainPageUrl;
             var radBtns = SeleniumHelper.ChromeDriver.FindElements(RadioData.xPathes.StationBtns);// находим кнопки всех станций
+            form1.StatusProgressBar(ProgressBarStyle.Continuous);
             for (int i = 0; i < radBtns.Count; i++) // прокликиваем все кнопки и собираем ссылки
             {
                 form1.ProgressProgressBar(i);
@@ -49,10 +51,12 @@ namespace RadioData
                 SeleniumHelper.ChromeDriver.SwitchTo().DefaultContent();
             }
             JsonWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
-            if (SettingsStatic.settings.HideBrowserAfter) SeleniumHelper.ChromeDriver.Manage().Window.Minimize();
+
         }
-        public void LoadTracks(int index, int count)
+        public void LoadTracks(int index, int count, object form)
         {
+            form1 = form as Form1;
+            form1.StatusProgressBar(ProgressBarStyle.Marquee);
             SeleniumHelper.ChromeDriver.Navigate().GoToUrl(RadioLists.StationsList[index].LinkTracksList);
             List<string> songs = new List<string> { };
             try
@@ -77,7 +81,8 @@ namespace RadioData
             }
             catch (NoSuchElementException ex)
             { }
-          if (SettingsStatic.settings.HideBrowserAfter)  SeleniumHelper.ChromeDriver.Manage().Window.Minimize();
+            form1.StatusProgressBar(ProgressBarStyle.Continuous);
+
         }
     }
 }

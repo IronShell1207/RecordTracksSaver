@@ -49,7 +49,7 @@ namespace RecordGetTracks
                 Invoke(new Action(() => {
                     toggleRecIsFav.Checked = SettingsStatic.settings.UseFavList;
                     tbGooglePath.Text = SettingsStatic.settings.ChromePath;
-                    toggleBrowser.Checked = SettingsStatic.settings.HideBrowserAfter;
+                    toggleBrowser.Checked = SettingsStatic.settings.HideBrowser;
                 }));
                 }
             })
@@ -90,7 +90,7 @@ namespace RecordGetTracks
                 StartCreator.Start();
             }
         }
-        private void listBox_SelectedIndexChanged(object sender, EventArgs e)
+        private void listBoxStations_SelectedIndexChanged(object sender, EventArgs e)
         {
             var cInd = listBox.SelectedIndex;
             listBox1.Items.Clear();
@@ -108,11 +108,8 @@ namespace RecordGetTracks
                     }
                     else labelDatePlaylist.Visible = false;
                 }
-
-                if (toggleRecIsFav.Checked == false)
-                    btnRecAddFav.Enabled = true;
-                if (toggleRecIsFav.Checked == true || station.isFavorite == true)
-                    btnRecRemFav.Enabled = true;
+                if (toggleRecIsFav.Checked == false) btnRecAddFav.Enabled = true;
+                if (toggleRecIsFav.Checked == true || station.isFavorite == true) btnRecRemFav.Enabled = true;
                 buttongetTitle.Enabled = true;
             }
             else
@@ -173,18 +170,10 @@ namespace RecordGetTracks
 
         private void metroButton4_Click(object sender, EventArgs e)
         {
-            var ind = listBox.SelectedIndex;
-            var indIt = listBox.SelectedItem;
-            var lls = RadioData.RadioLists.StationsList.ToArray();
-            lls[ind].isFavorite = true;
-            RadioData.RadioLists.StationsList.Clear();
-
-            RadioData.RadioLists.StationsList.AddRange(lls.ToList());
-
-            lblRecFav.Text = RadioData.RadioLists.StationsList[ind].isFavorite.ToString();
-            //    GlVars.FavList.Add(jsnWrk.RadioNamesList(msgCall, SeleniumHelper.ChromeDriver, GlVars.RecordGetStations)[ind]);
-            listBox.Items.RemoveAt(ind);
-            listBox.Items.Insert(ind, indIt + " 💙");
+            var IndexItem = listBox.SelectedIndex;
+            var ItemSelected = listBox.SelectedItem;
+            RadioLists.StationsList[IndexItem].isFavorite = true;
+            listBox.Items[IndexItem] = ItemSelected + " 💙";
             JsonWorker1.CreateJsnFile(RadioData.RadioLists.StationsList, SettingsStatic.JsonRecordPath);
         }
         #region TOGGLER!!!!!!!!!!!!
@@ -343,10 +332,13 @@ namespace RecordGetTracks
         private void LdTracks_click(object sender, EventArgs e)
         {
             listBox1.Items.Clear();
-            var station = RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
-            rwork.LoadTracks(station, 0);
-            listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
-            labelDatePlaylist.Text = "Список треков от: "+ RadioLists.StationsList[station].DateLoadedTracks;
+            //var thread = new Thread(() =>
+         //  {
+               var station = RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
+               rwork.LoadTracks(station, 0, this);
+               listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
+               labelDatePlaylist.Text = "Список треков от: " + RadioLists.StationsList[station].DateLoadedTracks;
+           //});
         }
 
 
@@ -451,11 +443,38 @@ namespace RecordGetTracks
 
         private void toggleBrowser_Click(object sender, EventArgs e)
         {
-            SettingsStatic.settings.HideBrowserAfter = (sender as MetroToggle).Checked;
+            SettingsStatic.settings.HideBrowser = (sender as MetroToggle).Checked;
             JsonWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
         }
 
         private void toggleBrowser_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void metroButton3_Click(object sender, EventArgs e)
+        {
+            
+        }
+
+        private void btnBackupRadios_Click(object sender, EventArgs e)
+        {
+            var newNameBackup = SettingsStatic.JsonRecordPath + ".backup";
+            while (File.Exists(newNameBackup))
+            {
+                newNameBackup = newNameBackup + ".backup";
+            }
+            if (DialogResult.Yes == msgCall($"Вы уверены что хотите сделать бэкап? Файл будет сохранен в:\n{newNameBackup}", "Бэкап станций", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                File.Copy(SettingsStatic.JsonRecordPath, newNameBackup);
+                if (File.Exists(newNameBackup))
+                    msgCall("Бэкап успешно сделан", "Бэкап станций", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                else
+                    msgCall("Непредвиденная ошибка", "Бэкап станций", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void btnRecRemFav_Click(object sender, EventArgs e)
         {
 
         }

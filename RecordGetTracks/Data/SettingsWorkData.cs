@@ -84,6 +84,6 @@ namespace RecordGetTracks
         public bool UseFavList { get; set; }
         public string SpotiLogin { get; set; }
         public string SpotiPass { get; set; }
-        public bool HideBrowserAfter { get; set; }
+        public bool HideBrowser { get; set; }
     }
 }
