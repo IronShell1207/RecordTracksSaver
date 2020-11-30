@@ -22,6 +22,7 @@ using MetroFramework.Controls;
 using System.Diagnostics;
 using RadioData;
 using System.Windows.Threading;
+using System.Text.RegularExpressions;
 
 namespace RecordGetTracks
 {
@@ -30,106 +31,41 @@ namespace RecordGetTracks
     {
         private ContextMenus ctxm;
         RadioWorker rwork;
+        int ReturnStationIndex() => RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
 
         public Form1()
         {
             InitializeComponent();
-            rwork = new RadioWorker();
+            rwork = new RadioWorker(this);
             ctxm = new ContextMenus(this);
             //  Names.progressMax = progressBar.Maximum;
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            Text = Text+" " + Application.ProductVersion;
+            Text = Text + " " + Application.ProductVersion;
             var th = new Thread(() =>
             {
-            CreateListRadios(false);
-            if (File.Exists(SettingsStatic.JsonSettingsPath))
-            {
-                Invoke(new Action(() => {
-                    toggleRecIsFav.Checked = SettingsStatic.settings.UseFavList;
-                    tbGooglePath.Text = SettingsStatic.settings.ChromePath;
-                    toggleBrowser.Checked = SettingsStatic.settings.HideBrowser;
-                }));
+                CreateListRadios(false);
+                if (File.Exists(SettingsStatic.JsonSettingsPath))
+                {
+                    Invoke(new Action(() =>
+                    {
+                        toggleRecIsFav.Checked = SettingsStatic.settings.UseFavList;
+                        tbGooglePath.Text = SettingsStatic.settings.ChromePath;
+                        toggleBrowser.Checked = SettingsStatic.settings.HideBrowser;
+                        toggleBigSmallLetters.Checked = SettingsStatic.settings.IsBigSymsInRadios;
+                        if (SettingsStatic.settings.SpotiPlaylists != null && SettingsStatic.settings.SpotiPlaylists.Count > 0)
+                            listBoxPlaylists.Items.AddRange(SettingsStatic.settings.SpotiPlaylists.ToArray());
+                        tblogin.Text = SettingsStatic.settings.SpotiLogin;
+                        tbpass.Text = SettingsStatic.settings.SpotiPass;
+                    }));
                 }
             })
             { IsBackground = true };
             th.Start();
             panelRecMain.Dock = DockStyle.Fill;
         }
-        public void ProgressProgressBar(int value) => progressBar.Invoke(new Action(() => progressBar.Value = value));
-        public void MaximumProgressBar(int value) => progressBar.Invoke(new Action(() => progressBar.Maximum = value));
-        public void StatusProgressBar(ProgressBarStyle styl) => progressBar.Invoke(new Action(() => progressBar.ProgressBarStyle = styl));
 
-        private void ContextMenuShower(Button btn, ContextMenuStrip ctx)
-        {
-            var btnloc = new Point(btn.Location.X, btn.Location.Y + btn.Size.Height);
-            var pnt = new Point(Location.X, Location.Y);
-            var pnlloc = panelMenu.Location;
-            var fpn = new Point(btnloc.X + pnlloc.X + pnt.X, btnloc.Y + pnlloc.Y + pnt.Y);
-            ctx.Show(fpn);
-        }
-        private void buttonStart_Click(object sender, EventArgs e)
-        {
-            var StartCreator = new Thread(() =>
-            {
-                listBox.Invoke(new Action(() => listBox.Items.Clear()));
-
-                rwork.CollectLinks(this);
-                CreateListRadios(false);
-            });
-            if (RadioLists.StationsList.Any() && DialogResult.Yes == msgCall("Список станций уже создан! Вы уверены что хотите полностью пересоздать список станций? Это займет какое-то время.", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
-            {
-                timerProgress.Start();
-                StartCreator.Start();
-
-            }
-            else if (RadioLists.StationsList == null || RadioLists.StationsList.Count <= 0)
-            {
-                timerProgress.Start();
-                StartCreator.Start();
-            }
-        }
-        private void listBoxStations_SelectedIndexChanged(object sender, EventArgs e)
-        {
-            var cInd = listBox.SelectedIndex;
-            listBox1.Items.Clear();
-            if (cInd > -1)
-            {
-                var station = RadioLists.StationsList.Find(x => x.Name == listBox.Items[cInd].ToString().Replace(" 💙", ""));
-                var stationTracks = station.TracksList;
-                if (stationTracks.Count > 0)
-                {
-                    listBox1.Items.AddRange(stationTracks.ToArray());
-                    if (station.DateLoadedTracks != null)
-                    {
-                        labelDatePlaylist.Text = $"Список треков от: {station.DateLoadedTracks}";
-                        labelDatePlaylist.Visible = true;
-                    }
-                    else labelDatePlaylist.Visible = false;
-                }
-                if (toggleRecIsFav.Checked == false) btnRecAddFav.Enabled = true;
-                if (toggleRecIsFav.Checked == true || station.isFavorite == true) btnRecRemFav.Enabled = true;
-                buttongetTitle.Enabled = true;
-            }
-            else
-            {
-                buttongetTitle.Enabled = false;
-                labelDatePlaylist.Visible = false;
-                btnRecAddFav.Enabled = false;
-                buttongetTitle.Enabled = false;
-            }
-        }
-
-        private void buttonAdd_Click(object sender, EventArgs e)
-        {
-            listBox1.Items.Add(listBox.SelectedItem);
-        }
-
-        private void buttonRemove_Click(object sender, EventArgs e)
-        {
-            listBox1.Items.RemoveAt(listBox1.SelectedIndex);
-        }
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -147,25 +83,25 @@ namespace RecordGetTracks
         }
 
 
-        List<string> TracksList = new List<string> { };
-
-        private void metroButton1_Click(object sender, EventArgs e)
-        {
-            TracksList.RemoveAt(listBox1.SelectedIndex);
-            listBox1.Items.RemoveAt(listBox1.SelectedIndex);
-        }
-
         private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
 
-            if (listBox1.SelectedIndex > 0)
+            if (listBox1.SelectedIndex > -1)
+            {
                 btnTracksRemove.Enabled = true;
-            else btnTracksRemove.Enabled = false;
+
+            }
+            else { btnTracksRemove.Enabled = false; }
         }
         public DialogResult msgCall(string text, string topic, MessageBoxButtons buttons, MessageBoxIcon icon)
         {
             // Invoke((Action)(() => { this.Focus(); }));
             return MetroMessageBox.Show(this, text, topic, buttons, icon);
+        }
+        public DialogResult msgCall(string text, string topic)
+        {
+            // Invoke((Action)(() => { this.Focus(); }));
+            return MetroMessageBox.Show(this, text, topic, MessageBoxButtons.OK, MessageBoxIcon.Information);
         }
 
         private void metroButton4_Click(object sender, EventArgs e)
@@ -174,179 +110,8 @@ namespace RecordGetTracks
             var ItemSelected = listBox.SelectedItem;
             RadioLists.StationsList[IndexItem].isFavorite = true;
             listBox.Items[IndexItem] = ItemSelected + " 💙";
-            JsonWorker1.CreateJsnFile(RadioData.RadioLists.StationsList, SettingsStatic.JsonRecordPath);
+            JsnWorker1.CreateJsnFile(RadioData.RadioLists.StationsList, SettingsStatic.JsonRecordPath);
         }
-        #region TOGGLER!!!!!!!!!!!!
-        private void toggleIsFav_CheckedChanged(object sender, EventArgs e)
-        {
-            CreateListRadios(toggleRecIsFav.Checked);
-        }
-        void CreateListRadios(bool isFavorite)
-        {
-            listBox.Invoke(new Action(() => listBox.Items.Clear()));
-            if (isFavorite)
-                foreach (RadioData.RadioStation radios in RadioData.RadioLists.StationsList)
-                {
-                    if (radios.isFavorite) listBox.Invoke(new Action(() => listBox.Items.Add(radios.Name + " 💙")));
-                }
-            else if (!isFavorite)
-                foreach (RadioData.RadioStation radios in RadioData.RadioLists.StationsList)
-                {
-                    listBox.Invoke(new Action(() => listBox.Items.Add(radios.Name + (radios.isFavorite ? " 💙" : ""))));
-                }
-        }
-        private void toggleRecIsFav_Click(object sender, EventArgs e)
-        {
-            SettingsStatic.settings.UseFavList = (sender as MetroToggle).Checked;
-            JsonWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
-        }
-        #endregion
-        private void metroButton3_Click_1(object sender, EventArgs e)
-        {
-
-            //    listBox1.Items.Clear();
-            //    buttonAllList.Enabled = false;
-            //    FullTracksList = new Thread(() =>
-            //    {
-            //        SeleniumHelper.ChromeDriver.SwitchTo().Frame("playlist_frame");
-            //        SeleniumHelper.ChromeDriver.FindElement(By.XPath("//b[text()='Все']")).Click();
-            //        var TracksNms = SeleniumHelper.ChromeDriver.FindElements(By.XPath("//div[@class='artist']"));
-            //        foreach (IWebElement el in TracksNms)
-            //        {
-            //            var es = el.Text.Replace("/", " ");
-            //            TracksList.Add(es);
-            //            if (InvokeRequired) Invoke((Action)(() => listBox1.Items.Add(es)));
-            //            else listBox1.Items.Add(es);
-
-            //        }
-            //        SeleniumHelper.ChromeDriver.SwitchTo().DefaultContent();
-
-            //    });
-            //    FullTracksList.Start();
-        }
-        void buttonMakePlaylist_Click(object sender, EventArgs e)
-        {
-
-            //if (listBox.SelectedIndex > -1)
-            //    tbPlName.Text = listBox.SelectedItem.ToString();
-            //panelShoweer(panelSpotify);
-        }
-        /* void Spoti(string login, string password, string PlaylistName, List<string> songs, bool IsNewPlaylist)
-         {
-             // if (InvokeRequired) progressBar.Invoke(new Action(() => { progressBar.ProgressBarStyle = ProgressBarStyle.Marquee; progressBar.Value = 0; }));
-             // else { progressBar.ProgressBarStyle = ProgressBarStyle.Marquee; progressBar.Value = 0; }
-             // Thread.Sleep(100);
-             IWebDriver webDriver = SeleniumHelper.ChromeDriver;
-             webDriver.Url = "https://open.spotify.com";
-             var wait = new WebDriverWait(webDriver, TimeSpan.FromMilliseconds(10000));
-             ClickLink(By.XPath("//button[@data-testid='login-button']")); // click login button
-             SendKeys(By.Id("login-username"), login); //push login 
-             SendKeys(By.Id("login-password"), password); //push pass
-             ClickLink(By.Id("login-button")); //click to login
-             if (IsNewPlaylist)
-             {
-                 ClickLink(By.XPath("(//button[@type='button'])[3]")); //click to New playlist
-                 SendKeys(By.XPath("//input[@placeholder='New Playlist']"), PlaylistName); // Send 
-                 ClickLink(By.XPath("//button[text()='CREATE']")); // Create playlist
-             }
-             //  SeleniumHelper.ChromeDriver.Url = SpotifyPages.SearchPageUrl;
-             // if (InvokeRequired)
-             //{
-             //    Invoke((Action)(() => progressBar.ProgressBarStyle = ProgressBarStyle.Continuous));
-             //    Invoke((Action)(() => progressBar.Maximum = songs.Count));
-             // }
-             //else
-             //{
-             //    progressBar.ProgressBarStyle = ProgressBarStyle.Continuous;
-             //   progressBar.Maximum = songs.Count;
-             //}
-             int i = 0;
-             foreach (string song in songs)
-             {
-                 i = AddTrackToPlaylist(song, i);
-             }
-             //if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.Value = songs.Count));
-             // else progressBar.Value = songs.Count;
-             msgCall(String.Format("Создание плейлиста завершено.\nВсего добавлено {0}/{1} треков.", i, songs.Count), "Завершено", MessageBoxButtons.OK, MessageBoxIcon.Information);
-
-         }
-         void ClickLink(By by)
-         {
-             var wait = new WebDriverWait(SeleniumHelper.ChromeDriver, TimeSpan.FromMilliseconds(10000));
-             var element = by;
-             wait.Until(d => d.FindElement(element));
-             SeleniumHelper.ChromeDriver.FindElement(element).Click();
-
-         }
-         void SendKeys(By by, string keys)
-         {
-             var wait = new WebDriverWait(SeleniumHelper.ChromeDriver, TimeSpan.FromMilliseconds(10000));
-             var element = by;
-             wait.Until(d => d.FindElement(element));
-             SeleniumHelper.ChromeDriver.FindElement(element).SendKeys(keys);
-         }
-         int AddTrackToPlaylist(string songname, int i)
-         {
-             ClickLink(By.XPath("(//a[@draggable='false'])[3]"));
-             SendKeys(By.XPath("//input[@data-testid='search-input']"), songname);
-             //  ClickLink(By.XPath("//span[text()='See all']"));
-             try
-             {
-                 Actions actions = new Actions(SeleniumHelper.ChromeDriver);
-                 var songMenu = SeleniumHelper.ChromeDriver.FindElement(By.XPath("//div[@data-testid='tracklist-row']"));
-                 actions.ContextClick(songMenu).Perform();
-                 ClickLink(By.XPath("//div[text()='Add to Playlist']"));
-                 ClickLink(By.XPath("//div[@class='media-object']//div"));
-                 // if (InvokeRequired) progressBar.Invoke(new Action(() => progressBar.Value = ++i));
-                 // else progressBar.Value = ++i;
-
-             }
-             catch (NoSuchElementException ex)
-             {
-             }
-             ClickLink(By.XPath("//header/div[3]/div[1]/div[1]/div[1]/button[1]"));
-             return i;
-         }*/
-
-
-        private void buttonStartSpoti_Click(object sender, EventArgs e)
-        {
-            SpotifyWorker.AuthSpoti(tblogin.Text, tbpass.Text);
-            /*if (tblogin.Text != "" && tbpass.Text != "" && tbPlName.Text != "")
-            {
-                SpotifyListCreator = new Thread(() => Spoti(tblogin.Text, tbpass.Text, tbPlName.Text, TracksList, metroCheckBox2.Checked)) { IsBackground = true };
-                SpotifyListCreator.Start();
-
-            }
-            else msgCall("Не все поля заполнены!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);*/
-        }
-
-        private void buttonCancelSpoti_Click(object sender, EventArgs e)
-        {
-            // panelSpotify.Visible = false;
-            tblogin.Text = "";
-            tbpass.Text = "";
-            //  tbPlName.Text = "";
-        }
-
-        private void LdTracks_click(object sender, EventArgs e)
-        {
-            listBox1.Items.Clear();
-            //var thread = new Thread(() =>
-         //  {
-               var station = RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
-               rwork.LoadTracks(station, 0, this);
-               listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
-               labelDatePlaylist.Text = "Список треков от: " + RadioLists.StationsList[station].DateLoadedTracks;
-           //});
-        }
-
-
-        private void btnFileMenu_MouseClick(object sender, MouseEventArgs e)
-        {
-            ContextMenuShower(sender as Button, ctxm.ctxFile);
-        }
-
         private void tbTracksNum_KeyDown(object sender, KeyEventArgs e)
         {
             var txt = tbTracksNum.Text;
@@ -378,11 +143,6 @@ namespace RecordGetTracks
             panelRecMain.Visible = true;
         }
 
-        private void btnExpMenu_MouseClick(object sender, MouseEventArgs e)
-        {
-            ContextMenuShower(btnExpMenu, ctxm.ctxExport);
-        }
-
         private void button4_MouseDown(object sender, MouseEventArgs e)
         {
             if (e.Button == MouseButtons.Left)
@@ -391,28 +151,6 @@ namespace RecordGetTracks
                 btn.PerformClick();
                 Thread.Sleep(50);
             }
-        }
-
-        private void metroButton2_Click(object sender, EventArgs e)
-        {
-            /*
-             var defpath = "";
-
-             if (Directory.Exists(chrMultiUsr))
-                 defpath = chrMultiUsr;
-             else if (Directory.Exists(chrSingleUsr))
-                 defpath = chrSingleUsr;
-             ofd.InitialDirectory = defpath;
-             if (DialogResult.OK == ofd.ShowDialog())
-             {
-
-             }*/
-
-        }
-
-        private void btnExpMenu_Click(object sender, EventArgs e)
-        {
-
         }
 
         private void tb_KeyPress(object sender, KeyPressEventArgs e)
@@ -428,12 +166,7 @@ namespace RecordGetTracks
                 e.Handled = true;
             }
         }
-        private void button4_Click(object sender, EventArgs e)
-        {
-            int cNum = tbTracksNum.Text != "" ? int.Parse(tbTracksNum.Text) : 0;
-            cNum += 5;
-            tbTracksNum.Text = cNum.ToString();
-        }
+
         private void metroButton8_Click(object sender, EventArgs e)
         {
             var proc = System.Diagnostics.Process.GetProcessesByName("chromedriver");
@@ -444,19 +177,45 @@ namespace RecordGetTracks
         private void toggleBrowser_Click(object sender, EventArgs e)
         {
             SettingsStatic.settings.HideBrowser = (sender as MetroToggle).Checked;
-            JsonWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
+            JsnWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
         }
-
-        private void toggleBrowser_CheckedChanged(object sender, EventArgs e)
+        #region Menu Button
+        private void btnExpMenu_MouseClick(object sender, MouseEventArgs e)
         {
-
+            ContextMenuShower(btnExpMenu, ctxm.ctxExport);
         }
-
-        private void metroButton3_Click(object sender, EventArgs e)
+        private void btnFileMenu_MouseClick(object sender, MouseEventArgs e)
         {
-            
+            ContextMenuShower(sender as Button, ctxm.ctxFile);
         }
+        private void ContextMenuShower(Button btn, ContextMenuStrip ctx)
+        {
+            var btnloc = new Point(btn.Location.X, btn.Location.Y + btn.Size.Height);
+            var pnt = new Point(Location.X, Location.Y);
+            var pnlloc = panelMenu.Location;
+            var fpn = new Point(btnloc.X + pnlloc.X + pnt.X, btnloc.Y + pnlloc.Y + pnt.Y);
+            ctx.Show(fpn);
+        }
+        #endregion
+        #region События на кнопки
+        private void button4_Click(object sender, EventArgs e)
+        {
+            int cNum = tbTracksNum.Text != "" ? int.Parse(tbTracksNum.Text) : 0;
+            cNum += 5;
+            tbTracksNum.Text = cNum.ToString();
+        }
+        private void button3_Click(object sender, EventArgs e)
+        {
+            int cNum = tbTracksNum.Text != "" ? int.Parse(tbTracksNum.Text) : 0;
+            if (cNum > 0)
+            {
+                cNum -= 5;
+                tbTracksNum.Text = cNum.ToString();
+            }
+            if (cNum == 0)
+                tbTracksNum.Text = "";
 
+        }
         private void btnBackupRadios_Click(object sender, EventArgs e)
         {
             var newNameBackup = SettingsStatic.JsonRecordPath + ".backup";
@@ -473,10 +232,286 @@ namespace RecordGetTracks
                     msgCall("Непредвиденная ошибка", "Бэкап станций", MessageBoxButtons.OK, MessageBoxIcon.Error);
             }
         }
-
-        private void btnRecRemFav_Click(object sender, EventArgs e)
+        private void LdTracks_click(object sender, EventArgs e) // загружает список треков в новом потоке
         {
+            listBox1.Items.Clear();
+            var station = ReturnStationIndex();
+            var thread = new Thread(() =>
+            {
 
+                rwork.LoadTracks(station, 0);
+                Invoke(new Action(() =>
+                {
+
+                    listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
+                    labelDatePlaylist.Text = "Список треков от: " + RadioLists.StationsList[station].DateLoadedTracks;
+                }));
+            });
+            thread.Start();
+        }
+        // возвращает индекс станции в json файле.
+
+
+
+        private void buttonStart_Click(object sender, EventArgs e)
+        {
+            var StartCreator = new Thread(() =>
+            {
+                listBox.Invoke(new Action(() => listBox.Items.Clear()));
+                rwork.CollectLinks();
+                CreateListRadios(false);
+                SettingsStatic.settings.IsBigSymsInRadios = true;
+                JsnWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
+                msgCall("Список успешно загружен", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            });
+            if (RadioLists.StationsList.Any() && DialogResult.Yes == msgCall("Список станций уже создан! Вы уверены что хотите полностью пересоздать список станций? Это займет какое-то время.", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                if (toggleRecIsFav.Checked == true)
+                    toggleRecIsFav.Checked = false;
+                StartCreator.Start();
+            }
+            else if (RadioLists.StationsList == null || RadioLists.StationsList.Count <= 0)
+            {
+                if (toggleRecIsFav.Checked == true)
+                    toggleRecIsFav.Checked = false;
+                StartCreator.Start();
+            }
+        }
+        private void buttonAdd_Click(object sender, EventArgs e)
+        {
+            listBox1.Items.Add(listBox.SelectedItem);
+        }
+
+        private void buttonRemove_Click(object sender, EventArgs e)
+        {
+            listBox1.Items.RemoveAt(listBox1.SelectedIndex);
+        }
+        private void buttonStartSpoti_Click(object sender, EventArgs e)
+        {
+            var th = new Thread(() =>
+            {
+                Invoke(new Action(() => StatusProgressBar = true));
+                if (SpotifyWorker.AuthSpoti(tblogin.Text, tbpass.Text))
+                {
+                    Invoke(new Action(() => listBoxPlaylists.Items.Clear()));
+                    Invoke(new Action(() => (sender as Button).Enabled = false));
+                    SpotifyWorker.GetPlaylists();
+                    if (SettingsStatic.settings.SpotiPlaylists != null && SettingsStatic.settings.SpotiPlaylists.Count > 0)
+                        Invoke(new Action(() => listBoxPlaylists.Items.AddRange(SettingsStatic.settings.SpotiPlaylists.ToArray())));
+                    if (cboxRemind.Checked)
+                    {
+                        SettingsStatic.settings.SpotiLogin = tblogin.Text;
+                        SettingsStatic.settings.SpotiPass = tbpass.Text;
+                        JsnWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
+                    }
+
+                }
+                else msgCall("Неверный логин или пароль!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                Invoke(new Action(() => StatusProgressBar = false));
+            });
+            th.Start();
+
+        }
+        private void SelectFolderForChrome_Click(object sender, EventArgs e)
+        {
+            var chr = SettingsStatic.FindChromePath();
+            if (chr != null)
+            {
+                SettingsStatic.settings.ChromePath = chr;
+                JsnWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
+                tbGooglePath.Text = SettingsStatic.settings.ChromePath;
+                msgCall($"Место размещения chrome изменено на:\n{chr}", "Месторасположение изменено", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        #endregion
+        #region listboxes
+        private void listBoxStations_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var cInd = listBox.SelectedIndex;
+            listBox1.Items.Clear();
+            if (cInd > -1)
+            {
+
+                var station = RadioLists.StationsList.Find(x => x.Name == listBox.Items[cInd].ToString().Replace(" 💙", ""));
+                var stationTracks = station.TracksList;
+                if (stationTracks.Count > 0)
+                {
+                    listBox1.Items.AddRange(stationTracks.ToArray());
+                    if (station.DateLoadedTracks != null)
+                    {
+                        labelDatePlaylist.Text = $"Список треков от: {station.DateLoadedTracks}";
+                        labelDatePlaylist.Visible = true;
+                    }
+                    else labelDatePlaylist.Visible = false;
+                }
+                if (toggleRecIsFav.Checked == false) btnRecAddFav.Enabled = true;
+                if (toggleRecIsFav.Checked == true || station.isFavorite == true) btnRecRemFav.Enabled = true;
+                buttongetTitle.Enabled = true;
+                if (listBox1.Items.Count > 1)
+                    labelRemoveRusMusic.Enabled = true;
+                else
+                    labelRemoveRusMusic.Enabled = false;
+            }
+            else
+            {
+                labelRemoveRusMusic.Enabled = false;
+                buttongetTitle.Enabled = false;
+                labelDatePlaylist.Visible = false;
+                btnRecAddFav.Enabled = false;
+                buttongetTitle.Enabled = false;
+            }
+        }
+        #endregion
+        #region TOGGLER!!!!!!!!!!!!
+        private void toggleIsFav_CheckedChanged(object sender, EventArgs e)
+        {
+            CreateListRadios(toggleRecIsFav.Checked);
+        }
+        private void changeRadioBigtoLittleSyms_Click(object sender, EventArgs e)
+        {
+            ChangeStationsNames((sender as MetroToggle).Checked);
+        }
+        void ChangeStationsNames(bool isBig)
+        {
+            SettingsStatic.settings.IsBigSymsInRadios = isBig;
+            var th = new Thread(() =>
+            {
+                Invoke(new Action(() => toggleBigSmallLetters.Enabled = false));
+                if (!isBig)
+                {
+                    Invoke(new Action(() => listBox.Items.Clear()));
+                    Invoke(new Action(() => MaximumProgressBar = RadioLists.StationsList.Count - 1));
+                    for (int i = 0; i < RadioLists.StationsList.Count; i++)
+                    {
+                        RadioLists.StationsList[i].Name = FirstLetterToUpAndOtherToLow(RadioLists.StationsList[i].Name);
+                        Invoke(new Action(() => listBox.Items.Add(RadioLists.StationsList[i].Name)));
+                        Invoke(new Action(() => ProgressProgressBar = i));
+                    }
+                }
+                else if (isBig)
+                {
+                    Invoke(new Action(() => listBox.Items.Clear()));
+                    Invoke(new Action(() => MaximumProgressBar = RadioLists.StationsList.Count - 1));
+                    for (int i = 0; i < RadioLists.StationsList.Count; i++)
+                    {
+                        RadioLists.StationsList[i].Name = RadioLists.StationsList[i].Name.ToUpper();
+                        Invoke(new Action(() => listBox.Items.Add(RadioLists.StationsList[i].Name)));
+                        Invoke(new Action(() => ProgressProgressBar = i));
+                    }
+                }
+                JsnWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
+                JsnWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
+                Invoke(new Action(() => toggleBigSmallLetters.Enabled = true));
+
+            });
+            th.Start();
+        }
+        private string FirstLetterToUpAndOtherToLow(string str)
+        {
+            str = str.ToLower();
+            return Char.ToUpper(str[0]) + str.Remove(0, 1);
+        }
+        void CreateListRadios(bool isFavorite)
+        {
+            listBox.Invoke(new Action(() => listBox.Items.Clear()));
+            if (isFavorite)
+                foreach (RadioData.RadioStation radios in RadioData.RadioLists.StationsList)
+                {
+                    if (radios.isFavorite) listBox.Invoke(new Action(() => listBox.Items.Add(radios.Name + " 💙")));
+                }
+            else if (!isFavorite)
+                foreach (RadioData.RadioStation radios in RadioData.RadioLists.StationsList)
+                {
+                    listBox.Invoke(new Action(() => listBox.Items.Add(radios.Name + (radios.isFavorite ? " 💙" : ""))));
+                }
+        }
+        private void toggleRecIsFav_Click(object sender, EventArgs e)
+        {
+            SettingsStatic.settings.UseFavList = (sender as MetroToggle).Checked;
+            JsnWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
+        }
+        #endregion
+        #region Прогресс Бар 
+        public int ProgressProgressBar
+        {
+            set =>
+                progressBar.Value = value;
+        }
+
+        public int MaximumProgressBar
+        {
+            set =>
+                progressBar.Maximum = value;
+        }
+
+        public bool StatusProgressBar
+        {
+            set =>
+                progressBarLoaging.Visible = value;
+        }
+        #endregion
+
+        private void tbTracksNum_Leave(object sender, EventArgs e)
+        {
+            if (tbTracksNum.Text != "" && int.Parse(tbTracksNum.Text) == 0)
+                tbTracksNum.Text = "";
+        }
+
+        private void listBoxPlaylists_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            var lb = sender as ListBox;
+            if (lb.SelectedIndex > -1)
+                btnStartImport.Enabled = true;
+            else
+                btnStartImport.Enabled = false;
+        }
+
+        private void buttonAddPlst_Click(object sender, EventArgs e)
+        {
+            SpotifyWorker.AddPlaylistSpotify(tbPlaylsName.Text);
+            listBoxPlaylists.Items.Insert(0, tbPlaylsName.Text);
+        }
+
+        private void tbPlaylsName_TextChanged(object sender, EventArgs e)
+        {
+            var tb = sender as MetroTextBox;
+            if (tb.Text != "")
+                buttonAddPlst.Enabled = true;
+            else
+                buttonAddPlst.Enabled = false;
+        }
+
+        private void labelRemoveRusMusic_Click(object sender, EventArgs e) // Удаляет русские треки
+        {
+            if (DialogResult.Yes == msgCall("Эта функция удаляет треки, в названии которых есть русские символы. Не удаляются русские треки, указанные на английском. Продолжить?", "Внимание. Функция только для русофобов!!!", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                int count = 0;
+                var station = ReturnStationIndex();
+                var tracks = RadioLists.StationsList[station].TracksList;
+                for (int i = 0; i < tracks.Count; i++)
+                {
+                    if (Regex.IsMatch(tracks[i], @"\p{IsCyrillic}")) // Выборка киррилических символов.
+                    {
+                        RadioLists.StationsList[station].TracksList.RemoveAt(i);
+                        count++;
+                    }
+                }
+                listBox1.Items.Clear();
+                listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
+                JsnWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
+                msgCall($"Русских треков удалено: {count}. Очистка произведена успешно!", "Record cleaner");
+            }
+        }
+
+        private void btnStartImport_Click(object sender, EventArgs e)
+        {
+            var index = ReturnStationIndex();
+            var StationName = listBoxPlaylists.SelectedItem.ToString();
+            var th = new Thread(() => {
+                var playlist = RadioLists.StationsList[index].TracksList;
+                SpotifyWorker.ImportTracksToPlaylist(StationName, playlist);
+            });
+            th.Start();
         }
     }
 }

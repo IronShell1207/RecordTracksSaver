@@ -9,6 +9,7 @@ using System.Windows.Forms;
 using MetroFramework.Controls;
 using System.Windows.Threading;
 using OpenQA.Selenium.Support.UI;
+using System.Threading;
 
 namespace RadioData
 {
@@ -16,25 +17,28 @@ namespace RadioData
     class RadioWorker
     {
         Form1 form1;
-        public void CollectLinks(object form) // первоначальный сбор станций и создание json списка БЕЗ СТАНЦИЙ и БЕЗ FAVORITE
+        public RadioWorker(object form)
         {
             form1 = form as Form1;
-            form1.StatusProgressBar(ProgressBarStyle.Marquee);
+        }
+        public void CollectLinks() // первоначальный сбор станций и создание json списка БЕЗ СТАНЦИЙ и БЕЗ FAVORITE
+        {
+            form1.Invoke(new Action(() => form1.StatusProgressBar = true));
             RadioLists.StationsList = new List<RadioStation> { }; // пересоздаем список для того чтобы не возникало проблем с текущим его наполнением
             var CurrURL = SeleniumHelper.ChromeDriver.Url; // переходим на сайт Record
-            if (CurrURL != RadioData.Pages.MainPageUrl)
-                SeleniumHelper.ChromeDriver.Url = RadioData.Pages.MainPageUrl;
+            if (CurrURL != RadioData.Pages.MainPageUrl) SeleniumHelper.ChromeDriver.Url = RadioData.Pages.MainPageUrl; 
             var radBtns = SeleniumHelper.ChromeDriver.FindElements(RadioData.xPathes.StationBtns);// находим кнопки всех станций
-            form1.StatusProgressBar(ProgressBarStyle.Continuous);
+            form1.Invoke(new Action(() => form1.StatusProgressBar = false));
+            form1.Invoke(new Action(() => form1.MaximumProgressBar = radBtns.Count - 1));
             for (int i = 0; i < radBtns.Count; i++) // прокликиваем все кнопки и собираем ссылки
             {
-                form1.ProgressProgressBar(i);
+                form1.Invoke(new Action(() => form1.ProgressProgressBar=i));
                 radBtns[i].Click(); // кликаем по станцици
                 try
                 {
-                    SeleniumHelper.ChromeDriver.SwitchTo().Frame(RadioData.xPathes.TracksFrameN); // Свитч на iframe
+                    var Frame = SeleniumHelper.ChromeDriver.FindElement(xPathes.FramePlaylist);
+                    SeleniumHelper.ChromeDriver.SwitchTo().Frame(Frame) ; // Свитч на iframe
                     var TitleName = SeleniumHelper.ChromeDriver.FindElement(RadioData.xPathes.IframePage.PageName).Text; // находим заголовок станции
-
                     var GetLinkFirstPage = SeleniumHelper.ChromeDriver.FindElements(RadioData.xPathes.IframePage.PageRef);
                     if (GetLinkFirstPage.Any())
                     {
@@ -46,29 +50,35 @@ namespace RadioData
                         };
                         RadioLists.StationsList.Add(radioStation); // и добавляем в список
                     }
+                    SeleniumHelper.ChromeDriver.SwitchTo().DefaultContent();
                 }
-                catch (NoSuchElementException ex) { }
-                SeleniumHelper.ChromeDriver.SwitchTo().DefaultContent();
+                catch (NoSuchElementException ex) { SeleniumHelper.ChromeDriver.SwitchTo().DefaultContent(); }
+                
             }
-            JsonWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
+            JsnWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
 
         }
-        public void LoadTracks(int index, int count, object form)
+        public void LoadTracks(int index, int count)
         {
-            form1 = form as Form1;
-            form1.StatusProgressBar(ProgressBarStyle.Marquee);
+            form1.Invoke(new Action(() => form1.StatusProgressBar = true));
             SeleniumHelper.ChromeDriver.Navigate().GoToUrl(RadioLists.StationsList[index].LinkTracksList);
             List<string> songs = new List<string> { };
             try
             {
                 var AllTracks = SeleniumHelper.ChromeDriver.FindElements(xPathes.TrackXPath);
                 int iTracksCount = count != 0 && count <= AllTracks.Count ? count : AllTracks.Count;
+
+                    form1.Invoke(new Action(() => form1.StatusProgressBar = false));
+                Thread.Sleep(1150);
+                form1.Invoke(new Action(() => form1.MaximumProgressBar=iTracksCount-1));
                 for (int ix = 0; ix < iTracksCount; ix++)
                 {
+                    form1.Invoke(new Action(() => form1.ProgressProgressBar = ix));
+
                     var name = AllTracks[ix].Text;
                     for (int i = 0; i < Converting.SymToChange.Length; i++)
                     {
-                        name.Replace(Converting.SymToChange[i], Converting.SymEnd[i]); // не много не то находит. поменять xpath
+                        name = name.Replace(Converting.SymToChange[i], Converting.SymEnd[i]); // не много не то находит. поменять xpath
                     }
                     songs.Add(name);
                 }
@@ -77,12 +87,10 @@ namespace RadioData
                     RadioLists.StationsList[index].DateLoadedTracks = DateTime.Now.ToLongDateString();
                     RadioLists.StationsList[index].TracksList = songs;
                 }
-                JsonWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
+                JsnWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
             }
             catch (NoSuchElementException ex)
             { }
-            form1.StatusProgressBar(ProgressBarStyle.Continuous);
-
         }
     }
 }

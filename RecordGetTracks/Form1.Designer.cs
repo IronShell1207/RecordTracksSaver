@@ -28,7 +28,6 @@
         /// </summary>
         private void InitializeComponent()
         {
-            this.components = new System.ComponentModel.Container();
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.listBox = new System.Windows.Forms.ListBox();
             this.buttongetTitle = new MetroFramework.Controls.MetroButton();
@@ -47,7 +46,6 @@
             this.tbpass = new MetroFramework.Controls.MetroTextBox();
             this.tblogin = new MetroFramework.Controls.MetroTextBox();
             this.buttonLogin = new MetroFramework.Controls.MetroButton();
-            this.timerProgress = new System.Windows.Forms.Timer(this.components);
             this.panelSpotiMain = new MetroFramework.Controls.MetroPanel();
             this.panelSpotiImport = new MetroFramework.Controls.MetroPanel();
             this.listBoxPlaylists = new System.Windows.Forms.ListBox();
@@ -68,6 +66,7 @@
             this.panelRecFav = new MetroFramework.Controls.MetroPanel();
             this.panelRecIsFav = new MetroFramework.Controls.MetroPanel();
             this.panelProgressBar = new MetroFramework.Controls.MetroPanel();
+            this.progressBarLoaging = new MetroFramework.Controls.MetroProgressBar();
             this.panelRightMain = new MetroFramework.Controls.MetroPanel();
             this.panelMenu = new MetroFramework.Controls.MetroPanel();
             this.labelDatePlaylist = new MetroFramework.Controls.MetroLabel();
@@ -85,6 +84,8 @@
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.panelSpaceMiddle = new MetroFramework.Controls.MetroPanel();
             this.panelSettings = new MetroFramework.Controls.MetroPanel();
+            this.toggleBigSmallLetters = new MetroFramework.Controls.MetroToggle();
+            this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
             this.btnBackupRadios = new MetroFramework.Controls.MetroLabel();
             this.toggleBrowser = new MetroFramework.Controls.MetroToggle();
             this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
@@ -94,6 +95,7 @@
             this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
             this.btnHideSetts = new MetroFramework.Controls.MetroButton();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
+            this.labelRemoveRusMusic = new MetroFramework.Controls.MetroLabel();
             this.panelSpotiMain.SuspendLayout();
             this.panelSpotiImport.SuspendLayout();
             this.panelRecSpaceImp2.SuspendLayout();
@@ -167,7 +169,7 @@
             this.listBox1.ItemHeight = 15;
             this.listBox1.Location = new System.Drawing.Point(10, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(320, 486);
+            this.listBox1.Size = new System.Drawing.Size(440, 486);
             this.listBox1.TabIndex = 3;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -202,7 +204,6 @@
             this.btnTracksRemove.Text = "Удалить";
             this.btnTracksRemove.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.btnTracksRemove.UseSelectable = true;
-            this.btnTracksRemove.Click += new System.EventHandler(this.metroButton1_Click);
             // 
             // toggleRecIsFav
             // 
@@ -259,14 +260,13 @@
             this.btnRecRemFav.Text = "Удалить";
             this.btnRecRemFav.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.btnRecRemFav.UseSelectable = true;
-            this.btnRecRemFav.Click += new System.EventHandler(this.btnRecRemFav_Click);
             // 
             // progressBar
             // 
             this.progressBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.progressBar.Location = new System.Drawing.Point(0, 0);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(535, 22);
+            this.progressBar.Size = new System.Drawing.Size(655, 22);
             this.progressBar.TabIndex = 12;
             this.progressBar.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
@@ -381,7 +381,7 @@
             this.panelSpotiMain.HorizontalScrollbarBarColor = true;
             this.panelSpotiMain.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSpotiMain.HorizontalScrollbarSize = 10;
-            this.panelSpotiMain.Location = new System.Drawing.Point(10, 384);
+            this.panelSpotiMain.Location = new System.Drawing.Point(3, 3);
             this.panelSpotiMain.Name = "panelSpotiMain";
             this.panelSpotiMain.Size = new System.Drawing.Size(205, 452);
             this.panelSpotiMain.TabIndex = 17;
@@ -425,6 +425,7 @@
             this.listBoxPlaylists.Name = "listBoxPlaylists";
             this.listBoxPlaylists.Size = new System.Drawing.Size(203, 198);
             this.listBoxPlaylists.TabIndex = 14;
+            this.listBoxPlaylists.SelectedIndexChanged += new System.EventHandler(this.listBoxPlaylists_SelectedIndexChanged);
             // 
             // panelRecSpaceImp2
             // 
@@ -458,6 +459,7 @@
             // buttonAddPlst
             // 
             this.buttonAddPlst.Dock = System.Windows.Forms.DockStyle.Top;
+            this.buttonAddPlst.Enabled = false;
             this.buttonAddPlst.Location = new System.Drawing.Point(0, 60);
             this.buttonAddPlst.Name = "buttonAddPlst";
             this.buttonAddPlst.Size = new System.Drawing.Size(203, 23);
@@ -465,6 +467,7 @@
             this.buttonAddPlst.Text = "Добавить новый плейлист";
             this.buttonAddPlst.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.buttonAddPlst.UseSelectable = true;
+            this.buttonAddPlst.Click += new System.EventHandler(this.buttonAddPlst_Click);
             // 
             // panelRecSpaceImp
             // 
@@ -514,6 +517,7 @@
             this.tbPlaylsName.WaterMark = "Введите имя новому плейлисту";
             this.tbPlaylsName.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.tbPlaylsName.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
+            this.tbPlaylsName.TextChanged += new System.EventHandler(this.tbPlaylsName_TextChanged);
             // 
             // metroPanel3
             // 
@@ -544,6 +548,7 @@
             // btnStartImport
             // 
             this.btnStartImport.Dock = System.Windows.Forms.DockStyle.Bottom;
+            this.btnStartImport.Enabled = false;
             this.btnStartImport.Location = new System.Drawing.Point(0, 302);
             this.btnStartImport.Name = "btnStartImport";
             this.btnStartImport.Size = new System.Drawing.Size(203, 23);
@@ -551,6 +556,7 @@
             this.btnStartImport.Text = "Импортировать музыку";
             this.btnStartImport.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.btnStartImport.UseSelectable = true;
+            this.btnStartImport.Click += new System.EventHandler(this.btnStartImport_Click);
             // 
             // panelSpotiLogin
             // 
@@ -625,11 +631,10 @@
             this.panelRecMain.Controls.Add(this.panelRecIsFav);
             this.panelRecMain.Controls.Add(this.buttonLoadPlayls);
             this.panelRecMain.Controls.Add(this.buttongetTitle);
-            this.panelRecMain.Dock = System.Windows.Forms.DockStyle.Fill;
             this.panelRecMain.HorizontalScrollbarBarColor = true;
             this.panelRecMain.HorizontalScrollbarHighlightOnWheel = false;
             this.panelRecMain.HorizontalScrollbarSize = 10;
-            this.panelRecMain.Location = new System.Drawing.Point(0, 0);
+            this.panelRecMain.Location = new System.Drawing.Point(121, 0);
             this.panelRecMain.Name = "panelRecMain";
             this.panelRecMain.Size = new System.Drawing.Size(205, 515);
             this.panelRecMain.TabIndex = 18;
@@ -690,6 +695,7 @@
             // 
             // panelProgressBar
             // 
+            this.panelProgressBar.Controls.Add(this.progressBarLoaging);
             this.panelProgressBar.Controls.Add(this.progressBar);
             this.panelProgressBar.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.panelProgressBar.HorizontalScrollbarBarColor = true;
@@ -697,11 +703,22 @@
             this.panelProgressBar.HorizontalScrollbarSize = 10;
             this.panelProgressBar.Location = new System.Drawing.Point(20, 601);
             this.panelProgressBar.Name = "panelProgressBar";
-            this.panelProgressBar.Size = new System.Drawing.Size(535, 22);
+            this.panelProgressBar.Size = new System.Drawing.Size(655, 22);
             this.panelProgressBar.TabIndex = 19;
             this.panelProgressBar.VerticalScrollbarBarColor = true;
             this.panelProgressBar.VerticalScrollbarHighlightOnWheel = false;
             this.panelProgressBar.VerticalScrollbarSize = 10;
+            // 
+            // progressBarLoaging
+            // 
+            this.progressBarLoaging.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.progressBarLoaging.Location = new System.Drawing.Point(0, 0);
+            this.progressBarLoaging.Name = "progressBarLoaging";
+            this.progressBarLoaging.ProgressBarStyle = System.Windows.Forms.ProgressBarStyle.Marquee;
+            this.progressBarLoaging.Size = new System.Drawing.Size(655, 22);
+            this.progressBarLoaging.TabIndex = 13;
+            this.progressBarLoaging.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.progressBarLoaging.Visible = false;
             // 
             // panelRightMain
             // 
@@ -722,6 +739,7 @@
             // 
             // panelMenu
             // 
+            this.panelMenu.Controls.Add(this.labelRemoveRusMusic);
             this.panelMenu.Controls.Add(this.labelDatePlaylist);
             this.panelMenu.Controls.Add(this.btnSupp);
             this.panelMenu.Controls.Add(this.btnExpMenu);
@@ -732,7 +750,7 @@
             this.panelMenu.HorizontalScrollbarSize = 10;
             this.panelMenu.Location = new System.Drawing.Point(20, 60);
             this.panelMenu.Name = "panelMenu";
-            this.panelMenu.Size = new System.Drawing.Size(535, 26);
+            this.panelMenu.Size = new System.Drawing.Size(655, 26);
             this.panelMenu.TabIndex = 19;
             this.panelMenu.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.panelMenu.VerticalScrollbarBarColor = true;
@@ -773,7 +791,6 @@
             this.btnExpMenu.TabIndex = 25;
             this.btnExpMenu.Text = "Экспорт";
             this.btnExpMenu.UseVisualStyleBackColor = true;
-            this.btnExpMenu.Click += new System.EventHandler(this.btnExpMenu_Click);
             this.btnExpMenu.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnExpMenu_MouseClick);
             // 
             // btnFileMenu
@@ -851,6 +868,7 @@
             this.tbTracksNum.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             this.tbTracksNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbTracksNum_KeyDown);
             this.tbTracksNum.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tb_KeyPress);
+            this.tbTracksNum.Leave += new System.EventHandler(this.tbTracksNum_Leave);
             // 
             // metroPanel6
             // 
@@ -900,6 +918,7 @@
             this.button3.Size = new System.Drawing.Size(25, 13);
             this.button3.TabIndex = 20;
             this.button3.UseVisualStyleBackColor = true;
+            this.button3.Click += new System.EventHandler(this.button3_Click);
             // 
             // metroPanel2
             // 
@@ -912,7 +931,7 @@
             this.metroPanel2.HorizontalScrollbarSize = 10;
             this.metroPanel2.Location = new System.Drawing.Point(225, 86);
             this.metroPanel2.Name = "metroPanel2";
-            this.metroPanel2.Size = new System.Drawing.Size(330, 515);
+            this.metroPanel2.Size = new System.Drawing.Size(450, 515);
             this.metroPanel2.TabIndex = 21;
             this.metroPanel2.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.metroPanel2.VerticalScrollbarBarColor = true;
@@ -929,7 +948,7 @@
             this.panelTracksBott.HorizontalScrollbarSize = 10;
             this.panelTracksBott.Location = new System.Drawing.Point(10, 486);
             this.panelTracksBott.Name = "panelTracksBott";
-            this.panelTracksBott.Size = new System.Drawing.Size(320, 29);
+            this.panelTracksBott.Size = new System.Drawing.Size(440, 29);
             this.panelTracksBott.TabIndex = 12;
             this.panelTracksBott.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.panelTracksBott.VerticalScrollbarBarColor = true;
@@ -966,6 +985,8 @@
             // panelSettings
             // 
             this.panelSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelSettings.Controls.Add(this.toggleBigSmallLetters);
+            this.panelSettings.Controls.Add(this.metroLabel9);
             this.panelSettings.Controls.Add(this.btnBackupRadios);
             this.panelSettings.Controls.Add(this.toggleBrowser);
             this.panelSettings.Controls.Add(this.metroLabel8);
@@ -980,7 +1001,7 @@
             this.panelSettings.HorizontalScrollbarBarColor = true;
             this.panelSettings.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSettings.HorizontalScrollbarSize = 10;
-            this.panelSettings.Location = new System.Drawing.Point(680, 16);
+            this.panelSettings.Location = new System.Drawing.Point(681, 14);
             this.panelSettings.Name = "panelSettings";
             this.panelSettings.Size = new System.Drawing.Size(371, 345);
             this.panelSettings.TabIndex = 22;
@@ -990,11 +1011,35 @@
             this.panelSettings.VerticalScrollbarSize = 10;
             this.panelSettings.Visible = false;
             // 
+            // toggleBigSmallLetters
+            // 
+            this.toggleBigSmallLetters.AutoSize = true;
+            this.toggleBigSmallLetters.Checked = true;
+            this.toggleBigSmallLetters.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.toggleBigSmallLetters.Location = new System.Drawing.Point(133, 216);
+            this.toggleBigSmallLetters.Name = "toggleBigSmallLetters";
+            this.toggleBigSmallLetters.Size = new System.Drawing.Size(80, 17);
+            this.toggleBigSmallLetters.TabIndex = 33;
+            this.toggleBigSmallLetters.Text = "On";
+            this.toggleBigSmallLetters.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.toggleBigSmallLetters.UseSelectable = true;
+            this.toggleBigSmallLetters.Click += new System.EventHandler(this.changeRadioBigtoLittleSyms_Click);
+            // 
+            // metroLabel9
+            // 
+            this.metroLabel9.AutoSize = true;
+            this.metroLabel9.Location = new System.Drawing.Point(60, 191);
+            this.metroLabel9.Name = "metroLabel9";
+            this.metroLabel9.Size = new System.Drawing.Size(246, 19);
+            this.metroLabel9.TabIndex = 32;
+            this.metroLabel9.Text = "Названия станций большими буквами";
+            this.metroLabel9.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
             // btnBackupRadios
             // 
             this.btnBackupRadios.AutoSize = true;
             this.btnBackupRadios.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.btnBackupRadios.Location = new System.Drawing.Point(7, 294);
+            this.btnBackupRadios.Location = new System.Drawing.Point(6, 296);
             this.btnBackupRadios.Name = "btnBackupRadios";
             this.btnBackupRadios.Size = new System.Drawing.Size(237, 19);
             this.btnBackupRadios.TabIndex = 31;
@@ -1012,7 +1057,6 @@
             this.toggleBrowser.Text = "Off";
             this.toggleBrowser.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.toggleBrowser.UseSelectable = true;
-            this.toggleBrowser.CheckedChanged += new System.EventHandler(this.toggleBrowser_CheckedChanged);
             this.toggleBrowser.Click += new System.EventHandler(this.toggleBrowser_Click);
             // 
             // metroLabel8
@@ -1045,7 +1089,7 @@
             this.metroButton2.Text = "Указать папку";
             this.metroButton2.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.metroButton2.UseSelectable = true;
-            this.metroButton2.Click += new System.EventHandler(this.metroButton2_Click);
+            this.metroButton2.Click += new System.EventHandler(this.SelectFolderForChrome_Click);
             // 
             // tbGooglePath
             // 
@@ -1114,11 +1158,24 @@
             this.metroLabel3.Text = "Настройки";
             this.metroLabel3.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
+            // labelRemoveRusMusic
+            // 
+            this.labelRemoveRusMusic.AutoSize = true;
+            this.labelRemoveRusMusic.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelRemoveRusMusic.Enabled = false;
+            this.labelRemoveRusMusic.Location = new System.Drawing.Point(496, 3);
+            this.labelRemoveRusMusic.Name = "labelRemoveRusMusic";
+            this.labelRemoveRusMusic.Size = new System.Drawing.Size(155, 19);
+            this.labelRemoveRusMusic.TabIndex = 29;
+            this.labelRemoveRusMusic.Text = "Удалить \"русские\" треки";
+            this.labelRemoveRusMusic.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.labelRemoveRusMusic.Click += new System.EventHandler(this.labelRemoveRusMusic_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(575, 643);
+            this.ClientSize = new System.Drawing.Size(695, 643);
             this.Controls.Add(this.panelSettings);
             this.Controls.Add(this.metroPanel2);
             this.Controls.Add(this.panelRightMain);
@@ -1181,7 +1238,6 @@
         private MetroFramework.Controls.MetroTextBox tbpass;
         private MetroFramework.Controls.MetroTextBox tblogin;
         private MetroFramework.Controls.MetroButton buttonLogin;
-        public System.Windows.Forms.Timer timerProgress;
         private MetroFramework.Controls.MetroPanel panelSpotiImport;
         public System.Windows.Forms.ListBox listBoxPlaylists;
         private MetroFramework.Controls.MetroLabel metroLabel4;
@@ -1228,6 +1284,10 @@
         private MetroFramework.Controls.MetroToggle toggleBrowser;
         private MetroFramework.Controls.MetroLabel metroLabel8;
         private MetroFramework.Controls.MetroLabel btnBackupRadios;
+        private MetroFramework.Controls.MetroProgressBar progressBarLoaging;
+        private MetroFramework.Controls.MetroToggle toggleBigSmallLetters;
+        private MetroFramework.Controls.MetroLabel metroLabel9;
+        private MetroFramework.Controls.MetroLabel labelRemoveRusMusic;
     }
 }
 

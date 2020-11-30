@@ -11,9 +11,9 @@ namespace RecordGetTracks
     public class ContextMenus
     {
         Form1 form;
-        public ContextMenus(object for1m) 
+        public ContextMenus(object for1m)
         {
-           form =  for1m as Form1;
+            form = for1m as Form1;
 
         }
         private ContextMenuStrip _ctxFile;
@@ -62,10 +62,12 @@ namespace RecordGetTracks
             form.panelSpotiMain.Visible = true;
             form.panelSpotiMain.Dock = DockStyle.Fill;
             form.panelRecMain.Visible = false;
+
         }
         private void SettsOpen(object sender, EventArgs e)
         {
             form.panelShoweer(form.panelSettings);
         }
+
     }
 }

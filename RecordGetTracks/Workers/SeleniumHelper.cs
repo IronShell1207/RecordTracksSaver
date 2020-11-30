@@ -5,6 +5,7 @@ using System.Reflection;
 using System.Threading;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
+using OpenQA.Selenium.Interactions;
 using OpenQA.Selenium.Support.UI;
 
 namespace RecordGetTracks
@@ -19,7 +20,7 @@ namespace RecordGetTracks
                 if (_driver != null)
                 {
                     ChromeDriver.Close();
-                    ChromeDriver.Quit();
+                   ChromeDriver.Quit();
                     _driver = null;
                 }
             }
@@ -33,17 +34,52 @@ namespace RecordGetTracks
                 wait.Until(d => d.FindElement(by)); //ждем пока объект заспавнится 
                 _driver.FindElement(by).Click();
             }
-            catch (NoSuchElementException ex)
+            catch (Exception ex)
             { // если не прогрузился
 
             }
         }
-        public static bool SendKeys(By by, string[] text) // печатаем текст в поле безошибочно
+        public static void ContextClick(By by)
+        {
+            Actions actions = new Actions(_driver);
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
+            try
+            {
+                wait.Until(d => d.FindElement(by)); //ждем пока объект заспавнится 
+                actions.ContextClick(_driver.FindElement(by)).Perform();
+            }
+            catch (Exception ex)
+            { // если не прогрузился
+
+            }
+        }
+        public static string FindErrors(By by)
+        {
+            var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
+            try
+            {
+                 wait.Until(d => d.FindElement(by));
+                 return _driver.FindElement(by).Text;
+            }
+            catch (OpenQA.Selenium.NoSuchElementException exx)
+            {
+                return null;
+            }
+            catch (Exception ex)
+            {
+                return null;
+            }
+            
+            return null;
+        }
+        public static bool SendKeys(By by,bool isClean, string[] text) // печатаем текст в поле безошибочно
         {
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
             try
             {
                 wait.Until(d => d.FindElement(by));
+                if (isClean)
+                    _driver.FindElement(by).Clear();
                 foreach (string str in text)
                 {
                     _driver.FindElement(by).SendKeys(str);
@@ -69,10 +105,8 @@ namespace RecordGetTracks
                 var chromeOptions = new ChromeOptions(); 
                 _driver = new ChromeDriver(chromeDriverService, chromeOptions);
                 // Avoid synchronization issues by applying timed delay to each step if necessary
-                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(2);
+                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
                 _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(7);
-                if (SettingsStatic.settings.HideBrowser) _driver.Manage().Window.Minimize();
-              //  _driver.Manage().Window.Minimize();
                 return _driver;
             }
             set
@@ -81,7 +115,7 @@ namespace RecordGetTracks
             }
         }
 
-        public static void Wait(int miliseconds, int maxTimeOutSeconds = 60)
+        public static void Wait(int miliseconds, int maxTimeOutSeconds = 10)
         {
             var wait = new WebDriverWait(ChromeDriver, new TimeSpan(0, 0, 1, maxTimeOutSeconds));
             var delay = new TimeSpan(0, 0, 0, 0, miliseconds);

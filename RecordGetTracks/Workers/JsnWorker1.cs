@@ -11,7 +11,7 @@ using System.Windows.Forms;
 
 namespace RecordGetTracks
 {    
-    public class JsonWorker1
+    public class JsnWorker1
     {
         public static List<RadioData.RadioStation> ReadJsnFile()
         {

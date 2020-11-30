@@ -44,6 +44,7 @@ namespace RadioData
     {
         public static readonly By StationBtns = By.XPath("//div[@class='icon']//img");
         public static readonly string TracksFrameN = "content_frame";
+        public static readonly By FramePlaylist = By.Name("playlist_frame");
         public static readonly string LinkAttr = "src";
         public static readonly By TrackXPath = By.XPath("//div[@class='artist']");
         public static readonly By TracksPath = By.ClassName("artist");
@@ -75,7 +76,7 @@ namespace RadioData
                     return _stationList;
                 try
                 {
-                    _stationList = JsonWorker1.ReadJsnFile();
+                    _stationList = JsnWorker1.ReadJsnFile();
                     return _stationList;
                 }
                 catch (Exception ex) { }

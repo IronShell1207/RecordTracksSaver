@@ -17,7 +17,7 @@ namespace RecordGetTracks
             {
                 if (_sets != null)
                     return _sets;
-                _sets = File.Exists(JsonSettingsPath) ? JsonWorker1.ReadSettingsJson() : null;
+                _sets = File.Exists(JsonSettingsPath) ? JsnWorker1.ReadSettingsJson() : null;
                 if (_sets == null)
                 {
                     string chrPath = ChromeDefPath;
@@ -30,7 +30,7 @@ namespace RecordGetTracks
                         }
                     }
                     _sets = new SettingsM { ChromePath = chrPath };
-                    JsonWorker1.CreateJsnFile(_sets, JsonSettingsPath);
+                    JsnWorker1.CreateJsnFile(_sets, JsonSettingsPath);
                 }
                 return _sets;
             }
@@ -80,10 +80,22 @@ namespace RecordGetTracks
     }
     public class SettingsM
     {
-        public string ChromePath { get; set; }
+        private string _chrPath = SettingsStatic.ChromeDefPath;
+        public string ChromePath
+        {
+            get
+            {
+                if (_chrPath == null)
+                    _chrPath = SettingsStatic.ChromeDefPath;
+                return _chrPath;
+            }
+            set => _chrPath = value;
+        }
         public bool UseFavList { get; set; }
         public string SpotiLogin { get; set; }
         public string SpotiPass { get; set; }
         public bool HideBrowser { get; set; }
+        public bool IsBigSymsInRadios { get; set; }
+        public List<string> SpotiPlaylists { get; set; }
     }
 }
