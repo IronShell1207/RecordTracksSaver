@@ -8,7 +8,7 @@ using System.Windows.Forms;
 
 namespace RecordGetTracks
 {
-    public class SettingsStatic
+    public class SetStatic
     {
         private static SettingsM _sets;
         public static SettingsM settings
@@ -80,13 +80,13 @@ namespace RecordGetTracks
     }
     public class SettingsM
     {
-        private string _chrPath = SettingsStatic.ChromeDefPath;
+        private string _chrPath = SetStatic.ChromeDefPath;
         public string ChromePath
         {
             get
             {
                 if (_chrPath == null)
-                    _chrPath = SettingsStatic.ChromeDefPath;
+                    _chrPath = SetStatic.ChromeDefPath;
                 return _chrPath;
             }
             set => _chrPath = value;

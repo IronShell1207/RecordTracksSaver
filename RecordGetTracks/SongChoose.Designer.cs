@@ -94,9 +94,10 @@
             // labeltr
             // 
             this.labeltr.AutoSize = true;
+            this.labeltr.FontWeight = MetroFramework.MetroLabelWeight.Bold;
             this.labeltr.Location = new System.Drawing.Point(2, 5);
             this.labeltr.Name = "labeltr";
-            this.labeltr.Size = new System.Drawing.Size(103, 19);
+            this.labeltr.Size = new System.Drawing.Size(118, 19);
             this.labeltr.TabIndex = 2;
             this.labeltr.Text = "Искомый трек: ";
             this.labeltr.Theme = MetroFramework.MetroThemeStyle.Dark;

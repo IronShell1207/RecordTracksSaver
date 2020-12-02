@@ -11,6 +11,8 @@ namespace SpotifyData
     {
         public static readonly string MainPageUrl   = "https://open.spotify.com";
         public static readonly string SearchPageUrl = "https://open.spotify.com/search/";
+        public static bool IsAuthorized { get; set; }
+        public static bool BreakSpotify { get; set; }
     }
     public class SpotifyPatches
     {
@@ -26,11 +28,11 @@ namespace SpotifyData
         #region создание плейлиста
         public static By NewPlstBtn = By.XPath("(//button[@type='button'])/*[@shape-rendering=\"crispEdges\"]"); //кнопка добавления плейлиста НАДЕЖНАЯ СТОПРОЦЕНТОВ
         public static By NewPlstDefName = By.XPath("//button[@type='button']//h1[@as='h1']"); // и прямо по нему левой кнопкой для меню
-      //  public static By NewPlstEditD = By.XPath("//div[@id='context-menu-root']/ul[1]/li[4]/button[1]"); // edit details btn in context menu
+        // public static By NewPlstEditD = By.XPath("//div[@id='context-menu-root']/ul[1]/li[4]/button[1]"); // edit details btn in context menu
         public static By NewPlstFieldName = By.XPath("//input[@data-testid='playlist-edit-details-name-input']");
         public static By NewPlstSaveName = By.XPath("//button[@data-testid='playlist-edit-details-save-button']");
         public static By SuccessedAdding = By.XPath("//div[@role=\"alert\"]");//("//*[text()=\"Added to playlist\"]"); //<div class="_6ab8439613a179529f6655b0ee124b22-scss _33868ca6336b910d05b8f578acb9256c-scss" role="alert" aria-live="polite" xpath="1">Added to playlist</div>
-        public static By IsMoreThan4Tracks = By.XPath("//section[@data-testid='search-tracks-result']//span[text()='See all']");
+        // public static By IsMoreThan4Tracks = By.XPath("//section[@data-testid='search-tracks-result']//span[text()='See all']");
         #endregion
         #region поиск 
         public static By SearchBtn = By.XPath("//a[@href='/search']");

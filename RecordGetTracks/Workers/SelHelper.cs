@@ -100,7 +100,7 @@ namespace RecordGetTracks
                 {
                     return _driver;
                 }
-                var chromeDriverService = ChromeDriverService.CreateDefaultService(SettingsStatic.settings.ChromePath);  // сделать возможность менять
+                var chromeDriverService = ChromeDriverService.CreateDefaultService(SetStatic.settings.ChromePath);  // сделать возможность менять
                 chromeDriverService.HideCommandPromptWindow = true;
                 var chromeOptions = new ChromeOptions(); 
                 _driver = new ChromeDriver(chromeDriverService, chromeOptions);

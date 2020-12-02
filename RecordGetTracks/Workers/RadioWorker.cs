@@ -10,10 +10,12 @@ using MetroFramework.Controls;
 using System.Windows.Threading;
 using OpenQA.Selenium.Support.UI;
 using System.Threading;
+using System.Text.RegularExpressions;
 
 namespace RadioData
 {
-    // public delegate void ProgressStatus(int value, int max, bool isMarquee); //bool положительный когда требуется анимация загрузки (бегущая строка)
+     public delegate DialogResult MsgMess(string text, string topic, MessageBoxButtons buttons, MessageBoxIcon icon); //bool положительный когда требуется анимация загрузки (бегущая строка)
+
     class RadioWorker
     {
         Form1 form1;
@@ -56,7 +58,7 @@ namespace RadioData
                 catch (NoSuchElementException ex) { SelHelper.ChromeDriver.SwitchTo().DefaultContent(); }
                 
             }
-            JsnWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
+            JsnWorker1.CreateJsnFile(RadioLists.StationsList, SetStatic.JsonRecordPath);
 
         }
         public void LoadTracks(int index, int count)
@@ -88,10 +90,53 @@ namespace RadioData
                     RadioLists.StationsList[index].DateLoadedTracks = DateTime.Now.ToLongDateString();
                     RadioLists.StationsList[index].TracksList = songs;
                 }
-                JsnWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
+                JsnWorker1.CreateJsnFile(RadioLists.StationsList, SetStatic.JsonRecordPath);
             }
             catch (NoSuchElementException ex)
             { }
+        }
+        public void LetterFormatTransfo()
+        {
+            for (int i = 0; i < RadioLists.StationsList.Count; i++)
+            {
+                if (!SetStatic.settings.IsBigSymsInRadios)
+                    RadioLists.StationsList[i].Name = FirstLetterToUpAndOtherToLow(RadioLists.StationsList[i].Name);
+                else if (SetStatic.settings.IsBigSymsInRadios)
+                    RadioLists.StationsList[i].Name = RadioLists.StationsList[i].Name.ToUpper();
+            }
+          //  JsnWorker1.CreateJsnFile(RadioLists.StationsList, SetStatic.JsonRecordPath);
+          //  JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
+            
+        }
+        private string FirstLetterToUpAndOtherToLow(string str)
+        {
+            str = str.ToLower();
+            return Char.ToUpper(str[0]) + str.Remove(0, 1);
+        }
+        public void RussRemover(int stationIndex, MsgMess msgMess)
+        {
+            if (DialogResult.Yes == msgMess("Эта функция удаляет треки, в названии которых есть русские символы. Не удаляются русские треки, указанные на английском. Продолжить?", "Внимание. Функция только для русофобов!!!", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
+            {
+                int count = 0;
+                //var station = ReturnStationIndex();
+                var tracks = RadioLists.StationsList[stationIndex].TracksList;
+                for (int i = 0; i < tracks.Count; i++)
+                {
+                    if (IsRussian(tracks[i])) // Выборка киррилических символов.
+                    {
+                        RadioLists.StationsList[stationIndex].TracksList.RemoveAt(i);
+                        count++;
+                    }
+                }
+                JsnWorker1.CreateJsnFile(RadioLists.StationsList, SetStatic.JsonRecordPath);
+                msgMess($"Русских треков удалено: {count}. Очистка произведена успешно!", "Record cleaner", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+        }
+        private bool IsRussian(string track)
+        {
+            if (Regex.IsMatch(track, @"\p{IsCyrillic}"))
+                return true;
+            return false;
         }
     }
 }

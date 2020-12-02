@@ -69,11 +69,13 @@
             this.progressBarLoaging = new MetroFramework.Controls.MetroProgressBar();
             this.panelRightMain = new MetroFramework.Controls.MetroPanel();
             this.panelMenu = new MetroFramework.Controls.MetroPanel();
-            this.labelRemoveRusMusic = new MetroFramework.Controls.MetroLabel();
+            this.metroPanel4 = new MetroFramework.Controls.MetroPanel();
+            this.lblCountTracks = new MetroFramework.Controls.MetroLabel();
             this.labelDatePlaylist = new MetroFramework.Controls.MetroLabel();
             this.btnSupp = new System.Windows.Forms.Button();
             this.btnExpMenu = new System.Windows.Forms.Button();
             this.btnFileMenu = new System.Windows.Forms.Button();
+            this.labelRemoveRusMusic = new MetroFramework.Controls.MetroLabel();
             this.labalTracks = new MetroFramework.Controls.MetroLabel();
             this.panelNumUpDown = new MetroFramework.Controls.MetroPanel();
             this.tbTracksNum = new MetroFramework.Controls.MetroTextBox();
@@ -85,10 +87,12 @@
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.panelSpaceMiddle = new MetroFramework.Controls.MetroPanel();
             this.panelSettings = new MetroFramework.Controls.MetroPanel();
+            this.metroToggle1 = new MetroFramework.Controls.MetroToggle();
+            this.metroLabel10 = new MetroFramework.Controls.MetroLabel();
             this.toggleBigSmallLetters = new MetroFramework.Controls.MetroToggle();
             this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
             this.btnBackupRadios = new MetroFramework.Controls.MetroLabel();
-            this.toggleBrowser = new MetroFramework.Controls.MetroToggle();
+            this.toggleBrowserHide = new MetroFramework.Controls.MetroToggle();
             this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
             this.metroLabel7 = new MetroFramework.Controls.MetroLabel();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
@@ -96,8 +100,14 @@
             this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
             this.btnHideSetts = new MetroFramework.Controls.MetroButton();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
-            this.metroPanel4 = new MetroFramework.Controls.MetroPanel();
-            this.lblCountTracks = new MetroFramework.Controls.MetroLabel();
+            this.panelSpoti = new MetroFramework.Controls.MetroPanel();
+            this.labelSpotiCurrName = new System.Windows.Forms.Label();
+            this.buttonBreakSpoti = new MetroFramework.Controls.MetroButton();
+            this.labelCurrProcess = new System.Windows.Forms.Label();
+            this.metroLabel11 = new MetroFramework.Controls.MetroLabel();
+            this.toggleAutoSkip = new MetroFramework.Controls.MetroToggle();
+            this.toggleAutoSelect = new MetroFramework.Controls.MetroToggle();
+            this.metroLabel12 = new MetroFramework.Controls.MetroLabel();
             this.panelSpotiMain.SuspendLayout();
             this.panelSpotiImport.SuspendLayout();
             this.panelRecSpaceImp2.SuspendLayout();
@@ -111,12 +121,13 @@
             this.panelProgressBar.SuspendLayout();
             this.panelRightMain.SuspendLayout();
             this.panelMenu.SuspendLayout();
+            this.metroPanel4.SuspendLayout();
             this.panelNumUpDown.SuspendLayout();
             this.metroPanel6.SuspendLayout();
             this.metroPanel2.SuspendLayout();
             this.panelTracksBott.SuspendLayout();
             this.panelSettings.SuspendLayout();
-            this.metroPanel4.SuspendLayout();
+            this.panelSpoti.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBox
@@ -248,7 +259,7 @@
             this.btnRecAddFav.Text = "Добавить в избранное";
             this.btnRecAddFav.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.btnRecAddFav.UseSelectable = true;
-            this.btnRecAddFav.Click += new System.EventHandler(this.metroButton4_Click);
+            this.btnRecAddFav.Click += new System.EventHandler(this.butnLikeStation_Click);
             // 
             // btnRecRemFav
             // 
@@ -624,7 +635,7 @@
             this.metroLabel5.TabIndex = 11;
             this.metroLabel5.Text = "< Вернуться";
             this.metroLabel5.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.metroLabel5.Click += new System.EventHandler(this.metroLabel5_Click);
+            this.metroLabel5.Click += new System.EventHandler(this.lblSpotifyPanelClose_Click);
             // 
             // panelRecMain
             // 
@@ -637,7 +648,7 @@
             this.panelRecMain.HorizontalScrollbarBarColor = true;
             this.panelRecMain.HorizontalScrollbarHighlightOnWheel = false;
             this.panelRecMain.HorizontalScrollbarSize = 10;
-            this.panelRecMain.Location = new System.Drawing.Point(121, 0);
+            this.panelRecMain.Location = new System.Drawing.Point(40, 0);
             this.panelRecMain.Name = "panelRecMain";
             this.panelRecMain.Size = new System.Drawing.Size(205, 515);
             this.panelRecMain.TabIndex = 18;
@@ -760,18 +771,31 @@
             this.panelMenu.VerticalScrollbarHighlightOnWheel = false;
             this.panelMenu.VerticalScrollbarSize = 10;
             // 
-            // labelRemoveRusMusic
+            // metroPanel4
             // 
-            this.labelRemoveRusMusic.AutoSize = true;
-            this.labelRemoveRusMusic.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelRemoveRusMusic.Enabled = false;
-            this.labelRemoveRusMusic.Location = new System.Drawing.Point(282, 4);
-            this.labelRemoveRusMusic.Name = "labelRemoveRusMusic";
-            this.labelRemoveRusMusic.Size = new System.Drawing.Size(155, 19);
-            this.labelRemoveRusMusic.TabIndex = 29;
-            this.labelRemoveRusMusic.Text = "Удалить \"русские\" треки";
-            this.labelRemoveRusMusic.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.labelRemoveRusMusic.Click += new System.EventHandler(this.labelRemoveRusMusic_Click);
+            this.metroPanel4.Controls.Add(this.lblCountTracks);
+            this.metroPanel4.Dock = System.Windows.Forms.DockStyle.Right;
+            this.metroPanel4.HorizontalScrollbarBarColor = true;
+            this.metroPanel4.HorizontalScrollbarHighlightOnWheel = false;
+            this.metroPanel4.HorizontalScrollbarSize = 10;
+            this.metroPanel4.Location = new System.Drawing.Point(540, 0);
+            this.metroPanel4.Name = "metroPanel4";
+            this.metroPanel4.Size = new System.Drawing.Size(115, 26);
+            this.metroPanel4.TabIndex = 29;
+            this.metroPanel4.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.metroPanel4.VerticalScrollbarBarColor = true;
+            this.metroPanel4.VerticalScrollbarHighlightOnWheel = false;
+            this.metroPanel4.VerticalScrollbarSize = 10;
+            // 
+            // lblCountTracks
+            // 
+            this.lblCountTracks.AutoSize = true;
+            this.lblCountTracks.Location = new System.Drawing.Point(1, 3);
+            this.lblCountTracks.Name = "lblCountTracks";
+            this.lblCountTracks.Size = new System.Drawing.Size(55, 19);
+            this.lblCountTracks.TabIndex = 29;
+            this.lblCountTracks.Text = "Кол-во:";
+            this.lblCountTracks.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
             // labelDatePlaylist
             // 
@@ -822,6 +846,19 @@
             this.btnFileMenu.UseVisualStyleBackColor = true;
             this.btnFileMenu.MouseClick += new System.Windows.Forms.MouseEventHandler(this.btnFileMenu_MouseClick);
             // 
+            // labelRemoveRusMusic
+            // 
+            this.labelRemoveRusMusic.AutoSize = true;
+            this.labelRemoveRusMusic.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelRemoveRusMusic.Enabled = false;
+            this.labelRemoveRusMusic.Location = new System.Drawing.Point(282, 4);
+            this.labelRemoveRusMusic.Name = "labelRemoveRusMusic";
+            this.labelRemoveRusMusic.Size = new System.Drawing.Size(155, 19);
+            this.labelRemoveRusMusic.TabIndex = 29;
+            this.labelRemoveRusMusic.Text = "Удалить \"русские\" треки";
+            this.labelRemoveRusMusic.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.labelRemoveRusMusic.Click += new System.EventHandler(this.labelRemoveRusMusic_Click);
+            // 
             // labalTracks
             // 
             this.labalTracks.AutoSize = true;
@@ -840,7 +877,7 @@
             this.panelNumUpDown.HorizontalScrollbarBarColor = true;
             this.panelNumUpDown.HorizontalScrollbarHighlightOnWheel = false;
             this.panelNumUpDown.HorizontalScrollbarSize = 10;
-            this.panelNumUpDown.Location = new System.Drawing.Point(219, 37);
+            this.panelNumUpDown.Location = new System.Drawing.Point(232, 36);
             this.panelNumUpDown.Name = "panelNumUpDown";
             this.panelNumUpDown.Size = new System.Drawing.Size(80, 26);
             this.panelNumUpDown.TabIndex = 22;
@@ -883,7 +920,7 @@
             this.tbTracksNum.WaterMarkColor = System.Drawing.Color.FromArgb(((int)(((byte)(109)))), ((int)(((byte)(109)))), ((int)(((byte)(109)))));
             this.tbTracksNum.WaterMarkFont = new System.Drawing.Font("Segoe UI", 12F, System.Drawing.FontStyle.Italic, System.Drawing.GraphicsUnit.Pixel);
             this.tbTracksNum.KeyDown += new System.Windows.Forms.KeyEventHandler(this.tbTracksNum_KeyDown);
-            this.tbTracksNum.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tb_KeyPress);
+            this.tbTracksNum.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.tbNumTracks_KeyPress);
             this.tbTracksNum.Leave += new System.EventHandler(this.tbTracksNum_Leave);
             // 
             // metroPanel6
@@ -918,7 +955,6 @@
             this.button4.TabIndex = 22;
             this.button4.UseVisualStyleBackColor = true;
             this.button4.Click += new System.EventHandler(this.button4_Click);
-            this.button4.MouseDown += new System.Windows.Forms.MouseEventHandler(this.button4_MouseDown);
             // 
             // button3
             // 
@@ -1002,10 +1038,12 @@
             // panelSettings
             // 
             this.panelSettings.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelSettings.Controls.Add(this.metroToggle1);
+            this.panelSettings.Controls.Add(this.metroLabel10);
             this.panelSettings.Controls.Add(this.toggleBigSmallLetters);
             this.panelSettings.Controls.Add(this.metroLabel9);
             this.panelSettings.Controls.Add(this.btnBackupRadios);
-            this.panelSettings.Controls.Add(this.toggleBrowser);
+            this.panelSettings.Controls.Add(this.toggleBrowserHide);
             this.panelSettings.Controls.Add(this.metroLabel8);
             this.panelSettings.Controls.Add(this.metroLabel7);
             this.panelSettings.Controls.Add(this.metroButton2);
@@ -1018,7 +1056,7 @@
             this.panelSettings.HorizontalScrollbarBarColor = true;
             this.panelSettings.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSettings.HorizontalScrollbarSize = 10;
-            this.panelSettings.Location = new System.Drawing.Point(681, 19);
+            this.panelSettings.Location = new System.Drawing.Point(681, 18);
             this.panelSettings.Name = "panelSettings";
             this.panelSettings.Size = new System.Drawing.Size(371, 345);
             this.panelSettings.TabIndex = 22;
@@ -1028,12 +1066,33 @@
             this.panelSettings.VerticalScrollbarSize = 10;
             this.panelSettings.Visible = false;
             // 
+            // metroToggle1
+            // 
+            this.metroToggle1.AutoSize = true;
+            this.metroToggle1.Location = new System.Drawing.Point(262, 210);
+            this.metroToggle1.Name = "metroToggle1";
+            this.metroToggle1.Size = new System.Drawing.Size(80, 17);
+            this.metroToggle1.TabIndex = 35;
+            this.metroToggle1.Text = "Off";
+            this.metroToggle1.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.metroToggle1.UseSelectable = true;
+            // 
+            // metroLabel10
+            // 
+            this.metroLabel10.AutoSize = true;
+            this.metroLabel10.Location = new System.Drawing.Point(10, 208);
+            this.metroLabel10.Name = "metroLabel10";
+            this.metroLabel10.Size = new System.Drawing.Size(250, 19);
+            this.metroLabel10.TabIndex = 34;
+            this.metroLabel10.Text = "Пропускать треки с русским названием";
+            this.metroLabel10.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
             // toggleBigSmallLetters
             // 
             this.toggleBigSmallLetters.AutoSize = true;
             this.toggleBigSmallLetters.Checked = true;
             this.toggleBigSmallLetters.CheckState = System.Windows.Forms.CheckState.Checked;
-            this.toggleBigSmallLetters.Location = new System.Drawing.Point(133, 216);
+            this.toggleBigSmallLetters.Location = new System.Drawing.Point(262, 180);
             this.toggleBigSmallLetters.Name = "toggleBigSmallLetters";
             this.toggleBigSmallLetters.Size = new System.Drawing.Size(80, 17);
             this.toggleBigSmallLetters.TabIndex = 33;
@@ -1045,7 +1104,7 @@
             // metroLabel9
             // 
             this.metroLabel9.AutoSize = true;
-            this.metroLabel9.Location = new System.Drawing.Point(60, 191);
+            this.metroLabel9.Location = new System.Drawing.Point(10, 178);
             this.metroLabel9.Name = "metroLabel9";
             this.metroLabel9.Size = new System.Drawing.Size(246, 19);
             this.metroLabel9.TabIndex = 32;
@@ -1064,22 +1123,22 @@
             this.btnBackupRadios.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.btnBackupRadios.Click += new System.EventHandler(this.btnBackupRadios_Click);
             // 
-            // toggleBrowser
+            // toggleBrowserHide
             // 
-            this.toggleBrowser.AutoSize = true;
-            this.toggleBrowser.Location = new System.Drawing.Point(133, 171);
-            this.toggleBrowser.Name = "toggleBrowser";
-            this.toggleBrowser.Size = new System.Drawing.Size(80, 17);
-            this.toggleBrowser.TabIndex = 30;
-            this.toggleBrowser.Text = "Off";
-            this.toggleBrowser.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.toggleBrowser.UseSelectable = true;
-            this.toggleBrowser.Click += new System.EventHandler(this.toggleBrowser_Click);
+            this.toggleBrowserHide.AutoSize = true;
+            this.toggleBrowserHide.Location = new System.Drawing.Point(262, 149);
+            this.toggleBrowserHide.Name = "toggleBrowserHide";
+            this.toggleBrowserHide.Size = new System.Drawing.Size(80, 17);
+            this.toggleBrowserHide.TabIndex = 30;
+            this.toggleBrowserHide.Text = "Off";
+            this.toggleBrowserHide.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.toggleBrowserHide.UseSelectable = true;
+            this.toggleBrowserHide.Click += new System.EventHandler(this.toggleBrowserHide_Click);
             // 
             // metroLabel8
             // 
             this.metroLabel8.AutoSize = true;
-            this.metroLabel8.Location = new System.Drawing.Point(74, 145);
+            this.metroLabel8.Location = new System.Drawing.Point(11, 148);
             this.metroLabel8.Name = "metroLabel8";
             this.metroLabel8.Size = new System.Drawing.Size(214, 19);
             this.metroLabel8.TabIndex = 29;
@@ -1175,37 +1234,112 @@
             this.metroLabel3.Text = "Настройки";
             this.metroLabel3.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
-            // metroPanel4
+            // panelSpoti
             // 
-            this.metroPanel4.Controls.Add(this.lblCountTracks);
-            this.metroPanel4.Dock = System.Windows.Forms.DockStyle.Right;
-            this.metroPanel4.HorizontalScrollbarBarColor = true;
-            this.metroPanel4.HorizontalScrollbarHighlightOnWheel = false;
-            this.metroPanel4.HorizontalScrollbarSize = 10;
-            this.metroPanel4.Location = new System.Drawing.Point(540, 0);
-            this.metroPanel4.Name = "metroPanel4";
-            this.metroPanel4.Size = new System.Drawing.Size(115, 26);
-            this.metroPanel4.TabIndex = 29;
-            this.metroPanel4.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.metroPanel4.VerticalScrollbarBarColor = true;
-            this.metroPanel4.VerticalScrollbarHighlightOnWheel = false;
-            this.metroPanel4.VerticalScrollbarSize = 10;
+            this.panelSpoti.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panelSpoti.BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle;
+            this.panelSpoti.Controls.Add(this.toggleAutoSelect);
+            this.panelSpoti.Controls.Add(this.metroLabel12);
+            this.panelSpoti.Controls.Add(this.toggleAutoSkip);
+            this.panelSpoti.Controls.Add(this.metroLabel11);
+            this.panelSpoti.Controls.Add(this.labelCurrProcess);
+            this.panelSpoti.Controls.Add(this.buttonBreakSpoti);
+            this.panelSpoti.Controls.Add(this.labelSpotiCurrName);
+            this.panelSpoti.HorizontalScrollbarBarColor = true;
+            this.panelSpoti.HorizontalScrollbarHighlightOnWheel = false;
+            this.panelSpoti.HorizontalScrollbarSize = 10;
+            this.panelSpoti.Location = new System.Drawing.Point(20, -2);
+            this.panelSpoti.Name = "panelSpoti";
+            this.panelSpoti.Size = new System.Drawing.Size(655, 108);
+            this.panelSpoti.TabIndex = 23;
+            this.panelSpoti.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.panelSpoti.VerticalScrollbarBarColor = true;
+            this.panelSpoti.VerticalScrollbarHighlightOnWheel = false;
+            this.panelSpoti.VerticalScrollbarSize = 10;
+            this.panelSpoti.Visible = false;
             // 
-            // lblCountTracks
+            // labelSpotiCurrName
             // 
-            this.lblCountTracks.AutoSize = true;
-            this.lblCountTracks.Location = new System.Drawing.Point(1, 3);
-            this.lblCountTracks.Name = "lblCountTracks";
-            this.lblCountTracks.Size = new System.Drawing.Size(55, 19);
-            this.lblCountTracks.TabIndex = 29;
-            this.lblCountTracks.Text = "Кол-во:";
-            this.lblCountTracks.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.labelSpotiCurrName.AutoSize = true;
+            this.labelSpotiCurrName.Font = new System.Drawing.Font("Leelawadee UI Semilight", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelSpotiCurrName.Location = new System.Drawing.Point(11, 14);
+            this.labelSpotiCurrName.Name = "labelSpotiCurrName";
+            this.labelSpotiCurrName.Size = new System.Drawing.Size(415, 29);
+            this.labelSpotiCurrName.TabIndex = 2;
+            this.labelSpotiCurrName.Text = "Current Name Track - Current Artist";
+            // 
+            // buttonBreakSpoti
+            // 
+            this.buttonBreakSpoti.Location = new System.Drawing.Point(535, 53);
+            this.buttonBreakSpoti.Name = "buttonBreakSpoti";
+            this.buttonBreakSpoti.Size = new System.Drawing.Size(115, 47);
+            this.buttonBreakSpoti.TabIndex = 3;
+            this.buttonBreakSpoti.Text = "Отменить\r\n импорт";
+            this.buttonBreakSpoti.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.buttonBreakSpoti.UseSelectable = true;
+            this.buttonBreakSpoti.Click += new System.EventHandler(this.buttonBreakSpoti_Click);
+            // 
+            // labelCurrProcess
+            // 
+            this.labelCurrProcess.AutoSize = true;
+            this.labelCurrProcess.Font = new System.Drawing.Font("Leelawadee UI Semilight", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelCurrProcess.Location = new System.Drawing.Point(12, 47);
+            this.labelCurrProcess.Name = "labelCurrProcess";
+            this.labelCurrProcess.Size = new System.Drawing.Size(162, 22);
+            this.labelCurrProcess.TabIndex = 4;
+            this.labelCurrProcess.Text = "Выполняется: 0/0";
+            // 
+            // metroLabel11
+            // 
+            this.metroLabel11.AutoSize = true;
+            this.metroLabel11.Location = new System.Drawing.Point(13, 78);
+            this.metroLabel11.Name = "metroLabel11";
+            this.metroLabel11.Size = new System.Drawing.Size(175, 19);
+            this.metroLabel11.TabIndex = 5;
+            this.metroLabel11.Text = "Автопропуск ненайденных";
+            this.metroLabel11.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // toggleAutoSkip
+            // 
+            this.toggleAutoSkip.AutoSize = true;
+            this.toggleAutoSkip.DisplayStatus = false;
+            this.toggleAutoSkip.Location = new System.Drawing.Point(196, 80);
+            this.toggleAutoSkip.Name = "toggleAutoSkip";
+            this.toggleAutoSkip.Size = new System.Drawing.Size(50, 17);
+            this.toggleAutoSkip.TabIndex = 6;
+            this.toggleAutoSkip.Text = "Off";
+            this.toggleAutoSkip.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.toggleAutoSkip.UseSelectable = true;
+            // 
+            // toggleAutoSelect
+            // 
+            this.toggleAutoSelect.AutoSize = true;
+            this.toggleAutoSelect.DisplayStatus = false;
+            this.toggleAutoSelect.Location = new System.Drawing.Point(472, 80);
+            this.toggleAutoSelect.Name = "toggleAutoSelect";
+            this.toggleAutoSelect.Size = new System.Drawing.Size(50, 17);
+            this.toggleAutoSelect.TabIndex = 8;
+            this.toggleAutoSelect.Text = "Off";
+            this.toggleAutoSelect.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.toggleAutoSelect.UseSelectable = true;
+            // 
+            // metroLabel12
+            // 
+            this.metroLabel12.AutoSize = true;
+            this.metroLabel12.Location = new System.Drawing.Point(265, 78);
+            this.metroLabel12.Name = "metroLabel12";
+            this.metroLabel12.Size = new System.Drawing.Size(201, 19);
+            this.metroLabel12.TabIndex = 7;
+            this.metroLabel12.Text = "Выбирать первый попавшийся";
+            this.metroLabel12.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(695, 643);
+            this.Controls.Add(this.panelSpoti);
             this.Controls.Add(this.panelSettings);
             this.Controls.Add(this.metroPanel2);
             this.Controls.Add(this.panelRightMain);
@@ -1239,6 +1373,8 @@
             this.panelRightMain.ResumeLayout(false);
             this.panelMenu.ResumeLayout(false);
             this.panelMenu.PerformLayout();
+            this.metroPanel4.ResumeLayout(false);
+            this.metroPanel4.PerformLayout();
             this.panelNumUpDown.ResumeLayout(false);
             this.metroPanel6.ResumeLayout(false);
             this.metroPanel2.ResumeLayout(false);
@@ -1246,8 +1382,8 @@
             this.panelTracksBott.PerformLayout();
             this.panelSettings.ResumeLayout(false);
             this.panelSettings.PerformLayout();
-            this.metroPanel4.ResumeLayout(false);
-            this.metroPanel4.PerformLayout();
+            this.panelSpoti.ResumeLayout(false);
+            this.panelSpoti.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1314,7 +1450,7 @@
         private MetroFramework.Controls.MetroTextBox tbGooglePath;
         private MetroFramework.Controls.MetroLabel metroLabel6;
         private MetroFramework.Controls.MetroLabel metroLabel7;
-        private MetroFramework.Controls.MetroToggle toggleBrowser;
+        private MetroFramework.Controls.MetroToggle toggleBrowserHide;
         private MetroFramework.Controls.MetroLabel metroLabel8;
         private MetroFramework.Controls.MetroLabel btnBackupRadios;
         private MetroFramework.Controls.MetroProgressBar progressBarLoaging;
@@ -1323,6 +1459,16 @@
         private MetroFramework.Controls.MetroLabel labelRemoveRusMusic;
         private MetroFramework.Controls.MetroPanel metroPanel4;
         private MetroFramework.Controls.MetroLabel lblCountTracks;
+        private MetroFramework.Controls.MetroToggle metroToggle1;
+        private MetroFramework.Controls.MetroLabel metroLabel10;
+        private MetroFramework.Controls.MetroPanel panelSpoti;
+        private MetroFramework.Controls.MetroLabel metroLabel12;
+        private MetroFramework.Controls.MetroLabel metroLabel11;
+        private MetroFramework.Controls.MetroButton buttonBreakSpoti;
+        public MetroFramework.Controls.MetroToggle toggleAutoSelect;
+        public MetroFramework.Controls.MetroToggle toggleAutoSkip;
+        public System.Windows.Forms.Label labelCurrProcess;
+        public System.Windows.Forms.Label labelSpotiCurrName;
     }
 }
 

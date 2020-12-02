@@ -15,7 +15,7 @@ namespace RecordGetTracks
     {
         public static List<RadioData.RadioStation> ReadJsnFile()
         {
-            using (StreamReader jsReader = new StreamReader(SettingsStatic.JsonRecordPath))
+            using (StreamReader jsReader = new StreamReader(SetStatic.JsonRecordPath))
             {
                 JsonReader json = new JsonTextReader(jsReader);
                 JsonSerializer jsonSerializer = new JsonSerializer();
@@ -25,7 +25,7 @@ namespace RecordGetTracks
         }
         public static SettingsM ReadSettingsJson()
         {
-            using (StreamReader jsReader = new StreamReader(SettingsStatic.JsonSettingsPath))
+            using (StreamReader jsReader = new StreamReader(SetStatic.JsonSettingsPath))
             {
                 JsonReader json = new JsonTextReader(jsReader);
                 JsonSerializer jsonSerializer = new JsonSerializer();
