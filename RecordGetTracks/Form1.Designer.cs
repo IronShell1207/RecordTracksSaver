@@ -69,6 +69,7 @@
             this.progressBarLoaging = new MetroFramework.Controls.MetroProgressBar();
             this.panelRightMain = new MetroFramework.Controls.MetroPanel();
             this.panelMenu = new MetroFramework.Controls.MetroPanel();
+            this.labelRemoveRusMusic = new MetroFramework.Controls.MetroLabel();
             this.labelDatePlaylist = new MetroFramework.Controls.MetroLabel();
             this.btnSupp = new System.Windows.Forms.Button();
             this.btnExpMenu = new System.Windows.Forms.Button();
@@ -95,7 +96,8 @@
             this.metroLabel6 = new MetroFramework.Controls.MetroLabel();
             this.btnHideSetts = new MetroFramework.Controls.MetroButton();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
-            this.labelRemoveRusMusic = new MetroFramework.Controls.MetroLabel();
+            this.metroPanel4 = new MetroFramework.Controls.MetroPanel();
+            this.lblCountTracks = new MetroFramework.Controls.MetroLabel();
             this.panelSpotiMain.SuspendLayout();
             this.panelSpotiImport.SuspendLayout();
             this.panelRecSpaceImp2.SuspendLayout();
@@ -114,6 +116,7 @@
             this.metroPanel2.SuspendLayout();
             this.panelTracksBott.SuspendLayout();
             this.panelSettings.SuspendLayout();
+            this.metroPanel4.SuspendLayout();
             this.SuspendLayout();
             // 
             // listBox
@@ -153,7 +156,7 @@
             this.buttonLoadPlayls.Name = "buttonLoadPlayls";
             this.buttonLoadPlayls.Size = new System.Drawing.Size(205, 29);
             this.buttonLoadPlayls.TabIndex = 1;
-            this.buttonLoadPlayls.Text = "Загрузить список плейлистов";
+            this.buttonLoadPlayls.Text = "Сформировать список плейлистов";
             this.buttonLoadPlayls.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.buttonLoadPlayls.UseSelectable = true;
             this.buttonLoadPlayls.Click += new System.EventHandler(this.buttonStart_Click);
@@ -739,7 +742,7 @@
             // 
             // panelMenu
             // 
-            this.panelMenu.Controls.Add(this.labelRemoveRusMusic);
+            this.panelMenu.Controls.Add(this.metroPanel4);
             this.panelMenu.Controls.Add(this.labelDatePlaylist);
             this.panelMenu.Controls.Add(this.btnSupp);
             this.panelMenu.Controls.Add(this.btnExpMenu);
@@ -757,10 +760,23 @@
             this.panelMenu.VerticalScrollbarHighlightOnWheel = false;
             this.panelMenu.VerticalScrollbarSize = 10;
             // 
+            // labelRemoveRusMusic
+            // 
+            this.labelRemoveRusMusic.AutoSize = true;
+            this.labelRemoveRusMusic.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelRemoveRusMusic.Enabled = false;
+            this.labelRemoveRusMusic.Location = new System.Drawing.Point(282, 4);
+            this.labelRemoveRusMusic.Name = "labelRemoveRusMusic";
+            this.labelRemoveRusMusic.Size = new System.Drawing.Size(155, 19);
+            this.labelRemoveRusMusic.TabIndex = 29;
+            this.labelRemoveRusMusic.Text = "Удалить \"русские\" треки";
+            this.labelRemoveRusMusic.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.labelRemoveRusMusic.Click += new System.EventHandler(this.labelRemoveRusMusic_Click);
+            // 
             // labelDatePlaylist
             // 
             this.labelDatePlaylist.AutoSize = true;
-            this.labelDatePlaylist.Location = new System.Drawing.Point(213, 3);
+            this.labelDatePlaylist.Location = new System.Drawing.Point(215, 3);
             this.labelDatePlaylist.Name = "labelDatePlaylist";
             this.labelDatePlaylist.Size = new System.Drawing.Size(136, 19);
             this.labelDatePlaylist.TabIndex = 28;
@@ -940,6 +956,7 @@
             // 
             // panelTracksBott
             // 
+            this.panelTracksBott.Controls.Add(this.labelRemoveRusMusic);
             this.panelTracksBott.Controls.Add(this.metroButton1);
             this.panelTracksBott.Controls.Add(this.btnTracksRemove);
             this.panelTracksBott.Dock = System.Windows.Forms.DockStyle.Bottom;
@@ -1001,7 +1018,7 @@
             this.panelSettings.HorizontalScrollbarBarColor = true;
             this.panelSettings.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSettings.HorizontalScrollbarSize = 10;
-            this.panelSettings.Location = new System.Drawing.Point(681, 14);
+            this.panelSettings.Location = new System.Drawing.Point(681, 19);
             this.panelSettings.Name = "panelSettings";
             this.panelSettings.Size = new System.Drawing.Size(371, 345);
             this.panelSettings.TabIndex = 22;
@@ -1158,18 +1175,31 @@
             this.metroLabel3.Text = "Настройки";
             this.metroLabel3.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
-            // labelRemoveRusMusic
+            // metroPanel4
             // 
-            this.labelRemoveRusMusic.AutoSize = true;
-            this.labelRemoveRusMusic.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelRemoveRusMusic.Enabled = false;
-            this.labelRemoveRusMusic.Location = new System.Drawing.Point(496, 3);
-            this.labelRemoveRusMusic.Name = "labelRemoveRusMusic";
-            this.labelRemoveRusMusic.Size = new System.Drawing.Size(155, 19);
-            this.labelRemoveRusMusic.TabIndex = 29;
-            this.labelRemoveRusMusic.Text = "Удалить \"русские\" треки";
-            this.labelRemoveRusMusic.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.labelRemoveRusMusic.Click += new System.EventHandler(this.labelRemoveRusMusic_Click);
+            this.metroPanel4.Controls.Add(this.lblCountTracks);
+            this.metroPanel4.Dock = System.Windows.Forms.DockStyle.Right;
+            this.metroPanel4.HorizontalScrollbarBarColor = true;
+            this.metroPanel4.HorizontalScrollbarHighlightOnWheel = false;
+            this.metroPanel4.HorizontalScrollbarSize = 10;
+            this.metroPanel4.Location = new System.Drawing.Point(540, 0);
+            this.metroPanel4.Name = "metroPanel4";
+            this.metroPanel4.Size = new System.Drawing.Size(115, 26);
+            this.metroPanel4.TabIndex = 29;
+            this.metroPanel4.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.metroPanel4.VerticalScrollbarBarColor = true;
+            this.metroPanel4.VerticalScrollbarHighlightOnWheel = false;
+            this.metroPanel4.VerticalScrollbarSize = 10;
+            // 
+            // lblCountTracks
+            // 
+            this.lblCountTracks.AutoSize = true;
+            this.lblCountTracks.Location = new System.Drawing.Point(1, 3);
+            this.lblCountTracks.Name = "lblCountTracks";
+            this.lblCountTracks.Size = new System.Drawing.Size(55, 19);
+            this.lblCountTracks.TabIndex = 29;
+            this.lblCountTracks.Text = "Кол-во:";
+            this.lblCountTracks.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
             // Form1
             // 
@@ -1213,8 +1243,11 @@
             this.metroPanel6.ResumeLayout(false);
             this.metroPanel2.ResumeLayout(false);
             this.panelTracksBott.ResumeLayout(false);
+            this.panelTracksBott.PerformLayout();
             this.panelSettings.ResumeLayout(false);
             this.panelSettings.PerformLayout();
+            this.metroPanel4.ResumeLayout(false);
+            this.metroPanel4.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -1288,6 +1321,8 @@
         private MetroFramework.Controls.MetroToggle toggleBigSmallLetters;
         private MetroFramework.Controls.MetroLabel metroLabel9;
         private MetroFramework.Controls.MetroLabel labelRemoveRusMusic;
+        private MetroFramework.Controls.MetroPanel metroPanel4;
+        private MetroFramework.Controls.MetroLabel lblCountTracks;
     }
 }
 

@@ -24,10 +24,11 @@ namespace RadioData
         public void CollectLinks() // первоначальный сбор станций и создание json списка БЕЗ СТАНЦИЙ и БЕЗ FAVORITE
         {
             form1.Invoke(new Action(() => form1.StatusProgressBar = true));
+            form1.Invoke(new Action(() => form1.ProgressProgressBar = 0));
             RadioLists.StationsList = new List<RadioStation> { }; // пересоздаем список для того чтобы не возникало проблем с текущим его наполнением
-            var CurrURL = SeleniumHelper.ChromeDriver.Url; // переходим на сайт Record
-            if (CurrURL != RadioData.Pages.MainPageUrl) SeleniumHelper.ChromeDriver.Url = RadioData.Pages.MainPageUrl; 
-            var radBtns = SeleniumHelper.ChromeDriver.FindElements(RadioData.xPathes.StationBtns);// находим кнопки всех станций
+            var CurrURL = SelHelper.ChromeDriver.Url; // переходим на сайт Record
+            if (CurrURL != RadioData.Pages.MainPageUrl) SelHelper.ChromeDriver.Url = RadioData.Pages.MainPageUrl; 
+            var radBtns = SelHelper.ChromeDriver.FindElements(RadioData.xPathes.StationBtns);// находим кнопки всех станций
             form1.Invoke(new Action(() => form1.StatusProgressBar = false));
             form1.Invoke(new Action(() => form1.MaximumProgressBar = radBtns.Count - 1));
             for (int i = 0; i < radBtns.Count; i++) // прокликиваем все кнопки и собираем ссылки
@@ -36,10 +37,10 @@ namespace RadioData
                 radBtns[i].Click(); // кликаем по станцици
                 try
                 {
-                    var Frame = SeleniumHelper.ChromeDriver.FindElement(xPathes.FramePlaylist);
-                    SeleniumHelper.ChromeDriver.SwitchTo().Frame(Frame) ; // Свитч на iframe
-                    var TitleName = SeleniumHelper.ChromeDriver.FindElement(RadioData.xPathes.IframePage.PageName).Text; // находим заголовок станции
-                    var GetLinkFirstPage = SeleniumHelper.ChromeDriver.FindElements(RadioData.xPathes.IframePage.PageRef);
+                    var Frame = SelHelper.ChromeDriver.FindElement(xPathes.FramePlaylist);
+                    SelHelper.ChromeDriver.SwitchTo().Frame(Frame) ; // Свитч на iframe
+                    var TitleName = SelHelper.ChromeDriver.FindElement(RadioData.xPathes.IframePage.PageName).Text; // находим заголовок станции
+                    var GetLinkFirstPage = SelHelper.ChromeDriver.FindElements(RadioData.xPathes.IframePage.PageRef);
                     if (GetLinkFirstPage.Any())
                     {
                         string link = GetLinkFirstPage.LastOrDefault().GetAttribute("href");  // находим по атрибуту ССЫЛКА
@@ -50,9 +51,9 @@ namespace RadioData
                         };
                         RadioLists.StationsList.Add(radioStation); // и добавляем в список
                     }
-                    SeleniumHelper.ChromeDriver.SwitchTo().DefaultContent();
+                    SelHelper.ChromeDriver.SwitchTo().DefaultContent();
                 }
-                catch (NoSuchElementException ex) { SeleniumHelper.ChromeDriver.SwitchTo().DefaultContent(); }
+                catch (NoSuchElementException ex) { SelHelper.ChromeDriver.SwitchTo().DefaultContent(); }
                 
             }
             JsnWorker1.CreateJsnFile(RadioLists.StationsList, SettingsStatic.JsonRecordPath);
@@ -61,14 +62,14 @@ namespace RadioData
         public void LoadTracks(int index, int count)
         {
             form1.Invoke(new Action(() => form1.StatusProgressBar = true));
-            SeleniumHelper.ChromeDriver.Navigate().GoToUrl(RadioLists.StationsList[index].LinkTracksList);
+            form1.Invoke(new Action(() => form1.ProgressProgressBar = 0));
+            SelHelper.ChromeDriver.Navigate().GoToUrl(RadioLists.StationsList[index].LinkTracksList);
             List<string> songs = new List<string> { };
             try
             {
-                var AllTracks = SeleniumHelper.ChromeDriver.FindElements(xPathes.TrackXPath);
+                var AllTracks = SelHelper.ChromeDriver.FindElements(xPathes.TrackXPath);
                 int iTracksCount = count != 0 && count <= AllTracks.Count ? count : AllTracks.Count;
-
-                    form1.Invoke(new Action(() => form1.StatusProgressBar = false));
+                form1.Invoke(new Action(() => form1.StatusProgressBar = false));
                 Thread.Sleep(1150);
                 form1.Invoke(new Action(() => form1.MaximumProgressBar=iTracksCount-1));
                 for (int ix = 0; ix < iTracksCount; ix++)

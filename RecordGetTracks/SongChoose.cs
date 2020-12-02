@@ -26,7 +26,6 @@ namespace RecordGetTracks
             {
                 panemSOngs.Controls.Add(panelSongs(song.Replace("\r\n"," - ")));
             }
-           
         }
 
         private void metroButton1_Click(object sender, EventArgs e)
@@ -39,7 +38,7 @@ namespace RecordGetTracks
             MetroPanel _p = new MetroPanel()
             {
                 Size = new Size(360, 28),
-                Dock = DockStyle.Top,
+                Dock = DockStyle.Bottom,
                 Theme = MetroFramework.MetroThemeStyle.Dark,
                 BorderStyle = System.Windows.Forms.BorderStyle.FixedSingle
             };
@@ -52,6 +51,7 @@ namespace RecordGetTracks
                 Cursor = Cursors.Hand,
             };
             lb.Click += Lb_Click;
+            this.Height += 28;
             _p.Controls.Add(lb);
             mpnls.Add(lb);
             return _p;

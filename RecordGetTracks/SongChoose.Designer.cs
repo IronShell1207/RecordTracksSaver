@@ -31,8 +31,8 @@
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
             this.panemSOngs = new MetroFramework.Controls.MetroPanel();
             this.metroPanel2 = new MetroFramework.Controls.MetroPanel();
-            this.labeltr = new MetroFramework.Controls.MetroLabel();
             this.metroButton2 = new MetroFramework.Controls.MetroButton();
+            this.labeltr = new MetroFramework.Controls.MetroLabel();
             this.metroPanel2.SuspendLayout();
             this.SuspendLayout();
             // 
@@ -55,7 +55,7 @@
             this.panemSOngs.HorizontalScrollbarSize = 10;
             this.panemSOngs.Location = new System.Drawing.Point(20, 60);
             this.panemSOngs.Name = "panemSOngs";
-            this.panemSOngs.Size = new System.Drawing.Size(789, 487);
+            this.panemSOngs.Size = new System.Drawing.Size(789, 3);
             this.panemSOngs.TabIndex = 1;
             this.panemSOngs.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.panemSOngs.VerticalScrollbarBarColor = true;
@@ -71,7 +71,7 @@
             this.metroPanel2.HorizontalScrollbarBarColor = true;
             this.metroPanel2.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel2.HorizontalScrollbarSize = 10;
-            this.metroPanel2.Location = new System.Drawing.Point(20, 547);
+            this.metroPanel2.Location = new System.Drawing.Point(20, 63);
             this.metroPanel2.Name = "metroPanel2";
             this.metroPanel2.Size = new System.Drawing.Size(789, 28);
             this.metroPanel2.TabIndex = 2;
@@ -79,16 +79,6 @@
             this.metroPanel2.VerticalScrollbarBarColor = true;
             this.metroPanel2.VerticalScrollbarHighlightOnWheel = false;
             this.metroPanel2.VerticalScrollbarSize = 10;
-            // 
-            // labeltr
-            // 
-            this.labeltr.AutoSize = true;
-            this.labeltr.Location = new System.Drawing.Point(2, 5);
-            this.labeltr.Name = "labeltr";
-            this.labeltr.Size = new System.Drawing.Size(103, 19);
-            this.labeltr.TabIndex = 2;
-            this.labeltr.Text = "Искомый трек: ";
-            this.labeltr.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
             // metroButton2
             // 
@@ -101,17 +91,27 @@
             this.metroButton2.UseSelectable = true;
             this.metroButton2.Click += new System.EventHandler(this.metroButton2_Click);
             // 
+            // labeltr
+            // 
+            this.labeltr.AutoSize = true;
+            this.labeltr.Location = new System.Drawing.Point(2, 5);
+            this.labeltr.Name = "labeltr";
+            this.labeltr.Size = new System.Drawing.Size(103, 19);
+            this.labeltr.TabIndex = 2;
+            this.labeltr.Text = "Искомый трек: ";
+            this.labeltr.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
             // SongChoose
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(829, 595);
+            this.ClientSize = new System.Drawing.Size(829, 111);
             this.Controls.Add(this.panemSOngs);
             this.Controls.Add(this.metroPanel2);
             this.Name = "SongChoose";
             this.Resizable = false;
             this.StartPosition = System.Windows.Forms.FormStartPosition.CenterParent;
-            this.Style = MetroFramework.MetroColorStyle.Orange;
+            this.Style = MetroFramework.MetroColorStyle.Lime;
             this.Text = "Выбери наиболее подходящий трек";
             this.TextAlign = MetroFramework.Forms.MetroFormTextAlign.Center;
             this.Theme = MetroFramework.MetroThemeStyle.Dark;

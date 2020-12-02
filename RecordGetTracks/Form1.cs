@@ -69,7 +69,7 @@ namespace RecordGetTracks
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            SeleniumHelper.QuitDriver();
+            SelHelper.QuitDriver();
         }
         public void panelShoweer(MetroPanel panel)
         {
@@ -236,13 +236,14 @@ namespace RecordGetTracks
         {
             listBox1.Items.Clear();
             var station = ReturnStationIndex();
+            var count = tbTracksNum.Text!=""?  int.Parse(tbTracksNum.Text):0;
             var thread = new Thread(() =>
             {
 
-                rwork.LoadTracks(station, 0);
+                rwork.LoadTracks(station, count);
                 Invoke(new Action(() =>
                 {
-
+                    lblCountTracks.Text = $"Кол-во: {RadioLists.StationsList[station].TracksList.Count}";
                     listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
                     labelDatePlaylist.Text = "Список треков от: " + RadioLists.StationsList[station].DateLoadedTracks;
                 }));
@@ -291,10 +292,12 @@ namespace RecordGetTracks
             var th = new Thread(() =>
             {
                 Invoke(new Action(() => StatusProgressBar = true));
-                if (SpotifyWorker.AuthSpoti(tblogin.Text, tbpass.Text))
+                Invoke(new Action(() => (sender as Button).Enabled = false));
+                SpotifyWorker.AuthSpoti(tblogin.Text, tbpass.Text);
+                if (SpotifyWorker.IsAuthorized)
                 {
                     Invoke(new Action(() => listBoxPlaylists.Items.Clear()));
-                    Invoke(new Action(() => (sender as Button).Enabled = false));
+                    //Invoke(new Action(() => (sender as Button).Enabled = false));
                     SpotifyWorker.GetPlaylists();
                     if (SettingsStatic.settings.SpotiPlaylists != null && SettingsStatic.settings.SpotiPlaylists.Count > 0)
                         Invoke(new Action(() => listBoxPlaylists.Items.AddRange(SettingsStatic.settings.SpotiPlaylists.ToArray())));
@@ -306,7 +309,11 @@ namespace RecordGetTracks
                     }
 
                 }
-                else msgCall("Неверный логин или пароль!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                else {
+                    msgCall("Неверный логин или пароль!", "Ошибка", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                    Invoke(new Action(() => (sender as Button).Enabled = true));
+                };
+
                 Invoke(new Action(() => StatusProgressBar = false));
             });
             th.Start();
@@ -334,6 +341,7 @@ namespace RecordGetTracks
 
                 var station = RadioLists.StationsList.Find(x => x.Name == listBox.Items[cInd].ToString().Replace(" 💙", ""));
                 var stationTracks = station.TracksList;
+                lblCountTracks.Text = $"Кол-во: {station.TracksList.Count}";
                 if (stationTracks.Count > 0)
                 {
                     listBox1.Items.AddRange(stationTracks.ToArray());
@@ -468,8 +476,15 @@ namespace RecordGetTracks
 
         private void buttonAddPlst_Click(object sender, EventArgs e)
         {
-            SpotifyWorker.AddPlaylistSpotify(tbPlaylsName.Text);
-            listBoxPlaylists.Items.Insert(0, tbPlaylsName.Text);
+            var name = tbPlaylsName.Text;
+            var th = new Thread(() => {
+                SpotifyWorker.AddPlaylistSpotify(name);
+                listBoxPlaylists.Items.Insert(0, name);
+            });
+            if (SpotifyWorker.IsAuthorized)
+            {
+                th.Start(); 
+            }
         }
 
         private void tbPlaylsName_TextChanged(object sender, EventArgs e)

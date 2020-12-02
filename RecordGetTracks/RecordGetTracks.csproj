@@ -90,7 +90,7 @@
     <Compile Include="Data\SettingsWorkData.cs" />
     <Compile Include="Workers\SpotifyWorker.cs" />
     <Compile Include="Workers\RadioWorker.cs" />
-    <Compile Include="Workers\SeleniumHelper.cs" />
+    <Compile Include="Workers\SelHelper.cs" />
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

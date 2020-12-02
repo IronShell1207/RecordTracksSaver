@@ -10,7 +10,7 @@ using OpenQA.Selenium.Support.UI;
 
 namespace RecordGetTracks
 {
-    class SeleniumHelper
+    class SelHelper
     {
         private static IWebDriver _driver;
         public static void QuitDriver()
@@ -105,8 +105,8 @@ namespace RecordGetTracks
                 var chromeOptions = new ChromeOptions(); 
                 _driver = new ChromeDriver(chromeDriverService, chromeOptions);
                 // Avoid synchronization issues by applying timed delay to each step if necessary
-                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
-                _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(7);
+                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
                 return _driver;
             }
             set
@@ -115,13 +115,13 @@ namespace RecordGetTracks
             }
         }
 
-        public static void Wait(int miliseconds, int maxTimeOutSeconds = 10)
+      /*  public static void Wait(int miliseconds, int maxTimeOutSeconds = 10)
         {
             var wait = new WebDriverWait(ChromeDriver, new TimeSpan(0, 0, 1, maxTimeOutSeconds));
             var delay = new TimeSpan(0, 0, 0, 0, miliseconds);
             var timestamp = DateTime.Now;
             wait.Until(webDriver => (DateTime.Now - timestamp) > delay);
-        }
+        }*/
 
         public static string GetCosasBuildVersion()
         {

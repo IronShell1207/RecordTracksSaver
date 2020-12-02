@@ -14,68 +14,77 @@ namespace RecordGetTracks
 {
     class SpotifyWorker
     {
-        Form1 form1;
-        public static bool IsAuthorized = false;
-        public static bool AuthSpoti(string usrName, string usrPass)
+        public static bool IsAuthorized { get; set; }
+        public static void AuthSpoti(string usrName, string usrPass)
         {
-            SeleniumHelper.ChromeDriver.Navigate().GoToUrl(SpotifyPages.MainPageUrl); // переходим на страницу spotify
-            SeleniumHelper.ClickLink(SpotifyPatches.loginPageButton); // клик на ссылку Log in
-            if (SeleniumHelper.ChromeDriver.Url != SpotifyPages.MainPageUrl)
+            SelHelper.ChromeDriver.Navigate().GoToUrl(SpotifyPages.MainPageUrl); // переходим на страницу spotify
+            SelHelper.ClickLink(SpotifyPatches.loginPageButton); // клик на ссылку Log in
+            if (SelHelper.ChromeDriver.Url != SpotifyPages.MainPageUrl)
             {
-                SeleniumHelper.SendKeys(SpotifyPatches.LoginField, true, new[] { usrName });
-                SeleniumHelper.SendKeys(SpotifyPatches.PassField, true, new[] { usrPass });
-                SeleniumHelper.ClickLink(SpotifyPatches.LogInButt);
+                SelHelper.SendKeys(SpotifyPatches.LoginField, true, new[] { usrName });
+                SelHelper.SendKeys(SpotifyPatches.PassField, true, new[] { usrPass });
+                var urlLogin = SelHelper.ChromeDriver.Url;
+                SelHelper.ClickLink(SpotifyPatches.LogInButt);
+
+                Thread.Sleep(1000);
+                if (SelHelper.ChromeDriver.Url == urlLogin)
+                {
 #if !DEBUG
-                if (SeleniumHelper.FindErrors(SpotifyPatches.AllertLoginOrPassWrong) != null)
-                    return false;
+                 if (SeleniumHelper.FindErrors(SpotifyPatches.AllertLoginOrPassWrong) != null)
+
 #endif
+                }
             }
-            return true;
+            IsAuthorized = true;
         }
         public static void GetPlaylists()
         {
-            SeleniumHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
-            var wait = new WebDriverWait(SeleniumHelper.ChromeDriver, TimeSpan.FromSeconds(5));
+            SelHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(7);
+            var wait = new WebDriverWait(SelHelper.ChromeDriver, TimeSpan.FromSeconds(5));
             wait.Until(d => d.FindElement(SpotifyPatches.Playlists));
-            var Playlists = SeleniumHelper.ChromeDriver.FindElements(SpotifyPatches.Playlists);
+            var Playlists = SelHelper.ChromeDriver.FindElements(SpotifyPatches.Playlists);
             SettingsStatic.settings.SpotiPlaylists = new List<string> { };
             foreach (IWebElement el in Playlists)
                 SettingsStatic.settings.SpotiPlaylists.Add(el.Text);
             JsnWorker1.CreateJsnFile(SettingsStatic.settings, SettingsStatic.JsonSettingsPath);
-            SeleniumHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
+            SelHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(3);
         }
         public static void AddPlaylistSpotify(string name)
         {
-            SeleniumHelper.ClickLink(SpotifyPatches.NewPlstBtn);
-            var buttons = SeleniumHelper.ChromeDriver.FindElements(SpotifyPatches.NewPlstBtn);
+            SelHelper.ClickLink(SpotifyPatches.NewPlstBtn);
+            var buttons = SelHelper.ChromeDriver.FindElements(SpotifyPatches.NewPlstBtn);
             foreach (IWebElement el in buttons)
             {
                 if (el.GetAttribute("shape-rendering") == "crispEdges")
                     el.Click();
             }
-            SeleniumHelper.ClickLink(SpotifyPatches.NewPlstDefName); //жмем правой кнопкой по нему
+            SelHelper.ClickLink(SpotifyPatches.NewPlstDefName); //жмем правой кнопкой по нему
             //SeleniumHelper.ClickLink(SpotifyPatches.NewPlstEditD); // жмем изменить название
-            SeleniumHelper.SendKeys(SpotifyPatches.NewPlstFieldName, true, new[] { name });
-            SeleniumHelper.ClickLink(SpotifyPatches.NewPlstSaveName);
+            SelHelper.SendKeys(SpotifyPatches.NewPlstFieldName, true, new[] { name });
+            SelHelper.ClickLink(SpotifyPatches.NewPlstSaveName);
         }
-        public static void ImportTracksToPlaylist(string PlaylistName, List<string> tracks)
+        public static void ImportTracksToPlaylist(string PlaylistName, List<string> tracks, object form)
         {
+            Form1 ff = form as Form1;
+            ff.ProgressProgressBar = 0;
             for (int trackId = 0; trackId < tracks.Count; trackId++)
             {
+                ff.MaximumProgressBar = tracks.Count;
+                ff.ProgressProgressBar = trackId;
                 string urlSong = SpotifyPages.SearchPageUrl + tracks[trackId].Replace("-", "").Replace(" ", "%20");
-                SeleniumHelper.ChromeDriver.Navigate().GoToUrl(urlSong); 
+                SelHelper.ChromeDriver.Navigate().GoToUrl(urlSong);
                 try
                 {
-                    SeleniumHelper.ChromeDriver.FindElement(By.XPath(String.Format(SpotifyPatches.SongMenu,1)));
-                    AddTrackToPls(PlaylistName,1);
+                    SelHelper.ChromeDriver.FindElement(By.XPath(String.Format(SpotifyPatches.SongMenu, 1)));
+                    AddTrackToPls(PlaylistName, 1);
                 }
                 catch (NoSuchElementException ex)
                 {
                     if (ex.Message.Contains("(//div[@data-testid='tracklist-row'])[1]"))
                     {
                         var indexsong = LocateTrack(tracks[trackId]);
-                        if (indexsong>0)
-                            AddTrackToPls(PlaylistName,indexsong);
+                        if (indexsong > 0)
+                            AddTrackToPls(PlaylistName, indexsong);
                     }
                 }
                 Thread.Sleep(250);
@@ -83,17 +92,17 @@ namespace RecordGetTracks
         }
         private static void AddTrackToPls(string PlaylistName, int indexSong)
         {
-            SeleniumHelper.ContextClick(By.XPath(String.Format(SpotifyPatches.SongMenu, indexSong)));
-            SeleniumHelper.ClickLink(SpotifyPatches.AddToPlBtn);
-            var playlistsNames = SeleniumHelper.ChromeDriver.FindElements(By.XPath(SpotifyPatches.PlaylstsList));
+            SelHelper.ContextClick(By.XPath(String.Format(SpotifyPatches.SongMenu, indexSong)));
+            SelHelper.ClickLink(SpotifyPatches.AddToPlBtn);
+            var playlistsNames = SelHelper.ChromeDriver.FindElements(By.XPath(SpotifyPatches.PlaylstsList));
             foreach (IWebElement plEL in playlistsNames)
             {
                 var name = plEL.Text;
                 if (name == PlaylistName)
                 {
-                     plEL.Click();
-                    SeleniumHelper.FindErrors(SpotifyPatches.SuccessedAdding);
-                     break;
+                    plEL.Click();
+                    SelHelper.FindErrors(SpotifyPatches.SuccessedAdding);
+                    break;
                 }
             }
         }
@@ -105,12 +114,12 @@ namespace RecordGetTracks
             List<string> songNamesSplits = new List<string> { onlyArtist, onlyName, onlyNameWithoutAdds };
             foreach (string sName in songNamesSplits)
             {
-                SeleniumHelper.SendKeys(SpotifyPatches.SeatchField, true, new[] { sName });
-                Thread.Sleep(550);
-                var songsList = SeleniumHelper.ChromeDriver.FindElements(SpotifyPatches.SongsRow).ToList();
+                SelHelper.ChromeDriver.Navigate().GoToUrl(SpotifyPages.SearchPageUrl + sName.Replace(" ", "%20") + "/tracks");
+                var songsList = SelHelper.ChromeDriver.FindElements(SpotifyPatches.SongsRow).ToList();
                 List<string> songs = new List<string> { };
-                foreach (IWebElement el in songsList)
-                    songs.Add(el.Text);
+                int count = (songsList.Count > 20) ? 20 : songsList.Count;
+                for (int ix = 0; ix < count; ix++)
+                    songs.Add(songsList[ix].Text);
                 if (songs.Count != 0)
                 {
                     using (var formx = new SongChoose(songs, trackName))

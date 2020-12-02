@@ -11,6 +11,9 @@ namespace RecordGetTracks
 {
     public class ControlsWorker
     {
+        void addLoadingPanel(object form)
+        {
 
+        }
     }
 }

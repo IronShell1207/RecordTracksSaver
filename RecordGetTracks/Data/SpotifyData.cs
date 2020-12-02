@@ -29,7 +29,8 @@ namespace SpotifyData
       //  public static By NewPlstEditD = By.XPath("//div[@id='context-menu-root']/ul[1]/li[4]/button[1]"); // edit details btn in context menu
         public static By NewPlstFieldName = By.XPath("//input[@data-testid='playlist-edit-details-name-input']");
         public static By NewPlstSaveName = By.XPath("//button[@data-testid='playlist-edit-details-save-button']");
-        public static By SuccessedAdding = By.XPath("//*[text()=\"Added to playlist\"]");
+        public static By SuccessedAdding = By.XPath("//div[@role=\"alert\"]");//("//*[text()=\"Added to playlist\"]"); //<div class="_6ab8439613a179529f6655b0ee124b22-scss _33868ca6336b910d05b8f578acb9256c-scss" role="alert" aria-live="polite" xpath="1">Added to playlist</div>
+        public static By IsMoreThan4Tracks = By.XPath("//section[@data-testid='search-tracks-result']//span[text()='See all']");
         #endregion
         #region поиск 
         public static By SearchBtn = By.XPath("//a[@href='/search']");
@@ -38,8 +39,8 @@ namespace SpotifyData
         public static By SongsRow = By.XPath("//div[@data-testid='tracklist-row']");
         
         public static string SongMenu = "(//div[@data-testid='tracklist-row'])[{0}]"; // нажать по нему правой кнопкой
-        public static By AddToPlBtn = By.XPath("(//div[@id='context-menu-root'])/ul[1]/li[6]/button[1]/span[1]");
-        public static string PlaylstsList = "//body/div[@id='tippy-1']/div[@id='context-menu-root']/ul[1]/li[6]/div[1]/ul[1]/li"; // список плейлистов +[{0}] для выбора нужного
+        public static By AddToPlBtn = By.XPath("((//div[@id='context-menu-root'])//*[@class=\"Svg-ulyrgf-0 hJgLcF _166adb933fd91e65d2d8baf00dfd2d8c-scss\"])[1]"); //By.XPath("(//div[@id='context-menu-root'])/ul[1]/li[6]/button[1]/span[1]");
+        public static string PlaylstsList = "((//div[@id='context-menu-root'])//div[@data-tippy-root])//li"; //"//body/div[@id='tippy-1']/div[@id='context-menu-root']/ul[1]/li[6]/div[1]/ul[1]/li"; // список плейлистов +[{0}] для выбора нужного
         // чтобы искать по имени надо просто перебрать весь список до первого вхождения нужного наименования плейлиста))
         // string а не By для того чтобы не создавать две переменные, а просто добавить к этой поле для выбора при необходимости
         #endregion
