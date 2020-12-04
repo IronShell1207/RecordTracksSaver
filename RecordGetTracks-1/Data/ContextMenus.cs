@@ -66,15 +66,7 @@ namespace RecordGetTracks
         }
         private void SettsOpen(object sender, EventArgs e)
         {
-           // form.panelShoweer(form.panelSettings);
-            using (var formSets = new FormSettings(form))
-            {
-                var result = formSets.ShowDialog();
-                if (DialogResult.OK==result)
-                {
-
-                }
-            }
+            form.panelShoweer(form.panelSettings);
         }
 
     }

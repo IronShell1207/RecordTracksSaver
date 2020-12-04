@@ -101,13 +101,13 @@
             this.btnHideSetts = new MetroFramework.Controls.MetroButton();
             this.metroLabel3 = new MetroFramework.Controls.MetroLabel();
             this.panelSpoti = new MetroFramework.Controls.MetroPanel();
+            this.labelSpotiCurrName = new System.Windows.Forms.Label();
+            this.buttonBreakSpoti = new MetroFramework.Controls.MetroButton();
+            this.labelCurrProcess = new System.Windows.Forms.Label();
+            this.metroLabel11 = new MetroFramework.Controls.MetroLabel();
+            this.toggleAutoSkip = new MetroFramework.Controls.MetroToggle();
             this.toggleAutoSelect = new MetroFramework.Controls.MetroToggle();
             this.metroLabel12 = new MetroFramework.Controls.MetroLabel();
-            this.toggleAutoSkip = new MetroFramework.Controls.MetroToggle();
-            this.metroLabel11 = new MetroFramework.Controls.MetroLabel();
-            this.labelCurrProcess = new System.Windows.Forms.Label();
-            this.buttonBreakSpoti = new MetroFramework.Controls.MetroButton();
-            this.labelSpotiCurrName = new System.Windows.Forms.Label();
             this.panelSpotiMain.SuspendLayout();
             this.panelSpotiImport.SuspendLayout();
             this.panelRecSpaceImp2.SuspendLayout();
@@ -877,7 +877,7 @@
             this.panelNumUpDown.HorizontalScrollbarBarColor = true;
             this.panelNumUpDown.HorizontalScrollbarHighlightOnWheel = false;
             this.panelNumUpDown.HorizontalScrollbarSize = 10;
-            this.panelNumUpDown.Location = new System.Drawing.Point(45, 10);
+            this.panelNumUpDown.Location = new System.Drawing.Point(232, 36);
             this.panelNumUpDown.Name = "panelNumUpDown";
             this.panelNumUpDown.Size = new System.Drawing.Size(80, 26);
             this.panelNumUpDown.TabIndex = 22;
@@ -1056,7 +1056,7 @@
             this.panelSettings.HorizontalScrollbarBarColor = true;
             this.panelSettings.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSettings.HorizontalScrollbarSize = 10;
-            this.panelSettings.Location = new System.Drawing.Point(681, 161);
+            this.panelSettings.Location = new System.Drawing.Point(681, 18);
             this.panelSettings.Name = "panelSettings";
             this.panelSettings.Size = new System.Drawing.Size(371, 345);
             this.panelSettings.TabIndex = 22;
@@ -1099,7 +1099,6 @@
             this.toggleBigSmallLetters.Text = "On";
             this.toggleBigSmallLetters.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.toggleBigSmallLetters.UseSelectable = true;
-            this.toggleBigSmallLetters.CheckedChanged += new System.EventHandler(this.toggleBigSmallLetters_CheckedChanged);
             this.toggleBigSmallLetters.Click += new System.EventHandler(this.changeRadioBigtoLittleSyms_Click);
             // 
             // metroLabel9
@@ -1134,7 +1133,6 @@
             this.toggleBrowserHide.Text = "Off";
             this.toggleBrowserHide.Theme = MetroFramework.MetroThemeStyle.Dark;
             this.toggleBrowserHide.UseSelectable = true;
-            this.toggleBrowserHide.CheckedChanged += new System.EventHandler(this.toggleBrowserHide_CheckedChanged);
             this.toggleBrowserHide.Click += new System.EventHandler(this.toggleBrowserHide_Click);
             // 
             // metroLabel8
@@ -1251,7 +1249,7 @@
             this.panelSpoti.HorizontalScrollbarBarColor = true;
             this.panelSpoti.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSpoti.HorizontalScrollbarSize = 10;
-            this.panelSpoti.Location = new System.Drawing.Point(649, 11);
+            this.panelSpoti.Location = new System.Drawing.Point(20, -2);
             this.panelSpoti.Name = "panelSpoti";
             this.panelSpoti.Size = new System.Drawing.Size(655, 108);
             this.panelSpoti.TabIndex = 23;
@@ -1260,6 +1258,59 @@
             this.panelSpoti.VerticalScrollbarHighlightOnWheel = false;
             this.panelSpoti.VerticalScrollbarSize = 10;
             this.panelSpoti.Visible = false;
+            // 
+            // labelSpotiCurrName
+            // 
+            this.labelSpotiCurrName.AutoSize = true;
+            this.labelSpotiCurrName.Font = new System.Drawing.Font("Leelawadee UI Semilight", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelSpotiCurrName.Location = new System.Drawing.Point(11, 14);
+            this.labelSpotiCurrName.Name = "labelSpotiCurrName";
+            this.labelSpotiCurrName.Size = new System.Drawing.Size(415, 29);
+            this.labelSpotiCurrName.TabIndex = 2;
+            this.labelSpotiCurrName.Text = "Current Name Track - Current Artist";
+            // 
+            // buttonBreakSpoti
+            // 
+            this.buttonBreakSpoti.Location = new System.Drawing.Point(535, 53);
+            this.buttonBreakSpoti.Name = "buttonBreakSpoti";
+            this.buttonBreakSpoti.Size = new System.Drawing.Size(115, 47);
+            this.buttonBreakSpoti.TabIndex = 3;
+            this.buttonBreakSpoti.Text = "Отменить\r\n импорт";
+            this.buttonBreakSpoti.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.buttonBreakSpoti.UseSelectable = true;
+            this.buttonBreakSpoti.Click += new System.EventHandler(this.buttonBreakSpoti_Click);
+            // 
+            // labelCurrProcess
+            // 
+            this.labelCurrProcess.AutoSize = true;
+            this.labelCurrProcess.Font = new System.Drawing.Font("Leelawadee UI Semilight", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
+            this.labelCurrProcess.Location = new System.Drawing.Point(12, 47);
+            this.labelCurrProcess.Name = "labelCurrProcess";
+            this.labelCurrProcess.Size = new System.Drawing.Size(162, 22);
+            this.labelCurrProcess.TabIndex = 4;
+            this.labelCurrProcess.Text = "Выполняется: 0/0";
+            // 
+            // metroLabel11
+            // 
+            this.metroLabel11.AutoSize = true;
+            this.metroLabel11.Location = new System.Drawing.Point(13, 78);
+            this.metroLabel11.Name = "metroLabel11";
+            this.metroLabel11.Size = new System.Drawing.Size(175, 19);
+            this.metroLabel11.TabIndex = 5;
+            this.metroLabel11.Text = "Автопропуск ненайденных";
+            this.metroLabel11.Theme = MetroFramework.MetroThemeStyle.Dark;
+            // 
+            // toggleAutoSkip
+            // 
+            this.toggleAutoSkip.AutoSize = true;
+            this.toggleAutoSkip.DisplayStatus = false;
+            this.toggleAutoSkip.Location = new System.Drawing.Point(196, 80);
+            this.toggleAutoSkip.Name = "toggleAutoSkip";
+            this.toggleAutoSkip.Size = new System.Drawing.Size(50, 17);
+            this.toggleAutoSkip.TabIndex = 6;
+            this.toggleAutoSkip.Text = "Off";
+            this.toggleAutoSkip.Theme = MetroFramework.MetroThemeStyle.Dark;
+            this.toggleAutoSkip.UseSelectable = true;
             // 
             // toggleAutoSelect
             // 
@@ -1282,63 +1333,6 @@
             this.metroLabel12.TabIndex = 7;
             this.metroLabel12.Text = "Выбирать первый попавшийся";
             this.metroLabel12.Theme = MetroFramework.MetroThemeStyle.Dark;
-            // 
-            // toggleAutoSkip
-            // 
-            this.toggleAutoSkip.AutoSize = true;
-            this.toggleAutoSkip.DisplayStatus = false;
-            this.toggleAutoSkip.Location = new System.Drawing.Point(196, 80);
-            this.toggleAutoSkip.Name = "toggleAutoSkip";
-            this.toggleAutoSkip.Size = new System.Drawing.Size(50, 17);
-            this.toggleAutoSkip.TabIndex = 6;
-            this.toggleAutoSkip.Text = "Off";
-            this.toggleAutoSkip.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.toggleAutoSkip.UseSelectable = true;
-            // 
-            // metroLabel11
-            // 
-            this.metroLabel11.AutoSize = true;
-            this.metroLabel11.Location = new System.Drawing.Point(13, 78);
-            this.metroLabel11.Name = "metroLabel11";
-            this.metroLabel11.Size = new System.Drawing.Size(175, 19);
-            this.metroLabel11.TabIndex = 5;
-            this.metroLabel11.Text = "Автопропуск ненайденных";
-            this.metroLabel11.Theme = MetroFramework.MetroThemeStyle.Dark;
-            // 
-            // labelCurrProcess
-            // 
-            this.labelCurrProcess.AutoSize = true;
-            this.labelCurrProcess.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            this.labelCurrProcess.Font = new System.Drawing.Font("Leelawadee UI Semilight", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelCurrProcess.ForeColor = System.Drawing.Color.Silver;
-            this.labelCurrProcess.Location = new System.Drawing.Point(12, 47);
-            this.labelCurrProcess.Name = "labelCurrProcess";
-            this.labelCurrProcess.Size = new System.Drawing.Size(162, 22);
-            this.labelCurrProcess.TabIndex = 4;
-            this.labelCurrProcess.Text = "Выполняется: 0/0";
-            // 
-            // buttonBreakSpoti
-            // 
-            this.buttonBreakSpoti.Location = new System.Drawing.Point(535, 53);
-            this.buttonBreakSpoti.Name = "buttonBreakSpoti";
-            this.buttonBreakSpoti.Size = new System.Drawing.Size(115, 47);
-            this.buttonBreakSpoti.TabIndex = 3;
-            this.buttonBreakSpoti.Text = "Отменить\r\n импорт";
-            this.buttonBreakSpoti.Theme = MetroFramework.MetroThemeStyle.Dark;
-            this.buttonBreakSpoti.UseSelectable = true;
-            this.buttonBreakSpoti.Click += new System.EventHandler(this.buttonBreakSpoti_Click);
-            // 
-            // labelSpotiCurrName
-            // 
-            this.labelSpotiCurrName.AutoSize = true;
-            this.labelSpotiCurrName.BackColor = System.Drawing.Color.FromArgb(((int)(((byte)(17)))), ((int)(((byte)(17)))), ((int)(((byte)(17)))));
-            this.labelSpotiCurrName.Font = new System.Drawing.Font("Leelawadee UI Semilight", 18F, System.Drawing.FontStyle.Bold, System.Drawing.GraphicsUnit.Point, ((byte)(204)));
-            this.labelSpotiCurrName.ForeColor = System.Drawing.Color.Silver;
-            this.labelSpotiCurrName.Location = new System.Drawing.Point(11, 14);
-            this.labelSpotiCurrName.Name = "labelSpotiCurrName";
-            this.labelSpotiCurrName.Size = new System.Drawing.Size(415, 29);
-            this.labelSpotiCurrName.TabIndex = 2;
-            this.labelSpotiCurrName.Text = "Current Name Track - Current Artist";
             // 
             // Form1
             // 

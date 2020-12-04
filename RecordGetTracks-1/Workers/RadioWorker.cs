@@ -16,7 +16,7 @@ namespace RadioData
 {
      public delegate DialogResult MsgMess(string text, string topic, MessageBoxButtons buttons, MessageBoxIcon icon); //bool положительный когда требуется анимация загрузки (бегущая строка)
 
-    public class RadioWorker
+    class RadioWorker
     {
         Form1 form1;
         public RadioWorker(object form)

@@ -12,7 +12,7 @@ using SpotifyData;
 
 namespace RecordGetTracks
 {
-    public class SpotifyWorker
+    class SpotifyWorker
     {
         Form1 form1;
         public SpotifyWorker(object form) => form1 = form as Form1;
@@ -138,7 +138,6 @@ namespace RecordGetTracks
                 {
                     using (var formx = new SongChoose(songs, trackName))
                     {
-                        formx.TopMost = true;
                         var result = formx.ShowDialog();
                         if (result == DialogResult.OK)
                             return formx.ReturnValue1;

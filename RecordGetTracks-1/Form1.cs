@@ -23,18 +23,16 @@ using System.Diagnostics;
 using RadioData;
 using System.Windows.Threading;
 using System.Text.RegularExpressions;
-using MetroFramework.Components;
 
 namespace RecordGetTracks
 {
 
     public partial class Form1 : MetroFramework.Forms.MetroForm
     {
-        public ContextMenus ctxm;
-        public RadioWorker rwork;
-        public SpotifyWorker sWorker;
-        public ControlsWorker ctrlWorker;
-       
+        private ContextMenus ctxm;
+        private RadioWorker rwork;
+        private SpotifyWorker sWorker;
+        private ControlsWorker ctrlWorker;
         int ReturnStationIndex() => RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
         public Form1()
         {
@@ -49,7 +47,6 @@ namespace RecordGetTracks
         {
             Text = $"{Text} {Application.ProductVersion}";
             panelSpoti.Location = new Point(20, 493);
-            this.StyleManager = SetStatic.mSM;
             StartUPConfiguration(); // 
         }
         void StartUPConfiguration()
@@ -179,7 +176,8 @@ namespace RecordGetTracks
         }
         private void toggleBrowserHide_Click(object sender, EventArgs e) // переключатель автоскрывателя браузера
         {
-            
+            SetStatic.settings.HideBrowser = (sender as MetroToggle).Checked;
+            JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
         }
         #region Menu Button
         private void btnExpMenu_MouseClick(object sender, MouseEventArgs e)
@@ -479,16 +477,6 @@ namespace RecordGetTracks
         {
             SpotifyData.SpotifyPages.BreakSpotify = true;
             buttonBreakSpoti.Text = "Отменяем...";
-        }
-
-        private void toggleBigSmallLetters_CheckedChanged(object sender, EventArgs e)
-        {
-
-        }
-
-        private void toggleBrowserHide_CheckedChanged(object sender, EventArgs e)
-        {
-
         }
     }
 }

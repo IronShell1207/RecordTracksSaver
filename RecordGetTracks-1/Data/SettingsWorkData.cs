@@ -1,5 +1,4 @@
-﻿using MetroFramework.Components;
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
@@ -12,23 +11,6 @@ namespace RecordGetTracks
     public class SetStatic
     {
         private static SettingsM _sets;
-        private static MetroStyleManager _msm;
-        public static MetroStyleManager mSM
-        {
-            get
-            {
-                if (_msm != null)
-                    return _msm;
-                _msm = new MetroStyleManager();
-                _msm.Theme = settings.mTheme != 0 ? settings.mTheme : MetroFramework.MetroThemeStyle.Dark;
-                _msm.Style = settings.mColor != 0 ? settings.mColor : MetroFramework.MetroColorStyle.Brown;
-                return _msm;
-            }
-            set
-            {
-                _msm = value;
-            }
-        }
         public static SettingsM settings
         {
             get
@@ -115,7 +97,5 @@ namespace RecordGetTracks
         public bool HideBrowser { get; set; }
         public bool IsBigSymsInRadios { get; set; }
         public List<string> SpotiPlaylists { get; set; }
-        public MetroFramework.MetroThemeStyle mTheme { get; set; }
-        public MetroFramework.MetroColorStyle mColor { get; set; }
     }
 }
