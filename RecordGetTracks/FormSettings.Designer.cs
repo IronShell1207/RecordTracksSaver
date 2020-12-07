@@ -29,7 +29,9 @@ namespace RecordGetTracks
         /// </summary>
         private void InitializeComponent()
         {
+            this.components = new System.ComponentModel.Container();
             this.panelMain = new MetroFramework.Controls.MetroPanel();
+            this.labelCLose = new MetroFramework.Controls.MetroLabel();
             this.buttonCLose = new MetroFramework.Controls.MetroButton();
             this.toggleTheme = new MetroFramework.Controls.MetroToggle();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
@@ -46,11 +48,14 @@ namespace RecordGetTracks
             this.metroLabel9 = new MetroFramework.Controls.MetroLabel();
             this.toggleBrowserHide = new MetroFramework.Controls.MetroToggle();
             this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
+            this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
             this.panelMain.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).BeginInit();
             this.SuspendLayout();
             // 
             // panelMain
             // 
+            this.panelMain.Controls.Add(this.labelCLose);
             this.panelMain.Controls.Add(this.buttonCLose);
             this.panelMain.Controls.Add(this.toggleTheme);
             this.panelMain.Controls.Add(this.metroLabel1);
@@ -79,11 +84,22 @@ namespace RecordGetTracks
             this.panelMain.VerticalScrollbarHighlightOnWheel = false;
             this.panelMain.VerticalScrollbarSize = 10;
             // 
+            // labelCLose
+            // 
+            this.labelCLose.AutoSize = true;
+            this.labelCLose.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.labelCLose.Location = new System.Drawing.Point(205, 345);
+            this.labelCLose.Name = "labelCLose";
+            this.labelCLose.Size = new System.Drawing.Size(150, 19);
+            this.labelCLose.TabIndex = 56;
+            this.labelCLose.Text = "Закрыть все процессы ";
+            this.labelCLose.Click += new System.EventHandler(this.labelCLose_Click);
+            // 
             // buttonCLose
             // 
-            this.buttonCLose.Location = new System.Drawing.Point(420, 346);
+            this.buttonCLose.Location = new System.Drawing.Point(423, 344);
             this.buttonCLose.Name = "buttonCLose";
-            this.buttonCLose.Size = new System.Drawing.Size(122, 23);
+            this.buttonCLose.Size = new System.Drawing.Size(116, 23);
             this.buttonCLose.TabIndex = 55;
             this.buttonCLose.Text = "Закрыть";
             this.buttonCLose.UseSelectable = true;
@@ -99,7 +115,6 @@ namespace RecordGetTracks
             this.toggleTheme.TabIndex = 54;
             this.toggleTheme.Text = "On";
             this.toggleTheme.UseSelectable = true;
-            this.toggleTheme.CheckedChanged += new System.EventHandler(this.metroToggle2_CheckedChanged);
             this.toggleTheme.Click += new System.EventHandler(this.toggleTheme_Click);
             // 
             // metroLabel1
@@ -114,7 +129,7 @@ namespace RecordGetTracks
             // numUpDownMetr2
             // 
             this.numUpDownMetr2.isZeroEqualsEmpty = true;
-            this.numUpDownMetr2.Location = new System.Drawing.Point(420, 170);
+            this.numUpDownMetr2.Location = new System.Drawing.Point(432, 142);
             this.numUpDownMetr2.MaxValue = 100000;
             this.numUpDownMetr2.MinValue = 0;
             this.numUpDownMetr2.msTheme = MetroFramework.MetroThemeStyle.Light;
@@ -124,11 +139,12 @@ namespace RecordGetTracks
             this.numUpDownMetr2.TextV = "";
             this.numUpDownMetr2.ValueStep = 5;
             this.numUpDownMetr2.ValueStepByArrows = 1;
+            this.numUpDownMetr2.Load += new System.EventHandler(this.numUpDownMetr2_Load);
             // 
             // labalTracks
             // 
             this.labalTracks.AutoSize = true;
-            this.labalTracks.Location = new System.Drawing.Point(12, 176);
+            this.labalTracks.Location = new System.Drawing.Point(11, 144);
             this.labalTracks.Name = "labalTracks";
             this.labalTracks.Size = new System.Drawing.Size(251, 19);
             this.labalTracks.TabIndex = 50;
@@ -162,7 +178,7 @@ namespace RecordGetTracks
             this.metroButton2.FontWeight = MetroFramework.MetroButtonWeight.Light;
             this.metroButton2.Location = new System.Drawing.Point(423, 290);
             this.metroButton2.Name = "metroButton2";
-            this.metroButton2.Size = new System.Drawing.Size(90, 23);
+            this.metroButton2.Size = new System.Drawing.Size(116, 23);
             this.metroButton2.TabIndex = 44;
             this.metroButton2.Text = "Указать папку";
             this.metroButton2.UseSelectable = true;
@@ -221,6 +237,7 @@ namespace RecordGetTracks
             this.metroToggle1.TabIndex = 41;
             this.metroToggle1.Text = "Off";
             this.metroToggle1.UseSelectable = true;
+            this.metroToggle1.Click += new System.EventHandler(this.RusTracksSkipToggle_Click);
             // 
             // metroLabel10
             // 
@@ -262,6 +279,7 @@ namespace RecordGetTracks
             this.toggleBrowserHide.TabIndex = 37;
             this.toggleBrowserHide.Text = "Off";
             this.toggleBrowserHide.UseSelectable = true;
+            this.toggleBrowserHide.CheckedChanged += new System.EventHandler(this.toggleBrowserHide_CheckedChanged);
             this.toggleBrowserHide.Click += new System.EventHandler(this.toggleBrowserHide_Click);
             // 
             // metroLabel8
@@ -273,19 +291,27 @@ namespace RecordGetTracks
             this.metroLabel8.TabIndex = 36;
             this.metroLabel8.Text = "Скрывать браузер после дейтвий";
             // 
+            // metroStyleManager1
+            // 
+            this.metroStyleManager1.Owner = this;
+            // 
             // FormSettings
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(582, 450);
             this.Controls.Add(this.panelMain);
+            this.MaximizeBox = false;
+            this.MinimizeBox = false;
             this.Name = "FormSettings";
+            this.Resizable = false;
             this.Style = MetroFramework.MetroColorStyle.Default;
             this.Text = "Настройки";
             this.Theme = MetroFramework.MetroThemeStyle.Default;
             this.Load += new System.EventHandler(this.FormSettings_Load);
             this.panelMain.ResumeLayout(false);
             this.panelMain.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).EndInit();
             this.ResumeLayout(false);
 
         }
@@ -308,5 +334,7 @@ namespace RecordGetTracks
         private MetroFramework.Controls.MetroToggle toggleTheme;
         private MetroFramework.Controls.MetroLabel metroLabel1;
         private MetroFramework.Controls.MetroButton buttonCLose;
+        private MetroFramework.Controls.MetroLabel labelCLose;
+        private MetroFramework.Components.MetroStyleManager metroStyleManager1;
     }
 }

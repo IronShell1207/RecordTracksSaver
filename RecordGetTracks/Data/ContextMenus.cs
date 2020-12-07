@@ -1,4 +1,5 @@
-﻿using System;
+﻿using MetroFramework.Controls;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Linq;
@@ -52,16 +53,32 @@ namespace RecordGetTracks
                     RenderMode = ToolStripRenderMode.System
                 };
                 ToolStripMenuItem spoti = new ToolStripMenuItem("В Spotify") { BackColor = Color.FromArgb(20, 20, 20), ForeColor = Color.Silver };
+                ToolStripMenuItem file = new ToolStripMenuItem("В файл") { BackColor = Color.FromArgb(20, 20, 20), ForeColor = Color.Silver };
+                ToolStripMenuItem download = new ToolStripMenuItem("Скачать плейлист с youtube") { BackColor = Color.FromArgb(20, 20, 20), ForeColor = Color.Silver };
+                download.Click += Download_Click;
                 spoti.Click += ExSpotiOpen;
-                _ctxExport.Items.AddRange(new[] { spoti });
+                file.Click += File_Click;
+
+                _ctxExport.Items.AddRange(new[] { spoti,file, download });
                 return _ctxExport;
             }
         }
+
+        private void Download_Click(object sender, EventArgs e)
+        {
+            PanelSwitcher(form.panelDownladTracks);
+        }
+
+        private void File_Click(object sender, EventArgs e)
+        {
+            PanelSwitcher(form.panelExportFile);
+            form.tbSaveName.PromptText = form.listBox.SelectedItem.ToString();
+            form.tbSavePath.PromptText = Environment.GetFolderPath(Environment.SpecialFolder.Desktop);
+        }
+
         private void ExSpotiOpen(object sender, EventArgs e)
         {
-            form.panelSpotiMain.Visible = true;
-            form.panelSpotiMain.Dock = DockStyle.Fill;
-            form.panelRecMain.Visible = false;
+            PanelSwitcher(form.panelSpotiMain);
 
         }
         private void SettsOpen(object sender, EventArgs e)
@@ -70,12 +87,23 @@ namespace RecordGetTracks
             using (var formSets = new FormSettings(form))
             {
                 var result = formSets.ShowDialog();
-                if (DialogResult.OK==result)
+                if (DialogResult.Cancel==result)
                 {
-
+                    form.RefreshTheme();
                 }
             }
         }
-
+        private void PanelSwitcher(object panel )
+        {
+            List<MetroPanel> panels = new List<MetroPanel> { form.panelSpotiMain, form.panelDownladTracks, form.panelExportFile, form.panelRecMain };
+            foreach (MetroPanel pnl in panels)
+                if (pnl != panel as MetroPanel)
+                    pnl.Visible = false;
+                else if (pnl == panel as MetroPanel)
+                {
+                    pnl.Visible = true;
+                    pnl.Dock = DockStyle.Fill;
+                }
+        }
     }
 }

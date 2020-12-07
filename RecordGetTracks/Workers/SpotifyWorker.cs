@@ -15,7 +15,9 @@ namespace RecordGetTracks
     public class SpotifyWorker
     {
         Form1 form1;
-        public SpotifyWorker(object form) => form1 = form as Form1;
+        public SpotifyWorker(object form ) { 
+            form1 = form as Form1;
+        }
         public void AuthSpoti(string usrName, string usrPass) //главная аунтификация в spotify 
         {
             SelHelper.ChromeDriver.Navigate().GoToUrl(SpotifyPages.MainPageUrl); // переходим на страницу spotify
@@ -75,7 +77,7 @@ namespace RecordGetTracks
                 form1.Invoke(new Action(() =>
                 {
                     form1.labelSpotiCurrName.Text = tracks[trackId];
-                    form1.labelCurrProcess.Text = $"Выполняется: {trackId+1}/{tracks.Count}";
+                    form1.labelCurrProcess.Text = $"Выполняется: {trackId + 1}/{tracks.Count}";
                     form1.ProgressProgressBar = trackId;
                 }));
                 string urlSong = SpotifyPages.SearchPageUrl + tracks[trackId].Replace("-", "").Replace(" ", "%20");
@@ -121,18 +123,18 @@ namespace RecordGetTracks
             string onlyArt = "";
             for (int iz = 0; iz < onlyArtist.Length - 1; iz++)
             {
-                onlyArt += onlyArtist[iz] + (onlyArtist.Length - 2 != iz? "-" : "");
+                onlyArt += onlyArtist[iz] + (onlyArtist.Length - 2 != iz ? "-" : "");
             }
-        var onlyName = trackName.Split('-').LastOrDefault();
-        var onlyNameWithoutAdds = onlyName.Split('(').First();
-        List<string> songNamesSplits = new List<string> { onlyArt, onlyName, onlyNameWithoutAdds };
+            var onlyName = trackName.Split('-').LastOrDefault();
+            var onlyNameWithoutAdds = onlyName.Split('(').First();
+            List<string> songNamesSplits = new List<string> { onlyArt, onlyName, onlyNameWithoutAdds };
             foreach (string sName in songNamesSplits)
             {
                 SelHelper.ChromeDriver.Navigate().GoToUrl(SpotifyPages.SearchPageUrl + sName.Replace(" ", "%20") + "/tracks");
                 var songsList = SelHelper.ChromeDriver.FindElements(SpotifyPatches.SongsRow).ToList();
-        List<string> songs = new List<string> { };
-        int count = (songsList.Count > 20) ? 20 : songsList.Count;
-                for (int ix = 0; ix<count; ix++)
+                List<string> songs = new List<string> { };
+                int count = (songsList.Count > 20) ? 20 : songsList.Count;
+                for (int ix = 0; ix < count; ix++)
                     songs.Add(songsList[ix].Text);
                 if (songs.Count != 0)
                 {
@@ -147,7 +149,7 @@ namespace RecordGetTracks
                         else
                             return 0;
                     }
-}
+                }
             }
             return 0;
 

@@ -34,6 +34,7 @@ namespace RecordGetTracks
         public RadioWorker rwork;
         public SpotifyWorker sWorker;
         public ControlsWorker ctrlWorker;
+        private string StartNameForm;
        
         int ReturnStationIndex() => RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
         public Form1()
@@ -47,16 +48,31 @@ namespace RecordGetTracks
         }
         private void Form1_Load(object sender, EventArgs e)
         {
-            Text = $"{Text} {Application.ProductVersion}";
+            StartNameForm = Text = $"{Text} {Application.ProductVersion}";
             panelSpoti.Location = new Point(20, 493);
-            this.StyleManager = SetStatic.mSM;
             StartUPConfiguration(); // 
+        }
+        public void RefreshTheme()
+        {
+            List<ListBox> lboses = new List<ListBox> { listBox, listBox1, listBoxPlaylists };    
+            metroStyleManager1.Theme = SetStatic.settings.mTheme;
+            metroStyleManager1.Style = SetStatic.settings.mColor;
+            Theme = SetStatic.settings.mTheme;
+            Style = SetStatic.settings.mColor;
+            foreach (ListBox lbx in lboses)
+            {
+                bool isDark = SetStatic.settings.mTheme == MetroThemeStyle.Dark ? true: false;
+                lbx.ForeColor = isDark ? Color.White : Color.Black;
+                lbx.BackColor = isDark ? Color.Black : Color.White;
+            }
+            Refresh();
         }
         void StartUPConfiguration()
         {
             if (File.Exists(SetStatic.JsonSettingsPath))
             {
-                toggleRecIsFav.Checked = SetStatic.settings.UseFavList;              // Переключатель избранного
+                toggleRecIsFav.Checked = SetStatic.settings.UseFavList;// Переключатель избранного
+                RefreshTheme();
                 toggleBrowserHide.Checked = SetStatic.settings.HideBrowser;          // Автоскрытие браузера 
                 toggleBigSmallLetters.Checked = SetStatic.settings.IsBigSymsInRadios;// Переключатель состояния списка станций
                 tbGooglePath.Text = SetStatic.settings.ChromePath;                   // Путь к Chrome
@@ -64,6 +80,7 @@ namespace RecordGetTracks
                 tbpass.Text = SetStatic.settings.SpotiPass;                          // Spotify Pass
                 var spotiList = SetStatic.settings.SpotiPlaylists;                   // Список плейлистов из Spotify
                 ctrlWorker.CreateListRadios(toggleRecIsFav.Checked, listBox);
+                if (listBox.Items.Count > 0) listBox.SelectedIndex = 0;
                 if (spotiList != null && spotiList.Count > 0)
                 {
                     listBoxPlaylists.Items.Clear();
@@ -224,7 +241,9 @@ namespace RecordGetTracks
                 var count = tbTracksNum.Text != "" ? int.Parse(tbTracksNum.Text) : 0;
                 var thread = new Thread(() =>
                 {
+                    
                     rwork.LoadTracks(station, count);
+                    SelHelper.ChromeDriver.Manage().Window.Position = new Point(0, 0);
                     Invoke(new Action(() =>
                     {
                         listBox1.Items.Clear();
@@ -232,6 +251,7 @@ namespace RecordGetTracks
                         listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
                         labelDatePlaylist.Text = "Список треков от: " + RadioLists.StationsList[station].DateLoadedTracks;
                     }));
+                    if (SetStatic.settings.HideBrowser) SelHelper.ChromeDriver.Manage().Window.Minimize();
                 });
                 thread.Start();
             }
@@ -242,11 +262,13 @@ namespace RecordGetTracks
         {
             var StartCreator = new Thread(() =>
             {
+                SelHelper.ChromeDriver.Manage().Window.Position = new Point(0, 0);
                 listBox.Invoke(new Action(() => listBox.Items.Clear()));
                 rwork.CollectLinks();
                 ctrlWorker.CreateListRadios(false, listBox);
                 SetStatic.settings.IsBigSymsInRadios = true;
                 JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
+                if (SetStatic.settings.HideBrowser) SelHelper.ChromeDriver.Manage().Window.Minimize();
                 msgCall("Список успешно загружен", "Успех", MessageBoxButtons.OK, MessageBoxIcon.Information);
             });
             if (RadioLists.StationsList.Any() && DialogResult.Yes == msgCall("Список станций уже создан! Вы уверены что хотите полностью пересоздать список станций? Это займет какое-то время.", "Внимание!", MessageBoxButtons.YesNo, MessageBoxIcon.Question))
@@ -267,6 +289,7 @@ namespace RecordGetTracks
         {
             var th = new Thread(() =>
             {
+                SelHelper.ChromeDriver.Manage().Window.Position = new Point(0, 0);
                 Invoke(new Action(() => StatusProgressBar = true));
                 Invoke(new Action(() => (sender as Button).Enabled = false));
                 sWorker.AuthSpoti(tblogin.Text, tbpass.Text);
@@ -292,6 +315,7 @@ namespace RecordGetTracks
                 };
 
                 Invoke(new Action(() => StatusProgressBar = false));
+                if (SetStatic.settings.HideBrowser) SelHelper.ChromeDriver.Manage().Window.Minimize();
             });
             th.Start();
 
@@ -312,10 +336,12 @@ namespace RecordGetTracks
         private void listBoxStations_SelectedIndexChanged(object sender, EventArgs e)
         {
             var cInd = listBox.SelectedIndex;
+
             listBox1.Items.Clear();
             if (cInd > -1)
             {
-
+                Text = $"{StartNameForm} - {listBox.SelectedItem.ToString()}";
+                Refresh();
                 var station = RadioLists.StationsList.Find(x => x.Name == listBox.Items[cInd].ToString().Replace(" 💙", ""));
                 var stationTracks = station.TracksList;
                 lblCountTracks.Text = $"Кол-во: {station.TracksList.Count}";
@@ -339,6 +365,7 @@ namespace RecordGetTracks
             }
             else
             {
+                Text = StartNameForm;
                 labelRemoveRusMusic.Enabled = false;
                 buttongetTitle.Enabled = false;
                 labelDatePlaylist.Visible = false;
@@ -431,8 +458,9 @@ namespace RecordGetTracks
             var name = tbPlaylsName.Text;
             var th = new Thread(() =>
             {
+                SelHelper.ChromeDriver.Manage().Window.Position = new Point(0, 0);
                 sWorker.AddPlaylistSpotify(name);
-                
+                if (SetStatic.settings.HideBrowser) SelHelper.ChromeDriver.Manage().Window.Minimize();
             });
             if (SpotifyData.SpotifyPages.IsAuthorized)
             {
@@ -468,9 +496,11 @@ namespace RecordGetTracks
             panelSpoti.Visible = true;
             var th = new Thread(() =>
             {
+                SelHelper.ChromeDriver.Manage().Window.Position = new Point(0, 0);
                 var playlist = RadioLists.StationsList[index].TracksList;
                 sWorker.ImportTracksToPlaylist(StationName, playlist);
                 Invoke(new Action(() => panelSpoti.Visible = false));
+                if (SetStatic.settings.HideBrowser) SelHelper.ChromeDriver.Manage().Window.Minimize();
             });
             th.Start();
         }
@@ -489,6 +519,28 @@ namespace RecordGetTracks
         private void toggleBrowserHide_CheckedChanged(object sender, EventArgs e)
         {
 
+        }
+
+        private void metroLabel13_Click(object sender, EventArgs e)
+        {
+            panelExportFile.Visible = false;
+            panelRecMain.Visible = true;
+        }
+
+        private void metroButton4_Click(object sender, EventArgs e)
+        {
+            var folderTB = tbSavePath.Text;
+            string path = $"{(Directory.Exists(folderTB) ? folderTB : Environment.GetFolderPath(Environment.SpecialFolder.Desktop))}\\{(tbSaveName.Text != "" ? tbSaveName.Text : listBox.SelectedItem.ToString())}";
+            var tracklist = RadioLists.StationsList[ReturnStationIndex()].TracksList;
+            File.WriteAllText(path+".txt", String.Join("\n",tracklist.ToArray()));
+            msgCall($"Файл сохранен по пути:\n{path}.txt","Успешно экспортировано");
+        }
+
+        private void metroButton3_Click(object sender, EventArgs e)
+        {
+            var tracklist = RadioLists.StationsList[ReturnStationIndex()].TracksList;
+            PlaylistDownloader plsDownl = new PlaylistDownloader(this);
+            var dl = plsDownl.YoutubeDLPath;
         }
     }
 }

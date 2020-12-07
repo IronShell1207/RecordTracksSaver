@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -23,12 +24,14 @@ namespace RecordGetTracks
         { 
             InitializeComponent();
             Form1s = fom as Form1;
-            MetroStyleManager msmm = SetStatic.mSM;
-            msmm.Owner = this;
-            StyleManager = msmm;
+          
+            //Theme = metroStyleManager1.Theme = SetStatic.settings.mTheme;
+            //Style = metroStyleManager1.Style = SetStatic.settings.mColor;
             toggleTheme.Checked = SetStatic.settings.mTheme == MetroThemeStyle.Dark ? true : false;
-            numUpDownMetr2.msTheme = Theme;
-            Refresh();
+            //numUpDownMetr2.msTheme = Theme;
+            toggleBrowserHide.Checked = SetStatic.settings.HideBrowser;
+            RefreshTheme();
+            //Refresh();
         }
 
         private void FormSettings_Load(object sender, EventArgs e)
@@ -36,6 +39,7 @@ namespace RecordGetTracks
             toggleBrowserHide.Checked = SetStatic.settings.HideBrowser;          // Автоскрытие браузера 
             toggleBigSmallLetters.Checked = SetStatic.settings.IsBigSymsInRadios;// Переключатель состояния списка станций
             tbGooglePath.Text = SetStatic.settings.ChromePath;                   // Путь к Chrome
+            metroToggle1.Checked = SetStatic.settings.IsSkipRusAuto;
 
         }
 
@@ -69,11 +73,6 @@ namespace RecordGetTracks
             }
         }
 
-        private void metroToggle2_CheckedChanged(object sender, EventArgs e)
-        {
-            
-        }
-
         private void toggleBrowserHide_Click(object sender, EventArgs e)
         {
             SetStatic.settings.HideBrowser = (sender as MetroToggle).Checked;
@@ -104,12 +103,48 @@ namespace RecordGetTracks
 
         private void toggleTheme_Click(object sender, EventArgs e)
         {
-            SetStatic.mSM.Theme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
-            //  SetStatic.settings.mTheme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
-            //  mSM.Theme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
+            RefreshTheme();
+            //metroStyleManager1.Theme= SetStatic.settings.mTheme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
+            //metroStyleManager1.Style = SetStatic.settings.mColor = MetroColorStyle.Green;
+            
+            //numUpDownMetr2.msTheme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
+            //Theme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
+            //Refresh();
+            JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
+        }
+        public void RefreshTheme()
+        {
+            metroStyleManager1.Theme = SetStatic.settings.mTheme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
+            metroStyleManager1.Style = SetStatic.settings.mColor; //= MetroColorStyle.Green;
             numUpDownMetr2.msTheme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
             Theme = toggleTheme.Checked ? MetroThemeStyle.Dark : MetroThemeStyle.Light;
+            Style = metroStyleManager1.Style = SetStatic.settings.mColor;
             Refresh();
+        }
+
+        private void numUpDownMetr2_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void toggleBrowserHide_CheckedChanged(object sender, EventArgs e)
+        {
+
+        }
+
+        private void labelCLose_Click(object sender, EventArgs e)
+        {
+            var procs = Process.GetProcessesByName("conhost");
+            var procs2 = Process.GetProcessesByName("chromedriver");
+            foreach (Process proc in procs)
+                proc.Kill();
+            foreach (Process proc in procs2)
+                proc.Kill();
+        }
+
+        private void RusTracksSkipToggle_Click(object sender, EventArgs e)
+        {
+            SetStatic.settings.IsSkipRusAuto = true;
             JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
         }
     }

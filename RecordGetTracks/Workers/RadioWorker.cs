@@ -83,7 +83,8 @@ namespace RadioData
                     {
                         name = name.Replace(Converting.SymToChange[i], Converting.SymEnd[i]); // не много не то находит. поменять xpath
                     }
-                    songs.Add(name);
+                    if (SetStatic.settings.IsSkipRusAuto && !  IsRussian(name))
+                        songs.Add(name);
                 }
                 if (songs.Count > 0)
                 {
