@@ -540,7 +540,13 @@ namespace RecordGetTracks
         {
             var tracklist = RadioLists.StationsList[ReturnStationIndex()].TracksList;
             PlaylistDownloader plsDownl = new PlaylistDownloader(this);
-            var dl = plsDownl.YoutubeDLPath;
+          //  var dl = plsDownl.YoutubeDLPath;
+        }
+
+        private void metroButton4_Click_1(object sender, EventArgs e)
+        {
+            PlaylistDownloader osl = new PlaylistDownloader(this);
+            osl.DownloadTracks();
         }
     }
 }

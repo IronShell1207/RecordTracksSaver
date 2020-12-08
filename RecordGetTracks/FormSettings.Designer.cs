@@ -227,6 +227,7 @@ namespace RecordGetTracks
             this.metroLabel6.TabIndex = 42;
             this.metroLabel6.Text = "Путь к Google Chrome";
             this.metroLabel6.TextAlign = System.Drawing.ContentAlignment.MiddleCenter;
+            this.metroLabel6.Click += new System.EventHandler(this.metroLabel6_Click);
             // 
             // metroToggle1
             // 

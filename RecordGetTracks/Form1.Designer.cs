@@ -764,6 +764,7 @@
             this.metroButton4.TabIndex = 9;
             this.metroButton4.Text = "Скачать выделенный";
             this.metroButton4.UseSelectable = true;
+            this.metroButton4.Click += new System.EventHandler(this.metroButton4_Click_1);
             // 
             // metroLabel16
             // 

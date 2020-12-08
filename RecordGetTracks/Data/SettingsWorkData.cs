@@ -119,5 +119,6 @@ namespace RecordGetTracks
         public MetroFramework.MetroThemeStyle mTheme { get; set; }
         public MetroFramework.MetroColorStyle mColor { get; set; }
         public string YoutubeDLpath { get; set; }
+        public string FFMpegPath { get; set; }
     } 
 }

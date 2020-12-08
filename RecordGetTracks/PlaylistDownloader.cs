@@ -14,27 +14,55 @@ namespace RecordGetTracks
     {
         private Form1 form_;
         public PlaylistDownloader(object form) => form_ = form as Form1;
-        public string YoutubeDLPath
+        private WebClient webDld = new WebClient();
+        public bool CheckDownloadedContent()
         {
-            get
+            if (SetStatic.settings.YoutubeDLpath==null ||SetStatic.settings.YoutubeDLpath=="")
             {
-                if (SetStatic.settings.YoutubeDLpath != "" && File.Exists(SetStatic.settings.YoutubeDLpath))
-                    return SetStatic.settings.YoutubeDLpath;
-                DownloadYoutubeDL();
-                return SetStatic.settings.YoutubeDLpath;
+                webDld.DownloadFileCompleted += YoutubeDl_DownloadFileCompleted;
+                DownloaderEXE(new Uri("https://github.com/ytdl-org/youtube-dl/releases/download/2020.12.05/youtube-dl.exe"), "youtube-dl.exe");
+                    return false;
             }
+            if (SetStatic.settings.FFMpegPath==null || SetStatic.settings.FFMpegPath == "")
+            {
+                SetStatic.settings.FFMpegPath = $"{SetStatic.FolderPath}ffmpeg\\bin\\ffmpeg.exe";
+                JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
+                //webDld.DownloadFileCompleted += FFMpDld_DownloadFileCompleted;
+              //  DownloaderEXE(new Uri("https://www.gyan.dev/ffmpeg/builds/ffmpeg-git-full.7z"), "ffmpeg-git-full.7z");
+            }
+            return true;
         }
-        public void DownloadTracks(List<string> tracks1)
+
+       /* private void FFMpDld_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
-            var ytdl = new YoutubeDL();
-            ytdl.YoutubeDLPath = YoutubeDLPath;
-            ytdl.OutputFolder = SetStatic.FolderPath;
-            foreach (string songname in tracks1)
-            {
-                var res = await ytdl.RunAudioDownload("");
-            }
+            var file =$"{SetStatic.FolderPath}ffmpeg-git-full.7z";
+            
+            var listToHide = new List<Control> { form_.metroLabel11, form_.toggleAutoSkip, form_.metroLabel12, form_.toggleAutoSelect };
+            form_.panelSpoti.Visible = false;
+            foreach (Control ctrl in listToHide)
+                ctrl.Visible = true;
+            SetStatic.settings.YoutubeDLpath = $"{SetStatic.FolderPath}youtube-dl.exe";
+            JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
         }
-        public void DownloadYoutubeDL()
+       */
+        public async void DownloadTracks()//List<string> tracks1)
+        {
+            if (CheckDownloadedContent())
+            {
+                var ytdl = new YoutubeDL();
+                ytdl.YoutubeDLPath = SetStatic.settings.YoutubeDLpath;
+                ytdl.FFmpegPath = SetStatic.settings.FFMpegPath;
+                ytdl.OutputFolder = SetStatic.FolderPath;
+
+                var res = await ytdl.RunAudioDownload("https://www.youtube.com/watch?v=LXzOz0RHKuM", YoutubeDLSharp.Options.AudioConversionFormat.Mp3);
+             //   foreach (string songname in tracks1)
+                {
+                    
+                }
+            }
+        
+        }
+        public void DownloaderEXE(Uri link, string name)
         {
             var listToHide = new List<Control> { form_.metroLabel11, form_.toggleAutoSkip, form_.metroLabel12, form_.toggleAutoSelect };
             form_.Invoke(new Action(() =>
@@ -42,17 +70,16 @@ namespace RecordGetTracks
                 form_.panelSpoti.Visible = true;
                 foreach (Control ctrl in listToHide)
                     ctrl.Visible = false;
-                form_.labelSpotiCurrName.Text = "Youtube-Dl Downloading";
+                form_.labelSpotiCurrName.Text = $"Downloading: {name}";
                 form_.labelCurrProcess.Text = "Выполняется: 0/0";
-                form_.buttonBreakSpoti.Text = "Отменить\nскачивания";
+                form_.buttonBreakSpoti.Text = "Отменить\nскачивание";
             }));
-            var ClientDownloader = new WebClient();
-            ClientDownloader.DownloadProgressChanged += ClientDownloader_DownloadProgressChanged;
-            ClientDownloader.DownloadFileCompleted += ClientDownloader_DownloadFileCompleted;
-            ClientDownloader.DownloadFileAsync(new Uri("https://github.com/ytdl-org/youtube-dl/releases/download/2020.12.05/youtube-dl.exe"), $"{SetStatic.FolderPath}youtube-dl.exe");
+            webDld.DownloadProgressChanged += ClientDownloader_DownloadProgressChanged;
+          
+            webDld.DownloadFileAsync(link, $"{SetStatic.FolderPath}{name}");
         }
 
-        private void ClientDownloader_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
+        private void YoutubeDl_DownloadFileCompleted(object sender, System.ComponentModel.AsyncCompletedEventArgs e)
         {
             var listToHide = new List<Control> { form_.metroLabel11, form_.toggleAutoSkip, form_.metroLabel12, form_.toggleAutoSelect };
             form_.panelSpoti.Visible = false;
