@@ -6,6 +6,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using RadioData;
 
 namespace RecordGetTracks
 {
@@ -15,12 +16,12 @@ namespace RecordGetTracks
         {
             listBox.Invoke(new Action(() => listBox.Items.Clear()));
             if (isFavorite)
-                foreach (RadioData.RadioStation radios in RadioData.RadioLists.StationsList)
+                foreach (RadioRec radios in RadioLists.StationsList)
                 {
                     if (radios.isFavorite) listBox.Invoke(new Action(() => listBox.Items.Add(radios.Name + " 💙")));
                 }
             else if (!isFavorite)
-                foreach (RadioData.RadioStation radios in RadioData.RadioLists.StationsList)
+                foreach (RadioRec radios in RadioLists.StationsList)
                 {
                     listBox.Invoke(new Action(() => listBox.Items.Add(radios.Name + (radios.isFavorite ? " 💙" : ""))));
                 }

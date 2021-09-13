@@ -153,5 +153,11 @@ namespace RecordGetTracks
         {
             
         }
+
+        private void numUpDownMetr2_ValueChanged(object sender, EventArgs e)
+        {
+            SetStatic.CountTracksToShow = int.Parse(numUpDownMetr2.Text);
+        }
+
     }
 }

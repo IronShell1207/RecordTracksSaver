@@ -10,6 +10,10 @@ using YoutubeDLSharp;
 
 namespace RecordGetTracks
 {
+    public class LinkYoutube
+    {
+        public string vid { get; set; }
+    }
     class PlaylistDownloader
     {
         private Form1 form_;
@@ -17,7 +21,7 @@ namespace RecordGetTracks
         private WebClient webDld = new WebClient();
         public bool CheckDownloadedContent()
         {
-            if (SetStatic.settings.YoutubeDLpath==null ||SetStatic.settings.YoutubeDLpath=="")
+            if (SetStatic.settings.YoutubeDLpath==null || SetStatic.settings.YoutubeDLpath=="")
             {
                 webDld.DownloadFileCompleted += YoutubeDl_DownloadFileCompleted;
                 DownloaderEXE(new Uri("https://github.com/ytdl-org/youtube-dl/releases/download/2020.12.05/youtube-dl.exe"), "youtube-dl.exe");
@@ -45,16 +49,26 @@ namespace RecordGetTracks
             JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
         }
        */
-        public async void DownloadTracks()//List<string> tracks1)
+        public async void DownloadTracks(List<Track> links,string FolderName)//List<string> tracks1)
         {
-            if (CheckDownloadedContent())
+            //if (CheckDownloadedContent())
             {
                 var ytdl = new YoutubeDL();
                 ytdl.YoutubeDLPath = SetStatic.settings.YoutubeDLpath;
                 ytdl.FFmpegPath = SetStatic.settings.FFMpegPath;
-                ytdl.OutputFolder = SetStatic.FolderPath;
-
-                var res = await ytdl.RunAudioDownload("https://www.youtube.com/watch?v=LXzOz0RHKuM", YoutubeDLSharp.Options.AudioConversionFormat.Mp3);
+                if (!Directory.Exists(SetStatic.FolderPath + FolderName))
+                    Directory.CreateDirectory(SetStatic.FolderPath + FolderName);
+                ytdl.OutputFolder = SetStatic.FolderPath+ FolderName;
+                form_.panelSpoti.Visible = true;
+                form_.labelCurrProcess.Text = $"Выполняется: 0/0";
+                form_.MaximumProgressBar = links.Count;
+                for (int i = 0; i < links.Count; i++)
+                {
+                    form_.labelCurrProcess.Text = $"Выполняется: {i}/{links.Count}";
+                    form_.labelSpotiCurrName.Text = links[i].Name;
+                    form_.ProgressProgressBar = i+1;
+                    var res = await ytdl.RunAudioDownload($"{links[i].YoutubeLink}", YoutubeDLSharp.Options.AudioConversionFormat.Mp3);
+                }
              //   foreach (string songname in tracks1)
                 {
                     
@@ -62,6 +76,7 @@ namespace RecordGetTracks
             }
         
         }
+        
         public void DownloaderEXE(Uri link, string name)
         {
             var listToHide = new List<Control> { form_.metroLabel11, form_.toggleAutoSkip, form_.metroLabel12, form_.toggleAutoSelect };

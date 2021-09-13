@@ -30,10 +30,11 @@ namespace RecordGetTracks
                 SelHelper.ClickLink(SpotifyPatches.LogInButt);
                 SpotifyData.SpotifyPages.IsAuthorized = true;
                 Thread.Sleep(1000);
+                SelHelper.ClickLink(SpotifyPatches.CookieAllertCloser);
                 if (SelHelper.ChromeDriver.Url == urlLogin)
                 {
 #if !DEBUG
-                 if (SeleniumHelper.FindErrors(SpotifyPatches.AllertLoginOrPassWrong) != null)
+                 if (SelHelper.FindErrors(SpotifyPatches.AllertLoginOrPassWrong) != null)
                              SpotifyData.SpotifyPages.IsAuthorized = false;
 #endif
                 }
@@ -43,8 +44,8 @@ namespace RecordGetTracks
         public void GetPlaylists() // Получает список плейлистов расположенный в левом меню после авторизации
         {
             var wait = new WebDriverWait(SelHelper.ChromeDriver, TimeSpan.FromSeconds(5));
-            wait.Until(d => d.FindElement(SpotifyPatches.Playlists));
-            var Playlists = SelHelper.ChromeDriver.FindElements(SpotifyPatches.Playlists);
+            wait.Until(d => d.FindElement(SpotifyPatches.PlaylistList));
+            var Playlists = SelHelper.ChromeDriver.FindElements(SpotifyPatches.PlaylistList);
             SetStatic.settings.SpotiPlaylists = new List<string> { };
             foreach (IWebElement el in Playlists)
                 SetStatic.settings.SpotiPlaylists.Add(el.Text);
@@ -64,7 +65,7 @@ namespace RecordGetTracks
             SelHelper.SendKeys(SpotifyPatches.NewPlstFieldName, true, new[] { name });
             SelHelper.ClickLink(SpotifyPatches.NewPlstSaveName);
         }
-        public void ImportTracksToPlaylist(string PlaylistName, List<string> tracks)
+        public void ImportTracksToPlaylist(string PlaylistName, List<Track> tracks)
         {
             form1.Invoke(new Action(() => { form1.ProgressProgressBar = 0; form1.MaximumProgressBar = tracks.Count; }));
             for (int trackId = 0; trackId < tracks.Count; trackId++)
@@ -76,11 +77,11 @@ namespace RecordGetTracks
                 }
                 form1.Invoke(new Action(() =>
                 {
-                    form1.labelSpotiCurrName.Text = tracks[trackId];
+                    form1.labelSpotiCurrName.Text = tracks[trackId].Name;
                     form1.labelCurrProcess.Text = $"Выполняется: {trackId + 1}/{tracks.Count}";
                     form1.ProgressProgressBar = trackId;
                 }));
-                string urlSong = SpotifyPages.SearchPageUrl + tracks[trackId].Replace("-", "").Replace(" ", "%20");
+                string urlSong = SpotifyPages.SearchPageUrl + tracks[trackId].Name.Replace("-", "").Replace(" ", "%20");
                 SelHelper.ChromeDriver.Navigate().GoToUrl(urlSong);
                 try
                 {
@@ -92,7 +93,7 @@ namespace RecordGetTracks
                 {
                     if (ex.Message.Contains("(//div[@data-testid='tracklist-row'])[1]") && !form1.toggleAutoSkip.Checked)
                     {
-                        var indexsong = form1.toggleAutoSelect.Checked ? 1 : LocateTrack(tracks[trackId]);
+                        var indexsong = form1.toggleAutoSelect.Checked ? 1 : LocateTrack(tracks[trackId].Name);
                         if (indexsong > 0)
                             AddTrackToPls(PlaylistName, indexsong);
                     }
@@ -101,22 +102,74 @@ namespace RecordGetTracks
             }
             SelHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(10);
         }
+
+        private int FindMenuList()
+        {
+            for (int i=12; i<16; i++)
+            {
+                var xpath = By.XPath(String.Format(SpotifyPatches.AddToPlBtn, i));
+                try
+                {
+                    SelHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(310);
+                    var x= SelHelper.ChromeDriver.FindElements(xpath);
+                    if (x.Count > 0)
+                    {
+                        SelHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                        return i;
+                    }
+                    else
+                        continue;
+                }
+                catch
+                {
+                    continue;
+                }
+            }
+            return 14;
+        }
+
         private void AddTrackToPls(string PlaylistName, int indexSong)
         {
             SelHelper.ContextClick(By.XPath(String.Format(SpotifyPatches.SongMenu, indexSong)));
-            SelHelper.ClickLink(SpotifyPatches.AddToPlBtn);
-            var playlistsNames = SelHelper.ChromeDriver.FindElements(By.XPath(SpotifyPatches.PlaylstsList));
+            var idDIV = FindMenuList();
+            SelHelper.ClickLink(By.XPath(String.Format(SpotifyPatches.AddToPlBtn, idDIV)));
+            var playlistsNames = SelHelper.ChromeDriver.FindElements(By.XPath(String.Format(SpotifyPatches.PlaylstsList, idDIV)));
             foreach (IWebElement plEL in playlistsNames)
             {
                 var name = plEL.Text;
                 if (name == PlaylistName)
                 {
                     plEL.Click();
-                    SelHelper.FindErrors(SpotifyPatches.SuccessedAdding);
+                    if (! AlreadyAddedSkipper())
+                        SelHelper.FindErrors(SpotifyPatches.SuccessedAdding);
                     break;
                 }
             }
         }
+
+        private bool AlreadyAddedSkipper()
+        {
+            try
+            {
+                Thread.Sleep(650);
+                SelHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(1400);
+                var x = SelHelper.ChromeDriver.FindElement(SpotifyPatches.AlreadyAddedNOTTOADD);
+                if (!String.IsNullOrEmpty(x.Text))
+                {
+                    SelHelper.ClickLink(SpotifyPatches.AlreadyAddedNOTTOADD);
+                    Thread.Sleep(400);
+                    SelHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromMilliseconds(5000);
+                    return true;
+                }
+                
+            }
+            catch
+            {
+                return false;
+            }
+            return false;
+        }
+
         private int LocateTrack(string trackName)
         {
             var onlyArtist = trackName.Split('-');

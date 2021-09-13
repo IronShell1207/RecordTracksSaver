@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
 using System.Threading;
+using System.Windows.Forms;
 using OpenQA.Selenium;
 using OpenQA.Selenium.Chrome;
 using OpenQA.Selenium.Interactions;
@@ -20,7 +22,7 @@ namespace RecordGetTracks
                 if (_driver != null)
                 {
                     ChromeDriver.Close();
-                   ChromeDriver.Quit();
+                    ChromeDriver.Quit();
                     _driver = null;
                 }
             }
@@ -58,8 +60,8 @@ namespace RecordGetTracks
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(2));
             try
             {
-                 wait.Until(d => d.FindElement(by));
-                 return _driver.FindElement(by).Text;
+                wait.Until(d => d.FindElement(by));
+                return _driver.FindElement(by).Text;
             }
             catch (OpenQA.Selenium.NoSuchElementException exx)
             {
@@ -69,10 +71,9 @@ namespace RecordGetTracks
             {
                 return null;
             }
-            
             return null;
         }
-        public static bool SendKeys(By by,bool isClean, string[] text) // печатаем текст в поле безошибочно
+        public static bool SendKeys(By by, bool isClean, string[] text) // печатаем текст в поле безошибочно
         {
             var wait = new WebDriverWait(_driver, TimeSpan.FromSeconds(5));
             try
@@ -92,6 +93,7 @@ namespace RecordGetTracks
             }
             return true;
         }
+
         public static IWebDriver ChromeDriver
         {
             get
@@ -100,13 +102,31 @@ namespace RecordGetTracks
                 {
                     return _driver;
                 }
-                var chromeDriverService = ChromeDriverService.CreateDefaultService(SetStatic.settings.ChromePath);  // сделать возможность менять
-                chromeDriverService.HideCommandPromptWindow = true;
-                var chromeOptions = new ChromeOptions(); 
-                _driver = new ChromeDriver(chromeDriverService, chromeOptions);
-                // Avoid synchronization issues by applying timed delay to each step if necessary
-                _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
-                _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+                // if (DialogResult.OK != frm.msgCall("Укажите путь к chrome.exe для продолжения!", "Требуется указание пути к Google Chrome"))
+                // throw new Exception("Путь к Google Chrome не был указан! Завершение работы программы");
+
+                // if (SetStatic.settings.ChromePath == null)
+                //     throw new Exception("Путь к Google Chrome не был указан! Завершение работы программы");
+                if (!File.Exists(SetStatic.settings.ChromePath + "chromedriver.exe"))
+                {
+                    Process.Start("ChrDrivDownloader.exe", $"\"{SetStatic.settings.ChromePath}\"");
+                    Thread.Sleep(1500);
+
+                    while (Process.GetProcessesByName("ChrDrivDownloader").Length > 0)
+                    {
+                        Thread.Sleep(500);
+                    }
+                    Thread.Sleep(1000);
+                }
+                    var chromeDriverService = ChromeDriverService.CreateDefaultService(SetStatic.settings.ChromePath);
+                    // сделать возможность менять
+                    chromeDriverService.HideCommandPromptWindow = true;
+                    var chromeOptions = new ChromeOptions();
+                    _driver = new ChromeDriver(chromeDriverService, chromeOptions);
+                    // Avoid synchronization issues by applying timed delay to each step if necessary
+                    _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
+                    _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);
+              
                 return _driver;
             }
             set
@@ -115,13 +135,13 @@ namespace RecordGetTracks
             }
         }
 
-      /*  public static void Wait(int miliseconds, int maxTimeOutSeconds = 10)
-        {
-            var wait = new WebDriverWait(ChromeDriver, new TimeSpan(0, 0, 1, maxTimeOutSeconds));
-            var delay = new TimeSpan(0, 0, 0, 0, miliseconds);
-            var timestamp = DateTime.Now;
-            wait.Until(webDriver => (DateTime.Now - timestamp) > delay);
-        }*/
+        /*  public static void Wait(int miliseconds, int maxTimeOutSeconds = 10)
+          {
+              var wait = new WebDriverWait(ChromeDriver, new TimeSpan(0, 0, 1, maxTimeOutSeconds));
+              var delay = new TimeSpan(0, 0, 0, 0, miliseconds);
+              var timestamp = DateTime.Now;
+              wait.Until(webDriver => (DateTime.Now - timestamp) > delay);
+          }*/
 
         public static string GetCosasBuildVersion()
         {

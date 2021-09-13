@@ -24,6 +24,7 @@ using RadioData;
 using System.Windows.Threading;
 using System.Text.RegularExpressions;
 using MetroFramework.Components;
+using IronShellsControls;
 
 namespace RecordGetTracks
 {
@@ -35,7 +36,7 @@ namespace RecordGetTracks
         public SpotifyWorker sWorker;
         public ControlsWorker ctrlWorker;
         private string StartNameForm;
-       
+        private List<TrackSelec> tracksList = new List<TrackSelec> { };
         int ReturnStationIndex() => RadioLists.StationsList.FindIndex(x => x.Name == listBox.SelectedItem.ToString().Replace(" 💙", ""));
         public Form1()
         {
@@ -54,14 +55,14 @@ namespace RecordGetTracks
         }
         public void RefreshTheme()
         {
-            List<ListBox> lboses = new List<ListBox> { listBox, listBox1, listBoxPlaylists };    
+            List<ListBox> lboses = new List<ListBox> { listBox, listBox1, listBoxPlaylists };
             metroStyleManager1.Theme = SetStatic.settings.mTheme;
             metroStyleManager1.Style = SetStatic.settings.mColor;
             Theme = SetStatic.settings.mTheme;
             Style = SetStatic.settings.mColor;
             foreach (ListBox lbx in lboses)
             {
-                bool isDark = SetStatic.settings.mTheme == MetroThemeStyle.Dark ? true: false;
+                bool isDark = SetStatic.settings.mTheme == MetroThemeStyle.Dark ? true : false;
                 lbx.ForeColor = isDark ? Color.White : Color.Black;
                 lbx.BackColor = isDark ? Color.Black : Color.White;
             }
@@ -87,6 +88,17 @@ namespace RecordGetTracks
                     listBoxPlaylists.Items.AddRange(spotiList.ToArray());            // Список плейлистов из Spotify
                 }
                 panelRecMain.Dock = DockStyle.Fill;
+                if (SetStatic.settings.ChromePath == "" || SetStatic.settings.ChromePath == null) // первый запуск установка пути к хрому
+                {
+                    SetStatic.settings.ChromePath = SetStatic.ChromeDefPath;
+                    if (SetStatic.settings.ChromePath == "")
+                        if (DialogResult.OK == msgCall("Прежде чем продолжить укажите путь с chrome.exe", "Требуется указание пути к Google Chrome"))
+                        {
+                            SetStatic.settings.ChromePath = SetStatic.FindChromePath();
+                            JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
+                        }
+                        else Close();
+                }
             }
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
@@ -111,7 +123,8 @@ namespace RecordGetTracks
             if (listBox1.SelectedIndex > -1)
             {
                 btnTracksRemove.Enabled = true;
-
+                var station = RadioLists.StationsList.FindIndex(x => x.Name == listBox.Items[listBox.SelectedIndex].ToString().Replace(" 💙", ""));
+                labelRemoveRusMusic.Text = RadioList.StationsList[station].TracksList[listBox1.SelectedIndex].YoutubeLink;
             }
             else { btnTracksRemove.Enabled = false; }
         }
@@ -196,7 +209,7 @@ namespace RecordGetTracks
         }
         private void toggleBrowserHide_Click(object sender, EventArgs e) // переключатель автоскрывателя браузера
         {
-            
+
         }
         #region Menu Button
         private void btnExpMenu_MouseClick(object sender, MouseEventArgs e)
@@ -241,14 +254,37 @@ namespace RecordGetTracks
                 var count = tbTracksNum.Text != "" ? int.Parse(tbTracksNum.Text) : 0;
                 var thread = new Thread(() =>
                 {
-                    
                     rwork.LoadTracks(station, count);
                     SelHelper.ChromeDriver.Manage().Window.Position = new Point(0, 0);
                     Invoke(new Action(() =>
                     {
                         listBox1.Items.Clear();
                         lblCountTracks.Text = $"Кол-во: {RadioLists.StationsList[station].TracksList.Count}";
-                        listBox1.Items.AddRange(RadioLists.StationsList[station].TracksList.ToArray());
+                        for (int i = 0; i < RadioLists.StationsList[station].TracksList.Count; i++)
+                        {
+                            listBox1.Items.Add(RadioLists.StationsList[station].TracksList[i].Name);
+                        }
+                        labelDatePlaylist.Text = "Список треков от: " + RadioLists.StationsList[station].DateLoadedTracks;
+                    }));
+                    if (SetStatic.settings.HideBrowser) SelHelper.ChromeDriver.Manage().Window.Minimize();
+                });
+                thread.Start();
+            }
+            else
+            {
+                var count = tbTracksNum.Text != "" ? int.Parse(tbTracksNum.Text) : 0;
+                var thread = new Thread(() =>
+                {
+                    rwork.LoadTracks(station, count);
+                    SelHelper.ChromeDriver.Manage().Window.Position = new Point(0, 0);
+                    Invoke(new Action(() =>
+                    {
+                        listBox1.Items.Clear();
+                        lblCountTracks.Text = $"Кол-во: {RadioLists.StationsList[station].TracksList.Count}";
+                        for (int i = 0; i < RadioLists.StationsList[station].TracksList.Count; i++)
+                        {
+                            listBox1.Items.Add(RadioLists.StationsList[station].TracksList[i].Name);
+                        }
                         labelDatePlaylist.Text = "Список треков от: " + RadioLists.StationsList[station].DateLoadedTracks;
                     }));
                     if (SetStatic.settings.HideBrowser) SelHelper.ChromeDriver.Manage().Window.Minimize();
@@ -287,6 +323,7 @@ namespace RecordGetTracks
 
         private void buttonStartSpoti_Click(object sender, EventArgs e)
         {
+            (sender as MetroButton).Enabled = false;
             var th = new Thread(() =>
             {
                 SelHelper.ChromeDriver.Manage().Window.Position = new Point(0, 0);
@@ -306,7 +343,7 @@ namespace RecordGetTracks
                         SetStatic.settings.SpotiPass = tbpass.Text;
                         JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
                     }
-
+                    //SelHelper.ChromeDriver.FindElement(By.XPath("//button[@class=\"onetrust-close-btn-handler onetrust-close-btn-ui banner-close-button onetrust-lg ot-close-icon\"]")).Click();
                 }
                 else
                 {
@@ -336,8 +373,9 @@ namespace RecordGetTracks
         private void listBoxStations_SelectedIndexChanged(object sender, EventArgs e)
         {
             var cInd = listBox.SelectedIndex;
-
             listBox1.Items.Clear();
+            tracksList.Clear();
+          //  panelTracksList.Controls.Clear();
             if (cInd > -1)
             {
                 Text = $"{StartNameForm} - {listBox.SelectedItem.ToString()}";
@@ -347,9 +385,16 @@ namespace RecordGetTracks
                 lblCountTracks.Text = $"Кол-во: {station.TracksList.Count}";
                 if (stationTracks.Count > 0)
                 {
-                    listBox1.Items.AddRange(stationTracks.ToArray());
+                    //vScrollBar1.Maximum = stationTracks.Count;
+                    for (int i = 0; i < stationTracks.Count; i++)
+                    {
+                    //    TrackSelec ts = new TrackSelec() { Text = stationTracks[i].Name, Dock = DockStyle.Top };
+                  //      tracksList.Add(ts);
+                        listBox1.Items.Add(stationTracks[i].Name);
+                    }
                     if (station.DateLoadedTracks != null)
                     {
+                     //   CreateLists(0);
                         labelDatePlaylist.Text = $"Список треков от: {station.DateLoadedTracks}";
                         labelDatePlaylist.Visible = true;
                     }
@@ -373,6 +418,21 @@ namespace RecordGetTracks
                 buttongetTitle.Enabled = false;
             }
         }
+        int indextop = 0, indexlast = 0;
+       /* void CreateLists(int index)
+        {
+
+            int countToShow = panelTracksList.Height / 30;
+            panelTracksList.Controls.Clear();
+            for (int i = index; i < countToShow + index && i < tracksList.Count; i++)
+            {
+                panelTracksList.Controls.Add(tracksList[i]);
+            }
+            indextop = index;
+            indexlast = countToShow + index;
+
+        }*/
+
         #endregion
         #region TOGGLER!!!!!!!!!!!!
         private void toggleIsFav_CheckedChanged(object sender, EventArgs e)
@@ -392,12 +452,12 @@ namespace RecordGetTracks
                     toggleBigSmallLetters.Enabled = true;
                     ctrlWorker.CreateListRadios(toggleRecIsFav.Checked, listBox);
                 }));
-                
+
             });
             th.Start();
         }
 
-        
+
         /* void CreateListRadios(bool isFavorite)
         {
             listBox.Invoke(new Action(() => listBox.Items.Clear()));
@@ -482,10 +542,14 @@ namespace RecordGetTracks
 
         private void labelRemoveRusMusic_Click(object sender, EventArgs e) // Удаляет русские треки
         {
+           // SelHelper.ChromeDriver.Url = labelRemoveRusMusic.Text;
             var ind = ReturnStationIndex();
             rwork.RussRemover(ind, msgCall);
             listBox1.Items.Clear();
-            listBox1.Items.AddRange(RadioLists.StationsList[ind].TracksList.ToArray());
+            for (int i = 0; i < RadioLists.StationsList[ind].TracksList.Count; i++)
+            {
+                listBox1.Items.Add(RadioLists.StationsList[ind].TracksList[i].Name);
+            }
         }
 
         private void btnStartImport_Click(object sender, EventArgs e)
@@ -532,21 +596,76 @@ namespace RecordGetTracks
             var folderTB = tbSavePath.Text;
             string path = $"{(Directory.Exists(folderTB) ? folderTB : Environment.GetFolderPath(Environment.SpecialFolder.Desktop))}\\{(tbSaveName.Text != "" ? tbSaveName.Text : listBox.SelectedItem.ToString())}";
             var tracklist = RadioLists.StationsList[ReturnStationIndex()].TracksList;
-            File.WriteAllText(path+".txt", String.Join("\n",tracklist.ToArray()));
-            msgCall($"Файл сохранен по пути:\n{path}.txt","Успешно экспортировано");
+            //  File.WriteAllText(path+".txt", String.Join("\n",tracklist.ToArray())); исправить добавление в файл для нового класса вместо списка string
+            msgCall($"Файл сохранен по пути:\n{path}.txt", "Успешно экспортировано");
         }
 
         private void metroButton3_Click(object sender, EventArgs e)
         {
-            var tracklist = RadioLists.StationsList[ReturnStationIndex()].TracksList;
+            // var tracklist = RadioLists.StationsList[ReturnStationIndex()].TracksList;
             PlaylistDownloader plsDownl = new PlaylistDownloader(this);
-          //  var dl = plsDownl.YoutubeDLPath;
+            var stationDa = RadioLists.StationsList[ReturnStationIndex()];
+            var tracklist = stationDa.TracksList;
+            plsDownl.DownloadTracks(tracklist,stationDa.Name);
+            //   var lnn =  plsDownl.Get_youtube_Link("219610");
+            //   (sender as Button).Text = lnn;
+            //  var dl = plsDownl.YoutubeDLPath;
         }
 
         private void metroButton4_Click_1(object sender, EventArgs e)
         {
-            PlaylistDownloader osl = new PlaylistDownloader(this);
-            osl.DownloadTracks();
+
+            //PlaylistDownloader osl = new PlaylistDownloader(this);
+            // osl.DownloadTracks();
+        }
+
+        private void trackSelec9_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trackSelec8_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trackSelec7_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trackSelec6_Load(object sender, EventArgs e)
+        {
+
+        }
+
+        private void trackSelec5_Load(object sender, EventArgs e)
+        {
+
+        }
+        int iaaa = 0;
+        private void btnSupp_Click(object sender, EventArgs e)
+        {
+            //IronShellsControls.TrackSelec ts = new IronShellsControls.TrackSelec() { Dock = DockStyle.Top, Text = iaaa++.ToString() };
+            Form2 fm = new Form2();
+            fm.Show();
+           // panelTracksList.Controls.Add(ts);
+
+        }
+
+        private void vScrollBar1_ValueChanged(object sender, EventArgs e)
+        {
+          //  CreateLists(vScrollBar1.Value);
+        }
+
+        private void panelTracksList_Paint(object sender, PaintEventArgs e)
+        {
+
+        }
+
+        private void metroTrackBar1_Scroll(object sender, ScrollEventArgs e)
+        {
+         //   CreateLists(vScrollBar1.Value);
         }
     }
 }

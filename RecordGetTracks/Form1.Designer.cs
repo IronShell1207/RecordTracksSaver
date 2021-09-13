@@ -100,7 +100,6 @@
             this.metroPanel2 = new MetroFramework.Controls.MetroPanel();
             this.panelTracksBott = new MetroFramework.Controls.MetroPanel();
             this.metroButton1 = new MetroFramework.Controls.MetroButton();
-            this.panelSpaceMiddle = new MetroFramework.Controls.MetroPanel();
             this.panelSettings = new MetroFramework.Controls.MetroPanel();
             this.metroToggle1 = new MetroFramework.Controls.MetroToggle();
             this.metroLabel10 = new MetroFramework.Controls.MetroLabel();
@@ -124,6 +123,7 @@
             this.buttonBreakSpoti = new MetroFramework.Controls.MetroButton();
             this.labelSpotiCurrName = new System.Windows.Forms.Label();
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
+            this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
             this.panelSpotiMain.SuspendLayout();
             this.panelSpotiImport.SuspendLayout();
             this.panelRecSpaceImp2.SuspendLayout();
@@ -198,9 +198,9 @@
             this.listBox1.ForeColor = System.Drawing.Color.White;
             this.listBox1.FormattingEnabled = true;
             this.listBox1.ItemHeight = 15;
-            this.listBox1.Location = new System.Drawing.Point(10, 0);
+            this.listBox1.Location = new System.Drawing.Point(0, 0);
             this.listBox1.Name = "listBox1";
-            this.listBox1.Size = new System.Drawing.Size(440, 486);
+            this.listBox1.Size = new System.Drawing.Size(1073, 660);
             this.listBox1.TabIndex = 3;
             this.listBox1.SelectedIndexChanged += new System.EventHandler(this.listBox1_SelectedIndexChanged);
             // 
@@ -290,7 +290,7 @@
             this.progressBar.Dock = System.Windows.Forms.DockStyle.Fill;
             this.progressBar.Location = new System.Drawing.Point(0, 0);
             this.progressBar.Name = "progressBar";
-            this.progressBar.Size = new System.Drawing.Size(655, 22);
+            this.progressBar.Size = new System.Drawing.Size(1278, 22);
             this.progressBar.TabIndex = 12;
             // 
             // labelSpotiTitle
@@ -399,7 +399,7 @@
             this.panelSpotiMain.HorizontalScrollbarBarColor = true;
             this.panelSpotiMain.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSpotiMain.HorizontalScrollbarSize = 10;
-            this.panelSpotiMain.Location = new System.Drawing.Point(3, 500);
+            this.panelSpotiMain.Location = new System.Drawing.Point(2, 209);
             this.panelSpotiMain.Name = "panelSpotiMain";
             this.panelSpotiMain.Size = new System.Drawing.Size(205, 452);
             this.panelSpotiMain.TabIndex = 17;
@@ -638,7 +638,7 @@
             this.panelRecMain.HorizontalScrollbarBarColor = true;
             this.panelRecMain.HorizontalScrollbarHighlightOnWheel = false;
             this.panelRecMain.HorizontalScrollbarSize = 10;
-            this.panelRecMain.Location = new System.Drawing.Point(40, 500);
+            this.panelRecMain.Location = new System.Drawing.Point(52, -6);
             this.panelRecMain.Name = "panelRecMain";
             this.panelRecMain.Size = new System.Drawing.Size(205, 515);
             this.panelRecMain.TabIndex = 18;
@@ -701,9 +701,9 @@
             this.panelProgressBar.HorizontalScrollbarBarColor = true;
             this.panelProgressBar.HorizontalScrollbarHighlightOnWheel = false;
             this.panelProgressBar.HorizontalScrollbarSize = 10;
-            this.panelProgressBar.Location = new System.Drawing.Point(20, 601);
+            this.panelProgressBar.Location = new System.Drawing.Point(20, 775);
             this.panelProgressBar.Name = "panelProgressBar";
-            this.panelProgressBar.Size = new System.Drawing.Size(655, 22);
+            this.panelProgressBar.Size = new System.Drawing.Size(1278, 22);
             this.panelProgressBar.TabIndex = 19;
             this.panelProgressBar.VerticalScrollbarBarColor = true;
             this.panelProgressBar.VerticalScrollbarHighlightOnWheel = false;
@@ -715,7 +715,7 @@
             this.progressBarLoaging.Location = new System.Drawing.Point(0, 0);
             this.progressBarLoaging.Name = "progressBarLoaging";
             this.progressBarLoaging.ProgressBarStyle = System.Windows.Forms.ProgressBarStyle.Marquee;
-            this.progressBarLoaging.Size = new System.Drawing.Size(655, 22);
+            this.progressBarLoaging.Size = new System.Drawing.Size(1278, 22);
             this.progressBarLoaging.TabIndex = 13;
             this.progressBarLoaging.Visible = false;
             // 
@@ -731,7 +731,7 @@
             this.panelRightMain.HorizontalScrollbarSize = 10;
             this.panelRightMain.Location = new System.Drawing.Point(20, 86);
             this.panelRightMain.Name = "panelRightMain";
-            this.panelRightMain.Size = new System.Drawing.Size(205, 515);
+            this.panelRightMain.Size = new System.Drawing.Size(205, 689);
             this.panelRightMain.TabIndex = 20;
             this.panelRightMain.VerticalScrollbarBarColor = true;
             this.panelRightMain.VerticalScrollbarHighlightOnWheel = false;
@@ -746,7 +746,7 @@
             this.panelDownladTracks.HorizontalScrollbarBarColor = true;
             this.panelDownladTracks.HorizontalScrollbarHighlightOnWheel = false;
             this.panelDownladTracks.HorizontalScrollbarSize = 10;
-            this.panelDownladTracks.Location = new System.Drawing.Point(0, 12);
+            this.panelDownladTracks.Location = new System.Drawing.Point(193, 12);
             this.panelDownladTracks.Name = "panelDownladTracks";
             this.panelDownladTracks.Size = new System.Drawing.Size(205, 490);
             this.panelDownladTracks.TabIndex = 20;
@@ -809,7 +809,7 @@
             this.panelExportFile.HorizontalScrollbarBarColor = true;
             this.panelExportFile.HorizontalScrollbarHighlightOnWheel = false;
             this.panelExportFile.HorizontalScrollbarSize = 10;
-            this.panelExportFile.Location = new System.Drawing.Point(7, 461);
+            this.panelExportFile.Location = new System.Drawing.Point(107, 115);
             this.panelExportFile.Name = "panelExportFile";
             this.panelExportFile.Size = new System.Drawing.Size(205, 490);
             this.panelExportFile.TabIndex = 19;
@@ -953,7 +953,7 @@
             this.panelMenu.HorizontalScrollbarSize = 10;
             this.panelMenu.Location = new System.Drawing.Point(20, 60);
             this.panelMenu.Name = "panelMenu";
-            this.panelMenu.Size = new System.Drawing.Size(655, 26);
+            this.panelMenu.Size = new System.Drawing.Size(1278, 26);
             this.panelMenu.TabIndex = 19;
             this.panelMenu.VerticalScrollbarBarColor = true;
             this.panelMenu.VerticalScrollbarHighlightOnWheel = false;
@@ -966,7 +966,7 @@
             this.metroPanel4.HorizontalScrollbarBarColor = true;
             this.metroPanel4.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel4.HorizontalScrollbarSize = 10;
-            this.metroPanel4.Location = new System.Drawing.Point(540, 0);
+            this.metroPanel4.Location = new System.Drawing.Point(1163, 0);
             this.metroPanel4.Name = "metroPanel4";
             this.metroPanel4.Size = new System.Drawing.Size(115, 26);
             this.metroPanel4.TabIndex = 29;
@@ -1004,6 +1004,7 @@
             this.btnSupp.TabIndex = 26;
             this.btnSupp.Text = "Справка";
             this.btnSupp.UseVisualStyleBackColor = true;
+            this.btnSupp.Click += new System.EventHandler(this.btnSupp_Click);
             // 
             // btnExpMenu
             // 
@@ -1036,9 +1037,10 @@
             this.labelRemoveRusMusic.AutoSize = true;
             this.labelRemoveRusMusic.Cursor = System.Windows.Forms.Cursors.Hand;
             this.labelRemoveRusMusic.Enabled = false;
-            this.labelRemoveRusMusic.Location = new System.Drawing.Point(282, 4);
+            this.labelRemoveRusMusic.FontSize = MetroFramework.MetroLabelSize.Small;
+            this.labelRemoveRusMusic.Location = new System.Drawing.Point(193, 7);
             this.labelRemoveRusMusic.Name = "labelRemoveRusMusic";
-            this.labelRemoveRusMusic.Size = new System.Drawing.Size(155, 19);
+            this.labelRemoveRusMusic.Size = new System.Drawing.Size(130, 15);
             this.labelRemoveRusMusic.TabIndex = 29;
             this.labelRemoveRusMusic.Text = "Удалить \"русские\" треки";
             this.labelRemoveRusMusic.Click += new System.EventHandler(this.labelRemoveRusMusic_Click);
@@ -1157,14 +1159,13 @@
             // 
             this.metroPanel2.Controls.Add(this.listBox1);
             this.metroPanel2.Controls.Add(this.panelTracksBott);
-            this.metroPanel2.Controls.Add(this.panelSpaceMiddle);
             this.metroPanel2.Dock = System.Windows.Forms.DockStyle.Fill;
             this.metroPanel2.HorizontalScrollbarBarColor = true;
             this.metroPanel2.HorizontalScrollbarHighlightOnWheel = false;
             this.metroPanel2.HorizontalScrollbarSize = 10;
             this.metroPanel2.Location = new System.Drawing.Point(225, 86);
             this.metroPanel2.Name = "metroPanel2";
-            this.metroPanel2.Size = new System.Drawing.Size(450, 515);
+            this.metroPanel2.Size = new System.Drawing.Size(1073, 689);
             this.metroPanel2.TabIndex = 21;
             this.metroPanel2.VerticalScrollbarBarColor = true;
             this.metroPanel2.VerticalScrollbarHighlightOnWheel = false;
@@ -1179,9 +1180,9 @@
             this.panelTracksBott.HorizontalScrollbarBarColor = true;
             this.panelTracksBott.HorizontalScrollbarHighlightOnWheel = false;
             this.panelTracksBott.HorizontalScrollbarSize = 10;
-            this.panelTracksBott.Location = new System.Drawing.Point(10, 486);
+            this.panelTracksBott.Location = new System.Drawing.Point(0, 660);
             this.panelTracksBott.Name = "panelTracksBott";
-            this.panelTracksBott.Size = new System.Drawing.Size(440, 29);
+            this.panelTracksBott.Size = new System.Drawing.Size(1073, 29);
             this.panelTracksBott.TabIndex = 12;
             this.panelTracksBott.VerticalScrollbarBarColor = true;
             this.panelTracksBott.VerticalScrollbarHighlightOnWheel = false;
@@ -1197,20 +1198,6 @@
             this.metroButton1.TabIndex = 7;
             this.metroButton1.Text = "Очистить список";
             this.metroButton1.UseSelectable = true;
-            // 
-            // panelSpaceMiddle
-            // 
-            this.panelSpaceMiddle.Dock = System.Windows.Forms.DockStyle.Left;
-            this.panelSpaceMiddle.HorizontalScrollbarBarColor = true;
-            this.panelSpaceMiddle.HorizontalScrollbarHighlightOnWheel = false;
-            this.panelSpaceMiddle.HorizontalScrollbarSize = 10;
-            this.panelSpaceMiddle.Location = new System.Drawing.Point(0, 0);
-            this.panelSpaceMiddle.Name = "panelSpaceMiddle";
-            this.panelSpaceMiddle.Size = new System.Drawing.Size(10, 515);
-            this.panelSpaceMiddle.TabIndex = 4;
-            this.panelSpaceMiddle.VerticalScrollbarBarColor = true;
-            this.panelSpaceMiddle.VerticalScrollbarHighlightOnWheel = false;
-            this.panelSpaceMiddle.VerticalScrollbarSize = 10;
             // 
             // panelSettings
             // 
@@ -1233,7 +1220,7 @@
             this.panelSettings.HorizontalScrollbarBarColor = true;
             this.panelSettings.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSettings.HorizontalScrollbarSize = 10;
-            this.panelSettings.Location = new System.Drawing.Point(681, 161);
+            this.panelSettings.Location = new System.Drawing.Point(688, 15);
             this.panelSettings.Name = "panelSettings";
             this.panelSettings.Size = new System.Drawing.Size(371, 345);
             this.panelSettings.TabIndex = 22;
@@ -1414,9 +1401,9 @@
             this.panelSpoti.HorizontalScrollbarBarColor = true;
             this.panelSpoti.HorizontalScrollbarHighlightOnWheel = false;
             this.panelSpoti.HorizontalScrollbarSize = 10;
-            this.panelSpoti.Location = new System.Drawing.Point(27, 9);
+            this.panelSpoti.Location = new System.Drawing.Point(681, 189);
             this.panelSpoti.Name = "panelSpoti";
-            this.panelSpoti.Size = new System.Drawing.Size(655, 108);
+            this.panelSpoti.Size = new System.Drawing.Size(1278, 108);
             this.panelSpoti.TabIndex = 23;
             this.panelSpoti.VerticalScrollbarBarColor = true;
             this.panelSpoti.VerticalScrollbarHighlightOnWheel = false;
@@ -1428,7 +1415,7 @@
             this.toggleAutoSelect.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.toggleAutoSelect.AutoSize = true;
             this.toggleAutoSelect.DisplayStatus = false;
-            this.toggleAutoSelect.Location = new System.Drawing.Point(472, 80);
+            this.toggleAutoSelect.Location = new System.Drawing.Point(1095, 80);
             this.toggleAutoSelect.Name = "toggleAutoSelect";
             this.toggleAutoSelect.Size = new System.Drawing.Size(50, 17);
             this.toggleAutoSelect.TabIndex = 8;
@@ -1439,7 +1426,7 @@
             // 
             this.metroLabel12.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
             this.metroLabel12.AutoSize = true;
-            this.metroLabel12.Location = new System.Drawing.Point(265, 78);
+            this.metroLabel12.Location = new System.Drawing.Point(888, 78);
             this.metroLabel12.Name = "metroLabel12";
             this.metroLabel12.Size = new System.Drawing.Size(201, 19);
             this.metroLabel12.TabIndex = 7;
@@ -1482,7 +1469,7 @@
             // buttonBreakSpoti
             // 
             this.buttonBreakSpoti.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Right)));
-            this.buttonBreakSpoti.Location = new System.Drawing.Point(535, 53);
+            this.buttonBreakSpoti.Location = new System.Drawing.Point(1158, 53);
             this.buttonBreakSpoti.Name = "buttonBreakSpoti";
             this.buttonBreakSpoti.Size = new System.Drawing.Size(115, 47);
             this.buttonBreakSpoti.TabIndex = 3;
@@ -1507,11 +1494,15 @@
             this.metroStyleManager1.Owner = this;
             this.metroStyleManager1.Theme = MetroFramework.MetroThemeStyle.Dark;
             // 
+            // openFileDialog1
+            // 
+            this.openFileDialog1.FileName = "openFileDialog1";
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(695, 643);
+            this.ClientSize = new System.Drawing.Size(1318, 817);
             this.Controls.Add(this.panelSpoti);
             this.Controls.Add(this.panelSettings);
             this.Controls.Add(this.metroPanel2);
@@ -1605,7 +1596,6 @@
         private MetroFramework.Controls.MetroPanel metroPanel3;
         private MetroFramework.Controls.MetroPanel panelRecSpaceImp2;
         private MetroFramework.Controls.MetroPanel metroPanel2;
-        private MetroFramework.Controls.MetroPanel panelSpaceMiddle;
         private MetroFramework.Controls.MetroPanel panelTracksBott;
         private MetroFramework.Controls.MetroPanel panelNumUpDown;
         private MetroFramework.Controls.MetroPanel metroPanel6;
@@ -1662,6 +1652,7 @@
         public MetroFramework.Controls.MetroLabel metroLabel12;
         public MetroFramework.Controls.MetroLabel metroLabel11;
         public MetroFramework.Controls.MetroButton buttonBreakSpoti;
+        private System.Windows.Forms.OpenFileDialog openFileDialog1;
     }
 }
 

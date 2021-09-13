@@ -35,7 +35,6 @@ namespace RecordGetTracks
             this.buttonCLose = new MetroFramework.Controls.MetroButton();
             this.toggleTheme = new MetroFramework.Controls.MetroToggle();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
-            this.numUpDownMetr2 = new RecordGetTracks.numUpDownMetr();
             this.labalTracks = new MetroFramework.Controls.MetroLabel();
             this.btnBackupRadios = new MetroFramework.Controls.MetroLabel();
             this.metroLabel7 = new MetroFramework.Controls.MetroLabel();
@@ -49,6 +48,7 @@ namespace RecordGetTracks
             this.toggleBrowserHide = new MetroFramework.Controls.MetroToggle();
             this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
+            this.numUpDownMetr2 = new RecordGetTracks.numUpDownMetr();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).BeginInit();
             this.SuspendLayout();
@@ -125,21 +125,6 @@ namespace RecordGetTracks
             this.metroLabel1.Size = new System.Drawing.Size(174, 19);
             this.metroLabel1.TabIndex = 53;
             this.metroLabel1.Text = "Использовать темную тему";
-            // 
-            // numUpDownMetr2
-            // 
-            this.numUpDownMetr2.isZeroEqualsEmpty = true;
-            this.numUpDownMetr2.Location = new System.Drawing.Point(432, 142);
-            this.numUpDownMetr2.MaxValue = 100000;
-            this.numUpDownMetr2.MinValue = 0;
-            this.numUpDownMetr2.msTheme = MetroFramework.MetroThemeStyle.Light;
-            this.numUpDownMetr2.Name = "numUpDownMetr2";
-            this.numUpDownMetr2.Size = new System.Drawing.Size(93, 25);
-            this.numUpDownMetr2.TabIndex = 52;
-            this.numUpDownMetr2.TextV = "";
-            this.numUpDownMetr2.ValueStep = 5;
-            this.numUpDownMetr2.ValueStepByArrows = 1;
-            this.numUpDownMetr2.Load += new System.EventHandler(this.numUpDownMetr2_Load);
             // 
             // labalTracks
             // 
@@ -295,6 +280,20 @@ namespace RecordGetTracks
             // metroStyleManager1
             // 
             this.metroStyleManager1.Owner = this;
+            // 
+            // numUpDownMetr2
+            // 
+            this.numUpDownMetr2.isZeroEqualsEmpty = true;
+            this.numUpDownMetr2.Location = new System.Drawing.Point(432, 142);
+            this.numUpDownMetr2.MaxValue = 100000;
+            this.numUpDownMetr2.MinValue = 0;
+            this.numUpDownMetr2.msTheme = MetroFramework.MetroThemeStyle.Light;
+            this.numUpDownMetr2.Name = "numUpDownMetr2";
+            this.numUpDownMetr2.Size = new System.Drawing.Size(93, 25);
+            this.numUpDownMetr2.TabIndex = 52;
+            this.numUpDownMetr2.ValueStep = 5;
+            this.numUpDownMetr2.ValueStepByArrows = 1;
+            this.numUpDownMetr2.ValueChanged += new System.EventHandler(this.numUpDownMetr2_ValueChanged);
             // 
             // FormSettings
             // 

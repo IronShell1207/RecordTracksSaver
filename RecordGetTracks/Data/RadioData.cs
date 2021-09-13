@@ -8,33 +8,12 @@ using RecordGetTracks;
 
 namespace RadioData
 {
-    public class RadioStation // ОСНОВНОЙ КЛасс радио станций ВКЛЮЧАЮЩИЙ Список треков.!!
-    {
-        private List<string> _tracksList;
-        public string Name { get; set; }
-        public string LinkTracksList { get; set; }
-        public bool isFavorite { get; set; }
-        public string DateLoadedTracks { get; set; }
-        public List<string> TracksList // список треков, пусть тоже записывается в json с датой создания
-        {
-            get
-            {
-                if (_tracksList != null)
-                    return _tracksList;
-                _tracksList = new List<string> { };
-                return _tracksList;
-            }
-            set
-            {
-                _tracksList = value;
-            }
-        }
 
-    }
     public class Pages
     {
         public static readonly string MainPageUrl = "https://www.radiorecord.fm/playlist.html"; // основная страница
         public static readonly string StationUrlPat = "https://www.radiorecord.fm/player2/butlogo/"; // не используется
+        public static readonly string YoutubeJsonGetLink = "https://tags.radiorecord.fm/y.php?tid={0}"; // $ подставить номер
         #region By locations
         #endregion
 
@@ -47,6 +26,7 @@ namespace RadioData
         public static readonly By FramePlaylist = By.Name("playlist_frame");
         public static readonly string LinkAttr = "src";
         public static readonly By TrackXPath = By.XPath("//div[@class='artist']");
+        public static readonly By TrTdList = By.XPath("//tbody/tr");
         public static readonly By TracksPath = By.ClassName("artist");
         public static readonly By TrackAllXPath = By.XPath("//b[text()='Все']");
         public static readonly By TracksList = By.XPath("//tbody/tr");
@@ -54,6 +34,8 @@ namespace RadioData
         {
             public static By PageRef = By.ClassName("pages");
             public static By PageName = By.ClassName("ntitle2");
+            public static string YoutubeLink = "(//div[@class='youtubeimg'])[{0}]"; //attibute onclick
+            public static string FindButtonAtRow = "";
         }
     }
     public class Converting
@@ -67,8 +49,8 @@ namespace RadioData
     }
     public class RadioLists
     {
-        private static List<RadioData.RadioStation> _stationList;
-        public static List<RadioData.RadioStation> StationsList
+        private static List<RadioRec> _stationList;
+        public static List<RadioRec> StationsList
         {
             get
             {
@@ -82,7 +64,7 @@ namespace RadioData
                 catch (Exception ex) { }
                 if (_stationList != null)
                     return _stationList;
-                _stationList = new List<RadioData.RadioStation> { };
+                _stationList = new List<RadioRec> { };
                 return _stationList;
             }
             set
