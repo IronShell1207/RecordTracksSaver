@@ -70,36 +70,35 @@ namespace RecordGetTracks
         }
         void StartUPConfiguration()
         {
-            if (File.Exists(SetStatic.JsonSettingsPath))
+
+            toggleRecIsFav.Checked = SetStatic.settings.UseFavList;// Переключатель избранного
+            RefreshTheme();
+            toggleBrowserHide.Checked = SetStatic.settings.HideBrowser;          // Автоскрытие браузера 
+            toggleBigSmallLetters.Checked = SetStatic.settings.IsBigSymsInRadios;// Переключатель состояния списка станций
+            tbGooglePath.Text = SetStatic.settings.ChromePath;                   // Путь к Chrome
+            tblogin.Text = SetStatic.settings.SpotiLogin;                        // Spotify login
+            tbpass.Text = SetStatic.settings.SpotiPass;                          // Spotify Pass
+            var spotiList = SetStatic.settings.SpotiPlaylists;                   // Список плейлистов из Spotify
+            ctrlWorker.CreateListRadios(toggleRecIsFav.Checked, listBox);
+            if (listBox.Items.Count > 0) listBox.SelectedIndex = 0;
+            if (spotiList != null && spotiList.Count > 0)
             {
-                toggleRecIsFav.Checked = SetStatic.settings.UseFavList;// Переключатель избранного
-                RefreshTheme();
-                toggleBrowserHide.Checked = SetStatic.settings.HideBrowser;          // Автоскрытие браузера 
-                toggleBigSmallLetters.Checked = SetStatic.settings.IsBigSymsInRadios;// Переключатель состояния списка станций
-                tbGooglePath.Text = SetStatic.settings.ChromePath;                   // Путь к Chrome
-                tblogin.Text = SetStatic.settings.SpotiLogin;                        // Spotify login
-                tbpass.Text = SetStatic.settings.SpotiPass;                          // Spotify Pass
-                var spotiList = SetStatic.settings.SpotiPlaylists;                   // Список плейлистов из Spotify
-                ctrlWorker.CreateListRadios(toggleRecIsFav.Checked, listBox);
-                if (listBox.Items.Count > 0) listBox.SelectedIndex = 0;
-                if (spotiList != null && spotiList.Count > 0)
-                {
-                    listBoxPlaylists.Items.Clear();
-                    listBoxPlaylists.Items.AddRange(spotiList.ToArray());            // Список плейлистов из Spotify
-                }
-                panelRecMain.Dock = DockStyle.Fill;
-                if (SetStatic.settings.ChromePath == "" || SetStatic.settings.ChromePath == null) // первый запуск установка пути к хрому
-                {
-                    SetStatic.settings.ChromePath = SetStatic.ChromeDefPath;
-                    if (SetStatic.settings.ChromePath == "")
-                        if (DialogResult.OK == msgCall("Прежде чем продолжить укажите путь с chrome.exe", "Требуется указание пути к Google Chrome"))
-                        {
-                            SetStatic.settings.ChromePath = SetStatic.FindChromePath();
-                            JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
-                        }
-                        else Close();
-                }
+                listBoxPlaylists.Items.Clear();
+                listBoxPlaylists.Items.AddRange(spotiList.ToArray());            // Список плейлистов из Spotify
             }
+            panelRecMain.Dock = DockStyle.Fill;
+            if (SetStatic.settings.ChromePath == "" || SetStatic.settings.ChromePath == null) // первый запуск установка пути к хрому
+            {
+                SetStatic.settings.ChromePath = SetStatic.ChromeDefPath;
+                if (SetStatic.settings.ChromePath == "")
+                    if (DialogResult.OK == msgCall("Прежде чем продолжить укажите путь с chrome.exe", "Требуется указание пути к Google Chrome"))
+                    {
+                        SetStatic.settings.ChromePath = SetStatic.FindChromePath();
+                        JsnWorker1.CreateJsnFile(SetStatic.settings, SetStatic.JsonSettingsPath);
+                    }
+                    else Close();
+            }
+
         }
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
@@ -375,7 +374,7 @@ namespace RecordGetTracks
             var cInd = listBox.SelectedIndex;
             listBox1.Items.Clear();
             tracksList.Clear();
-          //  panelTracksList.Controls.Clear();
+            //  panelTracksList.Controls.Clear();
             if (cInd > -1)
             {
                 Text = $"{StartNameForm} - {listBox.SelectedItem.ToString()}";
@@ -388,13 +387,13 @@ namespace RecordGetTracks
                     //vScrollBar1.Maximum = stationTracks.Count;
                     for (int i = 0; i < stationTracks.Count; i++)
                     {
-                    //    TrackSelec ts = new TrackSelec() { Text = stationTracks[i].Name, Dock = DockStyle.Top };
-                  //      tracksList.Add(ts);
+                        //    TrackSelec ts = new TrackSelec() { Text = stationTracks[i].Name, Dock = DockStyle.Top };
+                        //      tracksList.Add(ts);
                         listBox1.Items.Add(stationTracks[i].Name);
                     }
                     if (station.DateLoadedTracks != null)
                     {
-                     //   CreateLists(0);
+                        //   CreateLists(0);
                         labelDatePlaylist.Text = $"Список треков от: {station.DateLoadedTracks}";
                         labelDatePlaylist.Visible = true;
                     }
@@ -419,19 +418,19 @@ namespace RecordGetTracks
             }
         }
         int indextop = 0, indexlast = 0;
-       /* void CreateLists(int index)
-        {
+        /* void CreateLists(int index)
+         {
 
-            int countToShow = panelTracksList.Height / 30;
-            panelTracksList.Controls.Clear();
-            for (int i = index; i < countToShow + index && i < tracksList.Count; i++)
-            {
-                panelTracksList.Controls.Add(tracksList[i]);
-            }
-            indextop = index;
-            indexlast = countToShow + index;
+             int countToShow = panelTracksList.Height / 30;
+             panelTracksList.Controls.Clear();
+             for (int i = index; i < countToShow + index && i < tracksList.Count; i++)
+             {
+                 panelTracksList.Controls.Add(tracksList[i]);
+             }
+             indextop = index;
+             indexlast = countToShow + index;
 
-        }*/
+         }*/
 
         #endregion
         #region TOGGLER!!!!!!!!!!!!
@@ -542,7 +541,7 @@ namespace RecordGetTracks
 
         private void labelRemoveRusMusic_Click(object sender, EventArgs e) // Удаляет русские треки
         {
-           // SelHelper.ChromeDriver.Url = labelRemoveRusMusic.Text;
+            // SelHelper.ChromeDriver.Url = labelRemoveRusMusic.Text;
             var ind = ReturnStationIndex();
             rwork.RussRemover(ind, msgCall);
             listBox1.Items.Clear();
@@ -606,7 +605,7 @@ namespace RecordGetTracks
             PlaylistDownloader plsDownl = new PlaylistDownloader(this);
             var stationDa = RadioLists.StationsList[ReturnStationIndex()];
             var tracklist = stationDa.TracksList;
-            plsDownl.DownloadTracks(tracklist,stationDa.Name);
+            plsDownl.DownloadTracks(tracklist, stationDa.Name);
             //   var lnn =  plsDownl.Get_youtube_Link("219610");
             //   (sender as Button).Text = lnn;
             //  var dl = plsDownl.YoutubeDLPath;
@@ -649,13 +648,13 @@ namespace RecordGetTracks
             //IronShellsControls.TrackSelec ts = new IronShellsControls.TrackSelec() { Dock = DockStyle.Top, Text = iaaa++.ToString() };
             Form2 fm = new Form2();
             fm.Show();
-           // panelTracksList.Controls.Add(ts);
+            // panelTracksList.Controls.Add(ts);
 
         }
 
         private void vScrollBar1_ValueChanged(object sender, EventArgs e)
         {
-          //  CreateLists(vScrollBar1.Value);
+            //  CreateLists(vScrollBar1.Value);
         }
 
         private void panelTracksList_Paint(object sender, PaintEventArgs e)
@@ -665,7 +664,7 @@ namespace RecordGetTracks
 
         private void metroTrackBar1_Scroll(object sender, ScrollEventArgs e)
         {
-         //   CreateLists(vScrollBar1.Value);
+            //   CreateLists(vScrollBar1.Value);
         }
     }
 }

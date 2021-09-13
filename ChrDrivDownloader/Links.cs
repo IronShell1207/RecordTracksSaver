@@ -1,14 +1,16 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Text.RegularExpressions;
 
 namespace ChromeDriverDownloader
 {
     class Links
     {
-        public static Uri ch87 = new Uri("https://chromedriver.storage.googleapis.com/87.0.4280.88/chromedriver_win32.zip");
-        public static Uri ch88 = new Uri("https://chromedriver.storage.googleapis.com/88.0.4324.27/chromedriver_win32.zip");
-        public static Uri ch86 = new Uri("https://chromedriver.storage.googleapis.com/86.0.4240.22/chromedriver_win32.zip");
+        public static string chromeLinkAdder = "https://chromedriver.storage.googleapis.com/";
         public static string VersionsLink = "https://chromedriver.storage.googleapis.com/index.html?path=&sort=desc";
+        public static string ChromeDriversApiXMLLink = "https://chromedriver.storage.googleapis.com/";
+        public static Regex VersionRE = new Regex(@"(?<ver>(?<rootver>[0-9]*)\.[0-9]*\.[0-9]*\.[0-9]*)/chromedriver_win32.zip");
+        public static Regex LastVe = new Regex(@"LATEST_RELEASE_[0-9.]*");
     }
 }
