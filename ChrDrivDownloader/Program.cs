@@ -18,8 +18,10 @@ namespace ChromeDriverDownloader
             
             if (args.Length > 0)
             {
-                var versionlink = GetVersions();
+                int instver = args[1] != null ? int.Parse(args[1]) : 0;
+                var versionlink = GetVersions(instver);
                 pathChrome = args[0].Replace("\"","");
+                
                 Console.WriteLine(pathChrome);
                 Console.WriteLine("");
                 DownlChromeDr(Links.chromeLinkAdder+ versionlink);
@@ -51,7 +53,7 @@ namespace ChromeDriverDownloader
             Thread.Sleep(1000);
             
         }
-        public static string GetVersions()
+        public static string GetVersions(int keyvers = 0)
         {
             Console.WriteLine("Please, select your chrome version by sending the number from list bellow (for exable send '0' for selecting 70 version of chrome");
             var webDr = new WebClient();
@@ -67,6 +69,11 @@ namespace ChromeDriverDownloader
                 {
                     var match = Links.VersionRE.Match(chver.Key);
                     var curver = int.Parse(Links.VersionRE.Replace(chver.Key, "${rootver}"));
+                    if (keyvers == curver)
+                    {
+                        Console.WriteLine($"Your version is: {Links.VersionRE.Replace(chver.Key, "${ver}")}");
+                        return chver.Key;
+                    }
                     if (curver!=lastVer)
                     {
                         lastVer = curver; 

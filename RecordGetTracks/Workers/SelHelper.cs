@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Reflection;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using OpenQA.Selenium;
@@ -15,6 +16,7 @@ namespace RecordGetTracks
     class SelHelper
     {
         private static IWebDriver _driver;
+        private static Regex errorCodeWrongDriver = new Regex(@"session not created: This version of ChromeDriver only supports Chrome version (?<ver>[0-9]{2,3})\nCurrent browser version is (?<curver>[0-9.]*) with binary path (?<path>.*chrome.exe)\s*\(SessionNotCreated\)");
         public static void QuitDriver()
         {
             try
@@ -122,7 +124,24 @@ namespace RecordGetTracks
                     // сделать возможность менять
                     chromeDriverService.HideCommandPromptWindow = true;
                     var chromeOptions = new ChromeOptions();
+                try
+                {
                     _driver = new ChromeDriver(chromeDriverService, chromeOptions);
+                }
+                catch (InvalidOperationException ex)
+                {
+                    if (errorCodeWrongDriver.IsMatch(ex.Message))
+                    {
+                        var currentver = errorCodeWrongDriver.Replace(ex.Message, "${curver}");
+                        var path = errorCodeWrongDriver.Replace(ex.Message, "${path}");
+                        Process.Start("ChrDrivDownloader.exe", $"path");
+                        while (Process.GetProcessesByName("ChrDrivDownloader").Length > 0)
+                        {
+                            Thread.Sleep(500);
+                        }
+                    }
+                }
+
                     // Avoid synchronization issues by applying timed delay to each step if necessary
                     _driver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(5);
                     _driver.Manage().Timeouts().PageLoad = TimeSpan.FromSeconds(10);

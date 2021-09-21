@@ -35,6 +35,7 @@ namespace RecordGetTracks
             this.buttonCLose = new MetroFramework.Controls.MetroButton();
             this.toggleTheme = new MetroFramework.Controls.MetroToggle();
             this.metroLabel1 = new MetroFramework.Controls.MetroLabel();
+            this.numUpDownMetr2 = new RecordGetTracks.numUpDownMetr();
             this.labalTracks = new MetroFramework.Controls.MetroLabel();
             this.btnBackupRadios = new MetroFramework.Controls.MetroLabel();
             this.metroLabel7 = new MetroFramework.Controls.MetroLabel();
@@ -48,7 +49,6 @@ namespace RecordGetTracks
             this.toggleBrowserHide = new MetroFramework.Controls.MetroToggle();
             this.metroLabel8 = new MetroFramework.Controls.MetroLabel();
             this.metroStyleManager1 = new MetroFramework.Components.MetroStyleManager(this.components);
-            this.numUpDownMetr2 = new RecordGetTracks.numUpDownMetr();
             this.panelMain.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.metroStyleManager1)).BeginInit();
             this.SuspendLayout();
@@ -88,9 +88,10 @@ namespace RecordGetTracks
             // 
             this.labelCLose.AutoSize = true;
             this.labelCLose.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.labelCLose.Location = new System.Drawing.Point(205, 345);
+            this.labelCLose.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.labelCLose.Location = new System.Drawing.Point(214, 341);
             this.labelCLose.Name = "labelCLose";
-            this.labelCLose.Size = new System.Drawing.Size(150, 19);
+            this.labelCLose.Size = new System.Drawing.Size(171, 19);
             this.labelCLose.TabIndex = 56;
             this.labelCLose.Text = "Закрыть все процессы ";
             this.labelCLose.Click += new System.EventHandler(this.labelCLose_Click);
@@ -126,6 +127,20 @@ namespace RecordGetTracks
             this.metroLabel1.TabIndex = 53;
             this.metroLabel1.Text = "Использовать темную тему";
             // 
+            // numUpDownMetr2
+            // 
+            this.numUpDownMetr2.isZeroEqualsEmpty = true;
+            this.numUpDownMetr2.Location = new System.Drawing.Point(432, 142);
+            this.numUpDownMetr2.MaxValue = 100000;
+            this.numUpDownMetr2.MinValue = 0;
+            this.numUpDownMetr2.msTheme = MetroFramework.MetroThemeStyle.Light;
+            this.numUpDownMetr2.Name = "numUpDownMetr2";
+            this.numUpDownMetr2.Size = new System.Drawing.Size(93, 25);
+            this.numUpDownMetr2.TabIndex = 52;
+            this.numUpDownMetr2.ValueStep = 5;
+            this.numUpDownMetr2.ValueStepByArrows = 1;
+            this.numUpDownMetr2.ValueChanged += new System.EventHandler(this.numUpDownMetr2_ValueChanged);
+            // 
             // labalTracks
             // 
             this.labalTracks.AutoSize = true;
@@ -140,9 +155,10 @@ namespace RecordGetTracks
             // 
             this.btnBackupRadios.AutoSize = true;
             this.btnBackupRadios.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.btnBackupRadios.FontWeight = MetroFramework.MetroLabelWeight.Bold;
             this.btnBackupRadios.Location = new System.Drawing.Point(11, 318);
             this.btnBackupRadios.Name = "btnBackupRadios";
-            this.btnBackupRadios.Size = new System.Drawing.Size(237, 19);
+            this.btnBackupRadios.Size = new System.Drawing.Size(269, 19);
             this.btnBackupRadios.TabIndex = 46;
             this.btnBackupRadios.Text = "Создать бэкап станций и плейлистов";
             this.btnBackupRadios.Click += new System.EventHandler(this.btnBackupRadios_Click);
@@ -151,9 +167,10 @@ namespace RecordGetTracks
             // 
             this.metroLabel7.AutoSize = true;
             this.metroLabel7.FontSize = MetroFramework.MetroLabelSize.Small;
-            this.metroLabel7.Location = new System.Drawing.Point(12, 348);
+            this.metroLabel7.FontWeight = MetroFramework.MetroLabelWeight.Bold;
+            this.metroLabel7.Location = new System.Drawing.Point(12, 345);
             this.metroLabel7.Name = "metroLabel7";
-            this.metroLabel7.Size = new System.Drawing.Size(168, 15);
+            this.metroLabel7.Size = new System.Drawing.Size(181, 15);
             this.metroLabel7.TabIndex = 45;
             this.metroLabel7.Text = "Сбросить настройки и пароли";
             this.metroLabel7.Click += new System.EventHandler(this.metroLabel7_Click);
@@ -280,20 +297,6 @@ namespace RecordGetTracks
             // metroStyleManager1
             // 
             this.metroStyleManager1.Owner = this;
-            // 
-            // numUpDownMetr2
-            // 
-            this.numUpDownMetr2.isZeroEqualsEmpty = true;
-            this.numUpDownMetr2.Location = new System.Drawing.Point(432, 142);
-            this.numUpDownMetr2.MaxValue = 100000;
-            this.numUpDownMetr2.MinValue = 0;
-            this.numUpDownMetr2.msTheme = MetroFramework.MetroThemeStyle.Light;
-            this.numUpDownMetr2.Name = "numUpDownMetr2";
-            this.numUpDownMetr2.Size = new System.Drawing.Size(93, 25);
-            this.numUpDownMetr2.TabIndex = 52;
-            this.numUpDownMetr2.ValueStep = 5;
-            this.numUpDownMetr2.ValueStepByArrows = 1;
-            this.numUpDownMetr2.ValueChanged += new System.EventHandler(this.numUpDownMetr2_ValueChanged);
             // 
             // FormSettings
             // 

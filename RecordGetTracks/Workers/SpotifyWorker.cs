@@ -65,6 +65,7 @@ namespace RecordGetTracks
             SelHelper.SendKeys(SpotifyPatches.NewPlstFieldName, true, new[] { name });
             SelHelper.ClickLink(SpotifyPatches.NewPlstSaveName);
         }
+        
         public void ImportTracksToPlaylist(string PlaylistName, List<Track> tracks)
         {
             form1.Invoke(new Action(() => { form1.ProgressProgressBar = 0; form1.MaximumProgressBar = tracks.Count; }));
@@ -81,8 +82,19 @@ namespace RecordGetTracks
                     form1.labelCurrProcess.Text = $"Выполняется: {trackId + 1}/{tracks.Count}";
                     form1.ProgressProgressBar = trackId;
                 }));
-                string urlSong = SpotifyPages.SearchPageUrl + tracks[trackId].Name.Replace("-", "").Replace(" ", "%20");
-                SelHelper.ChromeDriver.Navigate().GoToUrl(urlSong);
+                //string urlSong = SpotifyPages.SearchPageUrl + tracks[trackId].Name.Replace("-", "").Replace(" ", "%20");
+                SearchBar.Clear();
+                SearchBar.SendKeys(tracks[trackId].Name.Replace("-", ""));
+                Thread.Sleep(400);
+                try
+                {
+                    SelHelper.ChromeDriver.FindElement(By.XPath("//section[@data-testid='search-tracks-result']/div[1]/div[1]/a")).Click();
+                }
+                catch
+                {
+                    
+                }
+                //SelHelper.ChromeDriver.Navigate().GoToUrl(urlSong);
                 try
                 {
                     SelHelper.ChromeDriver.Manage().Timeouts().ImplicitWait = TimeSpan.FromSeconds(4);
@@ -183,6 +195,7 @@ namespace RecordGetTracks
             List<string> songNamesSplits = new List<string> { onlyArt, onlyName, onlyNameWithoutAdds };
             foreach (string sName in songNamesSplits)
             {
+                
                 SelHelper.ChromeDriver.Navigate().GoToUrl(SpotifyPages.SearchPageUrl + sName.Replace(" ", "%20") + "/tracks");
                 var songsList = SelHelper.ChromeDriver.FindElements(SpotifyPatches.SongsRow).ToList();
                 List<string> songs = new List<string> { };
@@ -206,6 +219,33 @@ namespace RecordGetTracks
             }
             return 0;
 
+        }
+        private IWebElement SearchBar
+        {
+            get
+            {
+                try
+                {
+                    if (SelHelper.ChromeDriver.Url.Contains("https://open.spotify.com/search"))
+                    {
+                        goto getfield;
+                    }
+                    else
+                    {
+                        SelHelper.ChromeDriver.Navigate().GoToUrl("https://open.spotify.com/search");
+                        goto getfield;
+                    }
+                getfield:
+                    var field = SelHelper.ChromeDriver.FindElement(SpotifyData.SpotifyPatches.SeatchField);
+                    return field;
+                }
+                catch
+                {
+                    throw new Exception();
+                    
+                }
+                return null;
+            }
         }
 
     }

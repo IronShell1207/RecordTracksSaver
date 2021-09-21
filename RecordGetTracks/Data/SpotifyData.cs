@@ -43,7 +43,7 @@ namespace SpotifyData
         #endregion
         #region поиск 
         public static By SearchBtn = By.XPath("//a[@href='/search']");
-        public static By SeatchField = By.XPath("//input[@data-testid='search-input']");
+        public static By SeatchField = By.XPath("//form[@role='search']/input");
 
        // public static By SongsLikeOnly = By.XPath("//div[@data-testid='tracklist-row'][1]//button[@title='Save to Your Library']"); // сохранить песню в лайканые песни
         public static By SongsRow = By.XPath("//div[@data-testid='tracklist-row']");
